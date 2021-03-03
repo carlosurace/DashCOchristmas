@@ -19,7 +19,7 @@ class id_converter:
     def Get_Players(self):    
         page = requests.get("http://www63.myfantasyleague.com/2020/export?TYPE=players&L=11083&W=&JSON=1")
         players_json = json.loads(page.text)
-        players=["'"+player['name']+"', '"+player['position']+"'" for player in players_json['players']['player']]
+        players=[player['name']+", "+player['position'] for player in players_json['players']['player']]
         return players
     def convert_current_dp(self, pick):
         pick_round = str(int(pick[1]) + 1)

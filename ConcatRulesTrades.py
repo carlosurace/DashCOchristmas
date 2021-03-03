@@ -46,7 +46,10 @@ RuleTrades["WRPPR"]="WR_PPR: "+RuleTrades["WRPPR"]
 RuleTrades["TEPPR"]="TE_PPR: "+RuleTrades["TEPPR"]
 RuleTrades["Scoring"]=RuleTrades[ppr].apply(lambda row: ', '.join(row.values.astype(str)), axis=1)
 
+for col in ["Side1","Side2"]:
+    for letter in ["[","'","]"]:
+        RuleTrades[col]=RuleTrades[col].str.replace(letter,'')
 
 RuleTrades=RuleTrades[["Side1","Side2","Date","LeagueID","Scoring","Lineup"]]
-#RuleTrades.to_csv(Save)
+RuleTrades.to_csv(Save)
     

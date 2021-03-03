@@ -429,7 +429,11 @@ def update_Graph(Type,input1,input2,input3,input4,
     )
 def GenerateTradeTable(player):
     if player:
-        Trades=TradesRaw[TradesRaw['Side1'].str.contains(player)|TradesRaw['Side2'].str.contains(player)].reset_index(drop=True)
+        if type(player)!=list:
+            player=[player]
+        Trades=TradesRaw
+        for p in player:
+            Trades=Trades[TradesRaw['Side1'].str.contains(p)|Trades['Side2'].str.contains(p)].reset_index(drop=True)
         Trades=Trades[["Side1","Side2","Date","Scoring","Lineup"]].iloc[0:100]
         Table=dash_table.DataTable(
             id='TradeTab',

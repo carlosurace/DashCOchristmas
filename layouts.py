@@ -32,7 +32,10 @@ GameLogs= pd.read_csv(os.path.join(THIS_FOLDER,"data/GameLogs.csv"))
 MFLPlayers=IdConverterMFL.id_converter()
 
 AllPlayers=MFLPlayers.Get_Players()
-
+excludepositions=[", Coach",", PK",", TM",", Off",", Def",", KR",", PN",", ST"]
+for pos in excludepositions:
+    AllPlayers=[p for p in AllPlayers if pos not in p]
+AllPlayers=sorted(AllPlayers)
 Players1=set(GameLogs['Rk'])
 Players1=list(Players1)
 Players1=sorted(Players1)
@@ -577,7 +580,8 @@ tradecard = dbc.Card(
                                         options=[{'label': i, 'value':i} for i in AllPlayers],
                                         value='All',
                                         searchable=True,
-                                        clearable=False,
+                                        clearable=True,
+                                        multi=True,
                                         className="dash-bootstrap"
                                     )
                         ],

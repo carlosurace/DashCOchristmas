@@ -56,6 +56,7 @@ for col in ["Side1","Side2"]:
     for letter in ["'\)","\)"," '"]:
         RuleTrades[col]=RuleTrades[col].str.replace(letter,' ')     
 
+RuleTrades=RuleTrades.sort_values("Date",ascending=False).reset_index(drop=True)
 RuleTrades=RuleTrades[["Side1","Side2","Date","LeagueID","Scoring","Lineup"]]
 RuleTrades.to_csv(Save)
     

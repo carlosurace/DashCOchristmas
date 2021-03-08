@@ -9987,6 +9987,7 @@ legend {
 
 .dash-bootstrap .Select-control:hover {
   box-shadow: none;
+  background-color: #313131;
 }
 
 .dash-bootstrap .is-open > .Select-control {
@@ -10004,7 +10005,7 @@ legend {
 }
 
 .dash-bootstrap .Select.is-disabled > .Select-control {
-  background-color: #ADAFAE;
+  background-color: #313131;
 }
 
 .dash-bootstrap .has-value.Select--single > .Select-control .Select-value .Select-value-label,
@@ -10022,6 +10023,7 @@ legend {
   color: #fff;
   padding-left: 1rem;
   padding-right: 1rem;
+  background-color: #313131;
 }
 
 .dash-bootstrap .Select--single > .Select-control .Select-value,
@@ -10030,6 +10032,7 @@ legend {
   padding-left: 1rem;
   padding-right: 1rem;
   color: #fff;
+  background-color: #313131;
 }
 
 .dash-bootstrap .Select-input {
@@ -10037,6 +10040,7 @@ legend {
   padding: 0;
   margin-left: 1rem;
   color: #fff;
+  background-color: #313131;
 }
 
 .dash-bootstrap .Select-input > input {

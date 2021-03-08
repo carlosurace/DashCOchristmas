@@ -23,9 +23,9 @@ Tradepath=os.path.join(THIS_FOLDER,'data/TradesMaster.csv')
 Trades=pd.read_csv(Tradepath)
 trades=[]
 print(len(Rules))
-for league in Rules[0:10]:
+for league in Rules:
     try:
-        trades+=mfl.get_league_trades(league, 2021, csv_writer=None)
+        trades+=mfl.get_league_trades(league, 2021,7, csv_writer=None)
         print(league,"success")
     except:
         print(league,"fail")
@@ -33,6 +33,8 @@ for league in Rules[0:10]:
 df = pd.DataFrame(trades, columns=["Side1","Side2","Date","LeagueID"])
 df["Date"]=pd.to_datetime(df["Date"].astype(int), unit='s')
 Trades=pd.concat([Trades,df], axis=0, ignore_index=False)
-Trades.drop_duplicates()
+Trades["Side1"]=Trades["Side1"].map(str)
+Trades["Side2"]=Trades["Side2"].map(str)
+Trades=Trades.drop_duplicates()
 Tradepath=os.path.join(THIS_FOLDER,'data/TradesMaster.csv')
 Trades.to_csv(Tradepath)

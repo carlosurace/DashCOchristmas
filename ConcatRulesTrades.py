@@ -58,5 +58,6 @@ for col in ["Side1","Side2"]:
 RuleTrades=RuleTrades.sort_values("Date",ascending=False).reset_index(drop=True)
 print(max(Trades['Date']))
 RuleTrades=RuleTrades[["Side1","Side2","Date","LeagueID","Scoring","Lineup"]]
+RuleTrades=RuleTrades.drop_duplicates()
 RuleTrades.to_csv(Save)
     

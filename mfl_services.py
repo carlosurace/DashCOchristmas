@@ -164,7 +164,7 @@ class mfl_service:
             return
         return(server)
 
-    def get_league_trades(self, league_id, year, csv_writer=None):
+    def get_league_trades(self, league_id, year,days, csv_writer=None):
         '''
         Finds all trades in league.  Should return real name of playesr?
 
@@ -176,7 +176,7 @@ class mfl_service:
             try:
                 server=i
                 trade_url = "http://www"+str(server)+".myfantasyleague.com/" + str(year) + "/export?TYPE=transactions&L=" \
-                    + str(league_id) + "&TRANS_TYPE=TRADE&DAYS=365&JSON=1"
+                    + str(league_id) + "&TRANS_TYPE=TRADE&DAYS="+ str(days) +"&JSON=1"
                 page = requests.get(trade_url)
                 page.raise_for_status()
 

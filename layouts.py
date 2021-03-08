@@ -125,7 +125,8 @@ NavbarTrades=dbc.Navbar(
                 align="left",
                 no_gutters=True,
             )),
-        html.H2("AOD Trade Finder")
+        html.H2("AOD Trade Finder"),
+        
         #dbc.NavItem(dbc.NavLink("Welcome", href="/Home")),
         #dbc.NavItem(dbc.NavLink("MFL Draft Helper", href="/DraftHelper")),
         #dbc.NavItem(dbc.NavLink("RDP Graph", href="/RDPGraph")),
@@ -555,8 +556,26 @@ filtercard = dbc.Card(
 tradecard = dbc.Card(
     [
     html.Div(id="wrapper",children=
+        [dbc.Modal(
         [
-
+            dbc.ModalHeader("Most Traded Players",style={"backgroundColor":"#4a4a4a","color":"#fff"}),
+            dcc.Dropdown(
+                    id='TimePeriod',
+                    options=[{'label': i, 'value':i} for i in ["7Days","14Days","30Days"]],
+                    value="30Days",
+                    clearable=False,
+                    className="dash-bootstrap"
+                ),
+            dcc.Loading(dbc.ModalBody(id="StatsDisplay",children=[html.Div(id="MostTraded")],
+                style={"backgroundColor":"#4a4a4a","color":"#fff"}),type='circle'),
+            dbc.ModalFooter(
+                dbc.Button("Close", id="CloseModal",color='dark'),style={"backgroundColor":"#4a4a4a","color":"#fff"}
+            ),
+        ],
+        id="TradeModal",
+        is_open=False,
+        style={"max-width": "none", "width": "60%","backgroundColor":"#fff","color":"#fff"}
+        ),
             dbc.Row(
                 [
                     dbc.Col(
@@ -583,12 +602,17 @@ tradecard = dbc.Card(
                                         clearable=True,
                                         multi=True,
                                         className="dash-bootstrap"
-                                    )
+                                    ),
+                            
                         ],
                         width=5
                     ),
                     dbc.Col(
-                        [
+                        [dbc.Button(
+                                "Most Traded",
+                                id="OpenModal",
+                                color='dark',
+                            ),
                         ],
                         width=5
                     )

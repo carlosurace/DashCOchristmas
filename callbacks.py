@@ -5,16 +5,18 @@ Created on Jun 24, 2020
 '''
 from dash.dependencies import Input, Output,State
 import datetime
-from App import app
+from datetime import date
+from App import app,cache
 from mfl_services import mfl_service
 mfl = mfl_service(update_player_converter=True)
-from layouts import QB, Players, Dates,GameLogs,Stats,Seasons, SeasonWeeks,Players1
+from layouts import QB, Players, Dates,GameLogs,Stats,Seasons, SeasonWeeks,Players1,AllPlayers
 import dash_bootstrap_components as dbc
 import pandas as pd
 import dash_core_components as dcc
 import os
 import dash_table
-
+from dash_table.Format import Format, Scheme, Sign, Symbol
+import dash_table.FormatTemplate as FormatTemplate
 STYLE = {
     'boxShadow': '#313131' ,
     'background': '#313131' ,
@@ -33,6 +35,19 @@ THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 TradesRaw=os.path.join(THIS_FOLDER,'data/RulesTrades.csv')
 TradesRaw=pd.read_csv(TradesRaw,parse_dates=['Date'])
 TradesRaw=TradesRaw.sort_values("Date",ascending=False).reset_index(drop=True)
+
+
+def toggle_modal(n1, n2, is_open):
+    print("firing Modal Toggle",is_open,"n1",n1,"n2",n2)
+    if n1 or n2:
+        return not is_open
+    return is_open
+
+app.callback(
+    Output("TradeModal", "is_open"),
+    [Input("OpenModal", "n_clicks"), Input("CloseModal", "n_clicks")],
+    [State("TradeModal", "is_open")]
+    )(toggle_modal)
 
 @app.callback(Output(component_id='pick',component_property='options'),
               [Input("teams", "value")])
@@ -511,6 +526,67 @@ def GenerateTradeTable(player):
                     {'if': {'column_id': 'Date'},
                  'width': '10%'}])
         return Table
+    
+@app.callback(
+    Output(component_id='MostTraded',component_property='children'),
+    [Input("TimePeriod", "value")]
+    )
+@cache.memoize(86400)
+def GenerateMostTraded(TP):
+    #cache.delete_memoized(GenerateMostTraded)
+    if TP=='7Days':
+        diff=datetime.timedelta(7)
+    elif TP=='14Days':
+        diff=datetime.timedelta(14)
+    else:
+        diff=datetime.timedelta(30)
+    
+    Trades=TradesRaw[TradesRaw["Date"]>datetime.datetime.now()-datetime.timedelta(60)]
+    LeagueCount=len(list(set(Trades["LeagueID"])))
+    Trades=Trades[TradesRaw["Date"]>datetime.datetime.now()-diff]
+    
+    df=pd.DataFrame(columns=["Player","Volume"])
+    print("LeagueCount",LeagueCount)
+    for player in AllPlayers:
+        print(player)
+        df.loc[len(df)]=[player,(Trades.Side1.str.count(player).sum()+Trades.Side2.str.count(player).sum())/LeagueCount]
+    df=df.sort_values("Volume", ascending=False)
+    Table=dash_table.DataTable(
+        id='TradeTab',
+        columns=[{"name": i, "id": i,'type': 'numeric','format': FormatTemplate.percentage(1).sign(Sign.positive)} if i =="Volume" else {"name": i, "id": i} for i in df.columns],
+        data=df.to_dict('records'),
+        fixed_rows={'headers': True},
+        fixed_columns={'headers': True},
+        filter_action="native",
+        sort_action="native",
+        sort_mode="multi",
+        style_header={
+             'fontSize':25,
+            'fontFamily': 'helvetica',
+            'border': 'thin #a5d4d9 solid',
+            'color': '#a5d4d9',
+            'backgroundColor': '#313131',
+            'padding':'10px'
+            },
+        style_filter={'color': '#fff', "backgroundColor": "#313131"},
+        style_table={'minHeight':'650px','height': '650px','maxHeight':'650px','border': '#000','height': '650px',"width":"95%"},
+        style_cell={
+        'fontSize':22,
+        'border': 'thin #a5d4d9 solid',
+        'fontFamily': 'helvetica',
+        'textAlign': 'left',
+        'Width': 'auto',
+        'maxWidth': 0,
+        'height': 'auto',
+        'whiteSpace': 'normal',
+        'padding':'10px',
+        'color': '#a5d4d9',
+        'backgroundColor': '#313131'
+        },
+        style_data_conditional=[   
+                {'if': {'column_id': 'Date'},
+             'width': '10%'}])
+    return Table
 
 
 

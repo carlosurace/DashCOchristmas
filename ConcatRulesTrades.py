@@ -14,8 +14,6 @@ import IdConverterMFL
 MFLPlayers=IdConverterMFL.id_converter(update=True)
 
 AllPlayers=MFLPlayers.Get_Players()
-for player in AllPlayers:
-    print(player)
 THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 
 Rules=os.path.join(THIS_FOLDER,'data/MasterRules.csv')
@@ -23,7 +21,8 @@ Rules=pd.read_csv(Rules)
 Rules["ID"]=Rules["ID"].map(str)
 
 Trades=os.path.join(THIS_FOLDER,'data/TradesMaster.csv')
-Trades=pd.read_csv(Trades)
+Trades=pd.read_csv(Trades,parse_dates=['Date'])
+print(max(Trades['Date']))
 Trades["LeagueID"]=Trades["LeagueID"].map(str)
 RuleTrades=Trades.merge(Rules, left_on="LeagueID", right_on="ID")
 Save=os.path.join(THIS_FOLDER,'data/RulesTrades.csv')
@@ -57,6 +56,7 @@ for col in ["Side1","Side2"]:
         RuleTrades[col]=RuleTrades[col].str.replace(letter,' ')     
 
 RuleTrades=RuleTrades.sort_values("Date",ascending=False).reset_index(drop=True)
+print(max(Trades['Date']))
 RuleTrades=RuleTrades[["Side1","Side2","Date","LeagueID","Scoring","Lineup"]]
 RuleTrades.to_csv(Save)
     

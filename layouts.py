@@ -578,7 +578,7 @@ tradecard = dbc.Card(
                             dcc.Dropdown(
                                         id='tradeplayer',
                                         options=[{'label': i, 'value':i} for i in AllPlayers],
-                                        value='All',
+                                        value=None,
                                         searchable=True,
                                         clearable=True,
                                         multi=True,

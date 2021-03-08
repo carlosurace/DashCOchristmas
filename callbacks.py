@@ -31,8 +31,8 @@ colors =  {
 THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 
 TradesRaw=os.path.join(THIS_FOLDER,'data/RulesTrades.csv')
-TradesRaw=pd.read_csv(TradesRaw)
-TradesRaw=TradesRaw.sort_values("Date",ascending=False)
+TradesRaw=pd.read_csv(TradesRaw,parse_dates=['Date'])
+TradesRaw=TradesRaw.sort_values("Date",ascending=False).reset_index(drop=True)
 
 @app.callback(Output(component_id='pick',component_property='options'),
               [Input("teams", "value")])
@@ -424,11 +424,11 @@ def update_Graph(Type,input1,input2,input3,input4,
 
 @app.callback(
     Output(component_id='TradeTable',component_property='children'),
-    [Input("tradeplayer", "value")
-     ]
+    [Input("tradeplayer", "value")]
     )
 def GenerateTradeTable(player):
     if player:
+        print("Player =",player)
         if type(player)!=list:
             player=[player]
         Trades=TradesRaw
@@ -472,7 +472,45 @@ def GenerateTradeTable(player):
                  'width': '10%'}])
         return Table
     else:
-        return None
+        print("No player")
+        Trades=TradesRaw
+        Trades=Trades[["Side1","Side2","Date","Scoring","Lineup"]].iloc[0:100]
+        Table=dash_table.DataTable(
+            id='TradeTab',
+            columns=[{"name": i, "id": i}for i in Trades.columns],
+            data=Trades.to_dict('records'),
+            fixed_rows={'headers': True},
+            fixed_columns={'headers': True},
+            filter_action="native",
+            sort_action="native",
+            sort_mode="multi",
+            style_header={
+                 'fontSize':14,
+                'fontFamily': 'helvetica',
+                'border': 'thin #a5d4d9 solid',
+                'color': '#a5d4d9',
+                'backgroundColor': '#313131',
+                'padding':'10px'
+                },
+            style_filter={'color': '#fff', "backgroundColor": "#313131"},
+            style_table={'minHeight':'650px','height': '650px','maxHeight':'650px','border': '#000','height': '650px',"width":"95%"},
+            style_cell={
+            'fontSize':12,
+            'border': 'thin #a5d4d9 solid',
+            'fontFamily': 'helvetica',
+            'textAlign': 'left',
+            'Width': 'auto',
+            'maxWidth': 0,
+            'height': 'auto',
+            'whiteSpace': 'normal',
+            'padding':'10px',
+            'color': '#a5d4d9',
+            'backgroundColor': '#313131'
+            },
+            style_data_conditional=[   
+                    {'if': {'column_id': 'Date'},
+                 'width': '10%'}])
+        return Table
 
 
 

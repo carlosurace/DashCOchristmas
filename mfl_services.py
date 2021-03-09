@@ -390,7 +390,6 @@ class mfl_service:
         if not draft_dict:
             csv_writer.writerow(["No Data","", '','', '', league_id,''])
             return ["No Data","", '','', '', league_id,'']
-        print(draft_dict)
         try:
             try:
                 typ=draft_dict['draftResults']['draftUnit']['draftType']

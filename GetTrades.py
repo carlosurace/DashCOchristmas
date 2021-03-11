@@ -25,7 +25,7 @@ trades=[]
 print(len(Rules))
 for league in Rules:
     try:
-        trades+=mfl.get_league_trades(league, 2021,7, csv_writer=None)
+        trades+=mfl.get_league_trades(league, 2021,4, csv_writer=None)
         print(league,"success")
     except:
         print(league,"fail")

@@ -53,7 +53,7 @@ for col in ["Side1","Side2"]:
     for letter in ["',"]:
         RuleTrades[col]=RuleTrades[col].str.replace(letter,',')  
     for letter in ["'\)","\)"," '"]:
-        RuleTrades[col]=RuleTrades[col].str.replace(letter,' ')     
+        RuleTrades[col]=RuleTrades[col].str.replace(letter,'\n')     
 
 RuleTrades=RuleTrades.sort_values("Date",ascending=False).reset_index(drop=True)
 print(max(Trades['Date']))

@@ -477,7 +477,7 @@ def GenerateTradeTable(player):
             'Width': 'auto',
             'maxWidth': 0,
             'height': 'auto',
-            'whiteSpace': 'normal',
+            'whiteSpace': 'pre-line',
             'padding':'10px',
             'color': '#a5d4d9',
             'backgroundColor': '#313131'

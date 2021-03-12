@@ -34,6 +34,7 @@ THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 
 TradesRaw=os.path.join(THIS_FOLDER,'data/RulesTrades.csv')
 TradesRaw=pd.read_csv(TradesRaw,parse_dates=['Date'])
+TradesRaw["Date"]=TradesRaw["Date"].dt.date
 TradesRaw=TradesRaw.sort_values("Date",ascending=False).reset_index(drop=True)
 
 
@@ -448,6 +449,7 @@ def GenerateTradeTable(player):
             player=[player]
         Trades=TradesRaw
         for p in player:
+            print(player)
             Trades=Trades[TradesRaw['Side1'].str.contains(p)|Trades['Side2'].str.contains(p)].reset_index(drop=True)
         Trades=Trades[["Side1","Side2","Date","Scoring","Lineup"]].iloc[0:100]
         Table=dash_table.DataTable(
@@ -482,6 +484,7 @@ def GenerateTradeTable(player):
             'color': '#a5d4d9',
             'backgroundColor': '#313131'
             },
+            style_data={'whiteSpace': 'pre-line'},
             style_data_conditional=[   
                     {'if': {'column_id': 'Date'},
                  'width': '10%'}])
@@ -509,6 +512,7 @@ def GenerateTradeTable(player):
                 },
             style_filter={'color': '#fff', "backgroundColor": "#313131"},
             style_table={'minHeight':'650px','height': '650px','maxHeight':'650px','border': '#000','height': '650px',"width":"95%"},
+            style_data={'whiteSpace': 'pre-line'},
             style_cell={
             'fontSize':12,
             'border': 'thin #a5d4d9 solid',

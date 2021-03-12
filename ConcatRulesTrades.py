@@ -10,6 +10,7 @@ import numpy as np
 mfl = mfl_service(update_player_converter=True)
 import os
 import IdConverterMFL
+import ast
 
 MFLPlayers=IdConverterMFL.id_converter(update=True)
 
@@ -46,15 +47,19 @@ RuleTrades["TEPPR"]="TE PPR: "+RuleTrades["TEPPR"]
 RuleTrades["Scoring"]=RuleTrades[ppr].apply(lambda row: ', '.join(row.values.astype(str)), axis=1)
 
 for col in ["Side1","Side2"]:
-    RuleTrades[col]=RuleTrades[col].str.replace('"',"'")
+    #RuleTrades[col]=RuleTrades[col].str.replace('"',"'")
+    RuleTrades[col]=RuleTrades[col].apply(lambda x: ast.literal_eval(str(x)))
+    RuleTrades[col]=["\n".join([", ".join(list(i)) if type(i)==tuple else i for i in RuleTrades[col].loc[n]]) if type(RuleTrades[col].loc[n])==list else RuleTrades[col].loc[n] for n in range(len(RuleTrades))]
+    '''
+    for letter in ["'),","\),","', '"]:
+        RuleTrades[col]=RuleTrades[col].str.replace(letter,' \n')     
     for letter in ["\['","'\]","\[","\]","\('","\("]:
-        print(letter)
         RuleTrades[col]=RuleTrades[col].str.replace(letter,'')
     for letter in ["',"]:
         RuleTrades[col]=RuleTrades[col].str.replace(letter,',')  
     for letter in ["'\)","\)"," '"]:
-        RuleTrades[col]=RuleTrades[col].str.replace(letter,'')     
-
+        RuleTrades[col]=RuleTrades[col].str.replace(letter,' ')     
+    '''
 RuleTrades=RuleTrades.sort_values("Date",ascending=False).reset_index(drop=True)
 print(max(Trades['Date']))
 RuleTrades=RuleTrades[["Side1","Side2","Date","LeagueID","Scoring","Lineup"]]

@@ -93,6 +93,16 @@ STYLE = {
     'color':'#a5d4d9',
     'backgroundColor': '#313131'
 }
+
+HeaderSTYLE = {
+    'boxShadow': '#313131' ,
+    'background': '#313131' ,
+    'color':'#a5d4d9',
+    'backgroundColor': '#313131',
+    'font-weight': '600',
+    'text-decoration': 'underline'
+}
+
 page = {
     'margins': '15px' ,
 }
@@ -579,7 +589,7 @@ tradecard = dbc.Card(
             dbc.Row(
                 [
                     dbc.Col(
-                        dbc.Label("Player",style=STYLE),width=12
+                        dbc.Label("Player",style=HeaderSTYLE),width=12
                     )
                 ],
                 no_gutters=True
@@ -615,10 +625,11 @@ tradecard = dbc.Card(
                 ],
                 no_gutters=True
             ),
+            html.Br(),
             dbc.Row(
                 [
                     dbc.Col(
-                        dbc.Label("Starter Format",style=STYLE),width=12
+                        dbc.Label("Starter Format",style=HeaderSTYLE),width=12
                     )
                 ],
                 no_gutters=True
@@ -689,10 +700,11 @@ tradecard = dbc.Card(
                 ],
                 no_gutters=True
             ),
+            html.Br(),
             dbc.Row(
                 [
                     dbc.Col(
-                        dbc.Label("Scoring Format",style=STYLE),width=12
+                        dbc.Label("Scoring Format",style=HeaderSTYLE),width=12
                     )
                 ],
                 no_gutters=True
@@ -742,7 +754,7 @@ tradecard = dbc.Card(
         ],
         className="dash-bootstrap"
         ),
-    ]
+    ],style={"padding":"20px"}
 )
 
 

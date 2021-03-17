@@ -9987,43 +9987,47 @@ legend {
 
 .dash-bootstrap .Select-control:hover {
   box-shadow: none;
-  background-color: #313131;
+  background-color: #313131!important;
+  color: #a5d4d9!important;
 }
 
 .dash-bootstrap .is-open > .Select-control {
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
   color: #000 !important;
-  background-color: #313131;
+  background-color: #313131!important;
 }
 
 .dash-bootstrap .is-focused:not(.is-open) > .Select-control {
   border-color: #95cfeb;
   outline: 0;
   box-shadow: 0 0 0 0.2rem rgba(42, 159, 214, 0.25);
-  background-color: #313131;
+  background-color: #313131!important;
+  color: #a5d4d9!important;
 }
 
 .dash-bootstrap .Select.is-disabled > .Select-control {
-  background-color: #313131;
+  background-color: #313131!important;
+  color: #a5d4d9!important;
 }
 
 .dash-bootstrap .has-value.Select--single > .Select-control .Select-value .Select-value-label,
 .dash-bootstrap .has-value.is-pseudo-focused.Select--single > .Select-control .Select-value .Select-value-label {
-  color: #a5d4d9;
-  background-color: #313131;
+  color: #a5d4d9!important;
+  background-color: #313131!important;
 }
 
 .dash-bootstrap .Select-multi-value-wrapper {
   height: calc(1.5em + 0.75rem);
-  background-color: #313131;
+  background-color: #313131!important;
+  color: #a5d4d9!important;
 }
 
 .dash-bootstrap .Select-placeholder {
-  color: #fff;
+  color: #fff!important;
   padding-left: 1rem;
   padding-right: 1rem;
-  background-color: #313131;
+  background-color: #313131!important;
 }
 
 .dash-bootstrap .Select--single > .Select-control .Select-value,
@@ -10032,7 +10036,7 @@ legend {
   padding-left: 1rem;
   padding-right: 1rem;
   color: #fff;
-  background-color: #313131;
+  background-color: #313131!important;
 }
 
 .dash-bootstrap .Select-input {
@@ -10040,19 +10044,19 @@ legend {
   padding: 0;
   margin-left: 1rem;
   color: #fff;
-  background-color: #313131;
+  background-color: #313131!important;
 }
 
 .dash-bootstrap .Select-input > input {
   line-height: 1.5;
   padding-top: 0.375rem;
   padding-bottom: 0.375rem;
-  background-color: #313131;
+  background-color: #313131!important;
   color: #a5d4d9;
 }
 
 .dash-bootstrap .Select--multi .Select-value {
-  background-color: #313131;
+  background-color: #313131!important;
   border-color: rgba(42, 159, 214, 0.25);
   border-radius: 0.125rem;
   box-sizing: content-box;
@@ -10067,7 +10071,7 @@ legend {
   line-height: calc(0.875rem * 1.5);
   padding-top: 0;
   padding-bottom: 0;
-  background-color: #313131;
+  background-color: #313131!important;
 }
 
 .dash-bootstrap .Select--multi .Select-value-icon:hover {
@@ -10076,7 +10080,7 @@ legend {
   border-radius: 0.125rem;
   border-bottom-right-radius: 0;
   border-top-right-radius: 0;
-  background-color: #313131;
+  background-color: #313131!important;
 }
 .dash-bootstrap .Select--multi .Select-value-icon:active {
   background-color: rgba(42, 159, 214, 0.2);
@@ -10084,7 +10088,7 @@ legend {
   border-radius: 0.125rem;
   border-bottom-right-radius: 0;
   border-top-right-radius: 0;
-  background-color: #313131;
+  background-color: #313131!important;
 }
 
 .dash-bootstrap .Select--multi .Select-value-label {
@@ -10092,7 +10096,7 @@ legend {
   padding-bottom: 0;
   line-height: calc(0.875rem * 1.5);
   height: calc(0.875rem * 1.5);
-  background-color: #313131;
+  background-color: #313131!important;
 }
 
 .dash-bootstrap .Select-menu-outer {
@@ -10111,6 +10115,7 @@ legend {
 .dash-bootstrap .VirtualizedSelectOption {
   height: calc(1.5em + 0.75rem) !important;
   padding-left: 1rem;
+  color: #a5d4d9;
 }
 
 .dash-bootstrap .VirtualizedSelectFocusedOption {

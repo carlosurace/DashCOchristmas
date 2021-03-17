@@ -36,6 +36,8 @@ TradesRaw=os.path.join(THIS_FOLDER,'data/RulesTrades.csv')
 TradesRaw=pd.read_csv(TradesRaw,parse_dates=['Date'])
 TradesRaw["Date"]=TradesRaw["Date"].dt.date
 TradesRaw=TradesRaw.sort_values("Date",ascending=False).reset_index(drop=True)
+TradesRaw=TradesRaw.fillna("")
+
 
 
 def toggle_modal(n1, n2, is_open):
@@ -440,96 +442,79 @@ def update_Graph(Type,input1,input2,input3,input4,
 
 @app.callback(
     Output(component_id='TradeTable',component_property='children'),
-    [Input("tradeplayer", "value")]
+    [Input("tradeplayer", "value"),Input("QBs", "value"),
+     Input("WRs", "value"),Input("TEs", "value"),
+     Input("PassTD", "value"),Input("TEPrem", "value")]
     )
-def GenerateTradeTable(player):
+def GenerateTradeTable(player,QBs,WRs,TEs,PTD,TEP):
+    Trades=TradesRaw
     if player:
         print("Player =",player)
         if type(player)!=list:
             player=[player]
-        Trades=TradesRaw
         for p in player:
             print(player)
-            Trades=Trades[TradesRaw['Side1'].str.contains(p)|Trades['Side2'].str.contains(p)].reset_index(drop=True)
-        Trades=Trades[["Side1","Side2","Date","Scoring","Lineup"]].iloc[0:100]
-        Table=dash_table.DataTable(
-            id='TradeTab',
-            columns=[{"name": i, "id": i}for i in Trades.columns],
-            data=Trades.to_dict('records'),
-            fixed_rows={'headers': True},
-            fixed_columns={'headers': True},
-            filter_action="native",
-            sort_action="native",
-            sort_mode="multi",
-            style_header={
-                 'fontSize':14,
-                'fontFamily': 'helvetica',
-                'border': 'thin #a5d4d9 solid',
-                'color': '#a5d4d9',
-                'backgroundColor': '#313131',
-                'padding':'10px'
-                },
-            style_filter={'color': '#fff', "backgroundColor": "#313131"},
-            style_table={'minHeight':'650px','height': '650px','maxHeight':'650px','border': '#000','height': '650px',"width":"95%"},
-            style_cell={
-            'fontSize':12,
-            'border': 'thin #a5d4d9 solid',
+            Trades=Trades[Trades['Side1'].str.contains(p)|Trades['Side2'].str.contains(p)].reset_index(drop=True)
+    if QBs=="1QB":
+        Trades=Trades[Trades['Lineup'].str.contains("QB: 1-1")].reset_index(drop=True)
+    elif QBs=="SuperFlex":
+        Trades=Trades[Trades['Lineup'].str.contains("QB: 1-2")].reset_index(drop=True)
+    elif QBs=="2QB":
+        Trades=Trades[Trades['Lineup'].str.contains("QB: 2-2")].reset_index(drop=True)
+    if WRs=="2WR":
+        Trades=Trades[Trades['Lineup'].str.contains("WR: 2")].reset_index(drop=True)
+    elif WRs=="3WR":
+        Trades=Trades[Trades['Lineup'].str.contains("WR: 3")].reset_index(drop=True)
+    if TEs=="1TE":
+        Trades=Trades[Trades['Lineup'].str.contains("TE: 1")].reset_index(drop=True)
+    elif TEs=="2TE":
+        Trades=Trades[Trades['Lineup'].str.contains("TE: 2")].reset_index(drop=True)
+    if PTD=="4pt":
+        Trades=Trades[Trades['Scoring'].str.contains("pTD: 4")].reset_index(drop=True)
+    elif PTD=="6pt":
+        Trades=Trades[Trades['Scoring'].str.contains("pTD: 6")].reset_index(drop=True)
+    if TEP=="Yes":
+        Trades=Trades[Trades['Scoring'].str.contains("TE PPR: 1.5")|Trades['Scoring'].str.contains("TE PPR: 1.75")|Trades['Scoring'].str.contains("TE PPR: 2")].reset_index(drop=True)
+    elif TEP=="No":
+        Trades=Trades[~Trades['Scoring'].str.contains("TE PPR: 1.5") & ~Trades['Scoring'].str.contains("TE PPR: 1.75") & ~Trades['Scoring'].str.contains("TE PPR: 2")].reset_index(drop=True)
+    Trades=Trades[["Side1","Side2","Date","Scoring","Lineup"]].iloc[0:100]
+    Table=dash_table.DataTable(
+        id='TradeTab',
+        columns=[{"name": i, "id": i}for i in Trades.columns],
+        data=Trades.to_dict('records'),
+        fixed_rows={'headers': True},
+        fixed_columns={'headers': True},
+        filter_action="native",
+        sort_action="native",
+        sort_mode="multi",
+        style_header={
+             'fontSize':14,
             'fontFamily': 'helvetica',
-            'textAlign': 'left',
-            'Width': 'auto',
-            'maxWidth': 0,
-            'height': 'auto',
-            'whiteSpace': 'pre-line',
-            'padding':'10px',
-            'color': '#a5d4d9',
-            'backgroundColor': '#313131'
-            },
-            style_data={'whiteSpace': 'pre-line'},
-            style_data_conditional=[   
-                    {'if': {'column_id': 'Date'},
-                 'width': '10%'}])
-        return Table
-    else:
-        print("No player")
-        Trades=TradesRaw
-        Trades=Trades[["Side1","Side2","Date","Scoring","Lineup"]].iloc[0:100]
-        Table=dash_table.DataTable(
-            id='TradeTab',
-            columns=[{"name": i, "id": i}for i in Trades.columns],
-            data=Trades.to_dict('records'),
-            fixed_rows={'headers': True},
-            fixed_columns={'headers': True},
-            filter_action="native",
-            sort_action="native",
-            sort_mode="multi",
-            style_header={
-                 'fontSize':14,
-                'fontFamily': 'helvetica',
-                'border': 'thin #a5d4d9 solid',
-                'color': '#a5d4d9',
-                'backgroundColor': '#313131',
-                'padding':'10px'
-                },
-            style_filter={'color': '#fff', "backgroundColor": "#313131"},
-            style_table={'minHeight':'650px','height': '650px','maxHeight':'650px','border': '#000','height': '650px',"width":"95%"},
-            style_data={'whiteSpace': 'pre-line'},
-            style_cell={
-            'fontSize':12,
             'border': 'thin #a5d4d9 solid',
-            'fontFamily': 'helvetica',
-            'textAlign': 'left',
-            'Width': 'auto',
-            'maxWidth': 0,
-            'height': 'auto',
-            'whiteSpace': 'normal',
-            'padding':'10px',
             'color': '#a5d4d9',
-            'backgroundColor': '#313131'
+            'backgroundColor': '#313131',
+            'padding':'10px'
             },
-            style_data_conditional=[   
-                    {'if': {'column_id': 'Date'},
-                 'width': '10%'}])
-        return Table
+        style_filter={'color': '#fff', "backgroundColor": "#313131"},
+        style_table={'minHeight':'650px','height': '650px','maxHeight':'650px','border': '#000','height': '650px',"width":"95%"},
+        style_data={'whiteSpace': 'pre-line'},
+        style_cell={
+        'fontSize':12,
+        'border': 'thin #a5d4d9 solid',
+        'fontFamily': 'helvetica',
+        'textAlign': 'left',
+        'Width': 'auto',
+        'maxWidth': 0,
+        'height': 'auto',
+        'whiteSpace': 'normal',
+        'padding':'10px',
+        'color': '#a5d4d9',
+        'backgroundColor': '#313131'
+        },
+        style_data_conditional=[   
+                {'if': {'column_id': 'Date'},
+             'width': '10%'}])
+    return Table
     
 @app.callback(
     Output(component_id='MostTraded',component_property='children'),
@@ -539,26 +524,15 @@ def GenerateTradeTable(player):
 def GenerateMostTraded(TP):
     #cache.delete_memoized(GenerateMostTraded)
     if TP=='7Days':
-        diff=datetime.timedelta(7)
+        most=pd.read_csv(os.path.join(THIS_FOLDER,'data/Most7.csv'))
     elif TP=='14Days':
-        diff=datetime.timedelta(14)
+        most=pd.read_csv(os.path.join(THIS_FOLDER,'data/Most14.csv'))
     else:
-        diff=datetime.timedelta(30)
-    
-    Trades=TradesRaw[TradesRaw["Date"]>datetime.datetime.now()-datetime.timedelta(60)]
-    LeagueCount=len(list(set(Trades["LeagueID"])))
-    Trades=Trades[TradesRaw["Date"]>datetime.datetime.now()-diff]
-    
-    df=pd.DataFrame(columns=["Player","Volume"])
-    print("LeagueCount",LeagueCount)
-    for player in AllPlayers:
-        print(player)
-        df.loc[len(df)]=[player,(Trades.Side1.str.count(player).sum()+Trades.Side2.str.count(player).sum())/LeagueCount]
-    df=df.sort_values("Volume", ascending=False)
+        most=pd.read_csv(os.path.join(THIS_FOLDER,'data/Most30.csv'))
     Table=dash_table.DataTable(
         id='TradeTab',
-        columns=[{"name": i, "id": i,'type': 'numeric','format': FormatTemplate.percentage(1).sign(Sign.positive)} if i =="Volume" else {"name": i, "id": i} for i in df.columns],
-        data=df.to_dict('records'),
+        columns=[{"name": i, "id": i,'type': 'numeric','format': FormatTemplate.percentage(1).sign(Sign.positive)} if i =="Volume" else {"name": i, "id": i} for i in most.columns],
+        data=most.to_dict('records'),
         fixed_rows={'headers': True},
         fixed_columns={'headers': True},
         filter_action="native",

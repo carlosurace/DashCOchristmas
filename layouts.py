@@ -579,13 +579,8 @@ tradecard = dbc.Card(
             dbc.Row(
                 [
                     dbc.Col(
-                        dbc.Label("Player",style=STYLE),width=6
-                    ),
-                    dbc.Col(
-                        dbc.Label("",style=STYLE),width=4
-                    ),
-
-
+                        dbc.Label("Player",style=STYLE),width=12
+                    )
                 ],
                 no_gutters=True
             ),
@@ -605,7 +600,7 @@ tradecard = dbc.Card(
                                     ),
                             
                         ],
-                        width=5
+                        width=8
                     ),
                     dbc.Col(
                         [dbc.Button(
@@ -614,12 +609,136 @@ tradecard = dbc.Card(
                                 color='dark',
                             ),
                         ],
-                        width=5
+                        width=4
                     )
 
                 ],
                 no_gutters=True
-            )
+            ),
+            dbc.Row(
+                [
+                    dbc.Col(
+                        dbc.Label("Starter Format",style=STYLE),width=12
+                    )
+                ],
+                no_gutters=True
+            ),
+            dbc.Row(
+                [
+
+                    dbc.Col(
+                        dbc.Label("QBs",style=STYLE),width=4
+                    ),
+                    dbc.Col(
+                        [dcc.Dropdown(
+                                        id='QBs',
+                                        options=[{'label': i, 'value':i} for i in ["Any","1QB","SuperFlex","2QB"]],
+                                        value="Any",
+                                        searchable=True,
+                                        clearable=False,
+                                        className="dash-bootstrap"
+                                    )
+                        ],
+                        width=8
+                    )
+
+                ],
+                no_gutters=True
+            ),
+            dbc.Row(
+                [
+
+                    dbc.Col(
+                        dbc.Label("WRs",style=STYLE),width=4
+                    ),
+                    dbc.Col(
+                        [dcc.Dropdown(
+                                        id='WRs',
+                                        options=[{'label': i, 'value':i} for i in ["Any","2WR","3WR"]],
+                                        value="Any",
+                                        searchable=True,
+                                        clearable=False,
+                                        className="dash-bootstrap"
+                                    )
+                        ],
+                        width=8
+                    )
+
+                ],
+                no_gutters=True
+            ),
+            dbc.Row(
+                [
+
+                    dbc.Col(
+                        dbc.Label("TEs",style=STYLE),width=4
+                    ),
+                    dbc.Col(
+                        [dcc.Dropdown(
+                                        id='TEs',
+                                        options=[{'label': i, 'value':i} for i in ["Any","1TE","2TE"]],
+                                        value="Any",
+                                        searchable=True,
+                                        clearable=False,
+                                        className="dash-bootstrap"
+                                    )
+                        ],
+                        width=8
+                    )
+
+                ],
+                no_gutters=True
+            ),
+            dbc.Row(
+                [
+                    dbc.Col(
+                        dbc.Label("Scoring Format",style=STYLE),width=12
+                    )
+                ],
+                no_gutters=True
+            ),
+            dbc.Row(
+                [
+
+                    dbc.Col(
+                        dbc.Label("Pass TD",style=STYLE),width=4
+                    ),
+                    dbc.Col(
+                        [dcc.Dropdown(
+                                        id='PassTD',
+                                        options=[{'label': i, 'value':i} for i in ["Any","4pt","6pt"]],
+                                        value="Any",
+                                        searchable=True,
+                                        clearable=False,
+                                        className="dash-bootstrap"
+                                    )
+                        ],
+                        width=8),
+                ],
+                no_gutters=True
+            ),
+            dbc.Row(
+                [
+
+                    dbc.Col(
+                        dbc.Label("TE Premium",style=STYLE),width=4
+                    ),
+                    dbc.Col(
+                        [dcc.Dropdown(
+                                        id='TEPrem',
+                                        options=[{'label': i, 'value':i} for i in ["Any","Yes","No"]],
+                                        value="Any",
+                                        searchable=True,
+                                        clearable=False,
+                                        className="dash-bootstrap"
+                                    )
+                        ],
+                        width=8
+                    )
+                ],
+                no_gutters=True
+            ),
+            
         ],
         className="dash-bootstrap"
         ),
@@ -1083,26 +1202,14 @@ TradeFinder=html.Div([
     NavbarTrades,
     html.Div(
     children=[
-        html.Div(children=[html.Br(),
-            dbc.Row(
-                    [
-                    dbc.Col([tradecard], width=12)],
-                align='center'
-                ),
-            html.Br()
-            ])
-        ],
-    ),
-    html.Div(
-    children=[
         dbc.Row(
-            [
+            [dbc.Col([tradecard], width=3),
             dbc.Col(html.Div([dcc.Loading(
                 id="loading-4",
                 type="default",
                 children=html.Div(id='TradeTable')
                 )]),
-            width=12)
+            width=9)
             ]
         )
     ]

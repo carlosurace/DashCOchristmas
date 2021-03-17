@@ -24,6 +24,8 @@ ImagePath=os.path.join(THIS_FOLDER,'data/analytics logo.jpg')
 Image=base64.b64encode(open(ImagePath,'rb').read()).decode('ascii')
 Logo='data:image/jpg;base64,{}'.format(Image)
 
+
+
 NavbarSignUp=dbc.Navbar(
     children=[html.A(dbc.Row(
                 [

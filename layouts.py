@@ -40,6 +40,8 @@ Players1=set(GameLogs['Rk'])
 Players1=list(Players1)
 Players1=sorted(Players1)
 
+AllPicks=[str(i)+"." + str(n).zfill(2) for i in range(1,35) for n in range(1,13,1)]+["2022 Round " + str(n) for n in range(1,5,1)]+["2021 Round " + str(n) for n in range(1,5,1)]
+
 Seasons=set(GameLogs['season'])
 Seasons=list(Seasons)
 Seasons=sorted(Seasons)
@@ -601,7 +603,7 @@ tradecard = dbc.Card(
                         [
                             dcc.Dropdown(
                                         id='tradeplayer',
-                                        options=[{'label': i, 'value':i} for i in AllPlayers],
+                                        options=[{'label': i, 'value':i} for i in AllPlayers+AllPicks],
                                         value=None,
                                         searchable=True,
                                         clearable=True,

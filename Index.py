@@ -91,7 +91,7 @@ def display_page(pathname):
         return RDP_table
     elif pathname == '/HelpMePlease':
         return DraftHelper
-    elif pathname == '/Trades':
+    elif pathname == '/WoldOfWallstreet':
         return TradeFinder
     else:
         return Join

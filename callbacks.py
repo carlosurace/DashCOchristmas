@@ -496,7 +496,7 @@ def GenerateTradeTable(player,QBs,WRs,TEs,PTD,TEP):
             'padding':'10px'
             },
         style_filter={'color': '#fff', "backgroundColor": "#313131"},
-        style_table={'minHeight':'650px','height': '650px','maxHeight':'650px','border': '#000','height': '650px',"width":"95%"},
+        style_table={'minHeight':'1100px','height': '1100px','maxHeight':'1100px','border': '#000','height': '650px',"width":"95%"},
         style_data={'whiteSpace': 'pre-line'},
         style_cell={
         'fontSize':12,

@@ -137,7 +137,7 @@ NavbarTrades=dbc.Navbar(
                 align="left",
                 no_gutters=True,
             )),
-        html.H2("AOD Trade Finder"),
+        html.H2("AOD Trade Database"),
         
         #dbc.NavItem(dbc.NavLink("Welcome", href="/Home")),
         #dbc.NavItem(dbc.NavLink("MFL Draft Helper", href="/DraftHelper")),

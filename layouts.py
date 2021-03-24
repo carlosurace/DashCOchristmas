@@ -612,8 +612,14 @@ tradecard = dbc.Card(
                                     ),
                             
                         ],
-                        width=8
-                    ),
+                        width=12
+                    )
+                ],
+                no_gutters=True
+            ),
+            html.Br(),
+            dbc.Row(
+                [
                     dbc.Col(
                         [dbc.Button(
                                 "Most Traded",
@@ -623,7 +629,6 @@ tradecard = dbc.Card(
                         ],
                         width=4
                     )
-
                 ],
                 no_gutters=True
             ),

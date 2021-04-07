@@ -12,6 +12,7 @@ mfl = mfl_service(update_player_converter=True)
 from layouts import QB, Players, Dates,GameLogs,Stats,Seasons, SeasonWeeks,Players1,AllPlayers
 import dash_bootstrap_components as dbc
 import pandas as pd
+pd.options.mode.chained_assignment = None  # default='warn'
 import dash_core_components as dcc
 import os
 import dash_table
@@ -448,6 +449,7 @@ def update_Graph(Type,input1,input2,input3,input4,
     )
 def GenerateTradeTable(player,QBs,WRs,TEs,PTD,TEP):
     Trades=TradesRaw
+    Trades=Trades.dropna(subset=['Side1','Side2'])
     if player:
         print("Player =",player)
         if type(player)!=list:

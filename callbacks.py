@@ -616,8 +616,8 @@ def update_RDPTable(startdate,enddate,ADP,position
         df =df[(df.Position==position)]
     else:
         df =df
-
-
+    maxcount=max(df["Draft Count"])
+    df[(df["Draft Count"]>maxcount*0.3)]
 
 
     table = dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True)

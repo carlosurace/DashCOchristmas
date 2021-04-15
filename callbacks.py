@@ -18,6 +18,7 @@ import os
 import dash_table
 from dash_table.Format import Format, Scheme, Sign, Symbol
 import dash_table.FormatTemplate as FormatTemplate
+import dash_html_components as html
 STYLE = {
     'boxShadow': '#313131' ,
     'background': '#313131' ,
@@ -38,7 +39,7 @@ TradesRaw=pd.read_csv(TradesRaw,parse_dates=['Date'])
 TradesRaw["Date"]=TradesRaw["Date"].dt.date
 TradesRaw=TradesRaw.sort_values("Date",ascending=False).reset_index(drop=True)
 TradesRaw=TradesRaw.fillna("")
-
+TradesRaw=TradesRaw[(TradesRaw.Side1!="")&(TradesRaw.Side2!="")&(~TradesRaw.Side1.isna())&(~TradesRaw.Side2.isna())]
 
 
 def toggle_modal(n1, n2, is_open):
@@ -440,7 +441,13 @@ def update_Graph(Type,input1,input2,input3,input4,
                    }
             )
 
-
+def display_links(df):
+        links = df['link'].to_list()
+        rows = []
+        for x in links:
+            link = '[Link](' +str(x) + ')'
+            rows.append(link)
+        return rows
 @app.callback(
     Output(component_id='TradeTable',component_property='children'),
     [Input("tradeplayer", "value"),Input("QBs", "value"),
@@ -479,10 +486,13 @@ def GenerateTradeTable(player,QBs,WRs,TEs,PTD,TEP):
         Trades=Trades[Trades['Scoring'].str.contains("TE PPR: 1.5")|Trades['Scoring'].str.contains("TE PPR: 1.75")|Trades['Scoring'].str.contains("TE PPR: 2")].reset_index(drop=True)
     elif TEP=="No":
         Trades=Trades[~Trades['Scoring'].str.contains("TE PPR: 1.5") & ~Trades['Scoring'].str.contains("TE PPR: 1.75") & ~Trades['Scoring'].str.contains("TE PPR: 2")].reset_index(drop=True)
+    print(Trades.columns)
+    Trades["link"]=["www58.myfantasyleague.com/2021/options?L=30932&O=03" for i in Trades["LeagueID"]]
+    Trades["link"]=display_links(Trades)
     Trades=Trades[["Side1","Side2","Date","Scoring","Lineup"]].iloc[0:100]
     Table=dash_table.DataTable(
         id='TradeTab',
-        columns=[{"name": i, "id": i}for i in Trades.columns],
+        columns=[{"name": i, "id": i,'presentation':'markdown'} if i=="link" else{"name": i, "id": i}for i in Trades.columns],
         data=Trades.to_dict('records'),
         fixed_rows={'headers': True},
         fixed_columns={'headers': True},

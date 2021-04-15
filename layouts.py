@@ -23,6 +23,8 @@ import base64
 
 THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 
+
+
 ImagePath=os.path.join(THIS_FOLDER,'data/analytics logo.jpg')
 Image=base64.b64encode(open(ImagePath,'rb').read()).decode('ascii')
 Logo='data:image/jpg;base64,{}'.format(Image)
@@ -93,7 +95,8 @@ STYLE = {
     'boxShadow': '#313131' ,
     'background': '#313131' ,
     'color':'#a5d4d9',
-    'backgroundColor': '#313131'
+    'backgroundColor': '#313131',
+    'margin':'3px'
 }
 
 HeaderSTYLE = {
@@ -565,204 +568,130 @@ filtercard = dbc.Card(
     ]
 )
 
+
+
 tradecard = dbc.Card(
     [
     html.Div(id="wrapper",children=
         [dbc.Modal(
-        [
-            dbc.ModalHeader("Most Traded Players",style={"backgroundColor":"#4a4a4a","color":"#fff"}),
-            dcc.Dropdown(
-                    id='TimePeriod',
-                    options=[{'label': i, 'value':i} for i in ["7Days","14Days","30Days"]],
-                    value="30Days",
-                    clearable=False,
-                    className="dash-bootstrap"
+            [
+                dbc.ModalHeader("Most Traded Players",style={"backgroundColor":"#4a4a4a","color":"#fff"}),
+                dcc.Dropdown(
+                        id='TimePeriod',
+                        options=[{'label': i, 'value':i} for i in ["7Days","14Days","30Days"]],
+                        value="30Days",
+                        clearable=False,
+                        className="dash-bootstrap"
+                    ),
+                dcc.Loading(dbc.ModalBody(id="StatsDisplay",children=[html.Div(id="MostTraded")],
+                    style={"backgroundColor":"#4a4a4a","color":"#fff"}),type='circle'),
+                dbc.ModalFooter(
+                    dbc.Button("Close", id="CloseModal",color='dark'),style={"backgroundColor":"#4a4a4a","color":"#fff"}
                 ),
-            dcc.Loading(dbc.ModalBody(id="StatsDisplay",children=[html.Div(id="MostTraded")],
-                style={"backgroundColor":"#4a4a4a","color":"#fff"}),type='circle'),
-            dbc.ModalFooter(
-                dbc.Button("Close", id="CloseModal",color='dark'),style={"backgroundColor":"#4a4a4a","color":"#fff"}
-            ),
-        ],
+            ],
         id="TradeModal",
         is_open=False,
         style={"max-width": "none", "width": "60%","backgroundColor":"#fff","color":"#fff"}
         ),
-            dbc.Row(
-                [
-                    dbc.Col(
-                        dbc.Label("Player",style=HeaderSTYLE),width=12
-                    )
-                ],
-                no_gutters=True
-            ),
-            dbc.Row(
-                [
-
-                    dbc.Col(
-                        [
-                            dcc.Dropdown(
-                                        id='tradeplayer',
-                                        options=[{'label': i, 'value':i} for i in AllPlayers+AllPicks],
-                                        value=None,
-                                        searchable=True,
-                                        clearable=True,
-                                        multi=True,
-                                        className="dash-bootstrap"
-                                    ),
-                            
-                        ],
-                        width=12
-                    )
-                ],
-                no_gutters=True
-            ),
-            html.Br(),
-            dbc.Row(
-                [
-                    dbc.Col(
-                        [dbc.Button(
-                                "Most Traded",
-                                id="OpenModal",
-                                color='dark',
-                            ),
-                        ],
-                        width=4
-                    )
-                ],
-                no_gutters=True
-            ),
-            html.Br(),
-            dbc.Row(
-                [
-                    dbc.Col(
-                        dbc.Label("Starter Format",style=HeaderSTYLE),width=12
-                    )
-                ],
-                no_gutters=True
-            ),
-            dbc.Row(
-                [
-
-                    dbc.Col(
-                        dbc.Label("QBs",style=STYLE),width=4
-                    ),
-                    dbc.Col(
-                        [dcc.Dropdown(
-                                        id='QBs',
-                                        options=[{'label': i, 'value':i} for i in ["Any","1QB","SuperFlex","2QB"]],
-                                        value="Any",
-                                        searchable=True,
-                                        clearable=False,
-                                        className="dash-bootstrap"
-                                    )
-                        ],
-                        width=8
-                    )
-
-                ],
-                no_gutters=True
-            ),
-            dbc.Row(
-                [
-
-                    dbc.Col(
-                        dbc.Label("WRs",style=STYLE),width=4
-                    ),
-                    dbc.Col(
-                        [dcc.Dropdown(
-                                        id='WRs',
-                                        options=[{'label': i, 'value':i} for i in ["Any","2WR","3WR"]],
-                                        value="Any",
-                                        searchable=True,
-                                        clearable=False,
-                                        className="dash-bootstrap"
-                                    )
-                        ],
-                        width=8
-                    )
-
-                ],
-                no_gutters=True
-            ),
-            dbc.Row(
-                [
-
-                    dbc.Col(
-                        dbc.Label("TEs",style=STYLE),width=4
-                    ),
-                    dbc.Col(
-                        [dcc.Dropdown(
-                                        id='TEs',
-                                        options=[{'label': i, 'value':i} for i in ["Any","1TE","2TE"]],
-                                        value="Any",
-                                        searchable=True,
-                                        clearable=False,
-                                        className="dash-bootstrap"
-                                    )
-                        ],
-                        width=8
-                    )
-
-                ],
-                no_gutters=True
-            ),
-            html.Br(),
-            dbc.Row(
-                [
-                    dbc.Col(
-                        dbc.Label("Scoring Format",style=HeaderSTYLE),width=12
-                    )
-                ],
-                no_gutters=True
-            ),
-            dbc.Row(
-                [
-
-                    dbc.Col(
-                        dbc.Label("Pass TD",style=STYLE),width=4
-                    ),
-                    dbc.Col(
-                        [dcc.Dropdown(
-                                        id='PassTD',
-                                        options=[{'label': i, 'value':i} for i in ["Any","4pt","6pt"]],
-                                        value="Any",
-                                        searchable=True,
-                                        clearable=False,
-                                        className="dash-bootstrap"
-                                    )
-                        ],
-                        width=8),
-                ],
-                no_gutters=True
-            ),
-            dbc.Row(
-                [
-
-                    dbc.Col(
-                        dbc.Label("TE Premium",style=STYLE),width=4
-                    ),
-                    dbc.Col(
-                        [dcc.Dropdown(
-                                        id='TEPrem',
-                                        options=[{'label': i, 'value':i} for i in ["Any","Yes","No"]],
-                                        value="Any",
-                                        searchable=True,
-                                        clearable=False,
-                                        className="dash-bootstrap"
-                                    )
-                        ],
-                        width=8
-                    )
-                ],
-                no_gutters=True
-            ),
-            
-        ],
-        className="dash-bootstrap"
+        dbc.Row([dbc.Label("Player",style=HeaderSTYLE)]),
+        dbc.Row(
+            [
+                dbc.Col(
+                    dcc.Dropdown(
+                                    id='tradeplayer',
+                                    options=[{'label': i, 'value':i} for i in AllPlayers+AllPicks],
+                                    value=None,
+                                    searchable=True,
+                                    clearable=True,
+                                    multi=True,
+                                    className="dash-bootstrap"
+                                ),width=10),
+                dbc.Col(
+                    [dbc.Button(
+                            "Most Traded",
+                            id="OpenModal",
+                            color='dark',
+                        ),
+                    ],
+                    width=2
+                )
+                
+            ],
+            no_gutters=True
         ),
-    ],style={"padding":"20px"}
-)
+        html.Br(),
+        dbc.Row([dbc.Label("Starter Format",style=HeaderSTYLE)]),
+        dbc.Row(
+            [
+                dbc.Label("QBs:  ",style=STYLE),
+                dbc.Col(
+                    dbc.RadioItems(id="QBs",
+                        options=[{'label': i, 'value':i} for i in ["Any","1QB","SuperFlex","2QB"]],
+                        inline=True,
+                        value="Any",
+                        style={'color':'#000 !important'},
+                        inputStyle={"color": "#ccff00"}
+                        ),
+                    width=2
+                ),
+                dbc.Label("WRs:  ",style=STYLE),
+                dbc.Col(
+                    dbc.RadioItems(id="WRs",
+                            options=[{'label': i, 'value':i} for i in ["Any","2WR","3WR"]],
+                            inline=True,
+                            value="Any",
+                            style={'color':'#000 !important'},
+                            inputStyle={"color": "#ccff00"}
+                        ),
+                    width=2
+                ),
+                dbc.Label("TEs:  ",style=STYLE),
+                dbc.Col(
+                    dbc.RadioItems(id="TEs",
+                            options=[{'label': i, 'value':i} for i in ["Any","1TE","2TE"]],
+                            inline=True,
+                            value="Any",
+                            style={'color':'#000 !important'},
+                            inputStyle={"color": "#ccff00"}
+                        ),
+                    width=2
+                )
+            ],
+            no_gutters=True
+        ),
+        html.Br(),
+        dbc.Row([dbc.Label("Scoring Format",style=HeaderSTYLE)]),
+        dbc.Row(
+            [
+                dbc.Label("Pass TD:  ",style=STYLE),
+                dbc.Col(
+                    dbc.RadioItems(id="PassTD",
+                            options=[{'label': i, 'value':i} for i in ["Any","4pt","6pt"]],
+                            inline=True,
+                            value="Any",
+                            style={'color':'#000 !important'},
+                            inputStyle={"color": "#ccff00"}
+                        ),
+                    width=2
+                ),
+                dbc.Label("TE Premium:  ",style=STYLE),
+                dbc.Col(
+                    dbc.RadioItems(id="TEPrem",
+                            options=[{'label': i, 'value':i} for i in ["Any","Yes","No"]],
+                            inline=True,
+                            value="Any",
+                            style={'color':'#000 !important'},
+                            inputStyle={"color": "#ccff00"}
+                        ),
+                    width=2
+                ),
+            ],
+            no_gutters=True
+        ),
+    ],
+    className="dash-bootstrap"
+    ),
+],style={"padding":"20px"})
 
 
 
@@ -805,7 +734,7 @@ playercard = dbc.Card(
                                         clearable=True
                                     )
                         ],
-                        width=3
+                        width=2
                     ),
                     dbc.Col(
                         [
@@ -1220,16 +1149,9 @@ FCgraph=html.Div(children=[
 TradeFinder=html.Div([
     NavbarTrades,
     html.Div(
-    children=[
-        dbc.Row(
-            [dbc.Col([tradecard], width=3),
-            dbc.Col(html.Div([dcc.Loading(
+    children=[tradecard,html.Br(),dcc.Loading(
                 id="loading-4",
                 type="default",
-                children=html.Div(id='TradeTable')
-                )]),
-            width=9)
-            ]
-        )
-    ]
-    )],style={'padding': '0px 20px 20px 20px'})
+                children=[html.Div(id='TradeTable')]
+                )]
+    )],style={'padding': '0px 100px 20px 20px'})

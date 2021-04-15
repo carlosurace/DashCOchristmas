@@ -691,7 +691,7 @@ tradecard = dbc.Card(
     ],
     className="dash-bootstrap"
     ),
-],style={"padding":"20px"})
+],style={"padding":"20px","width":"95%"})
 
 
 

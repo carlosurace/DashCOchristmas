@@ -789,7 +789,8 @@ def update_NewDraftTable(list_of_contents,ApplyChanges,data,columns,Filename):
     df=pd.read_csv(os.path.join(THIS_FOLDER,"data/ForReview.csv"),parse_dates=['Date'])
     df["Player"]=df["Player"].fillna("")
     df=df[df["Player"]!=""]
-    df["Date"]=df["Date"].dt.date
+    if len(df)>0:
+        df["Date"]=df["Date"].dt.date
     df=df[['Date','DraftType','Overall','Pick','Player','Position','league_id','Name','Lineup','Scoring','Teams','Copies',"Decision?"]]
     return [mess,dash_table.DataTable(
         id='ChangeTable',

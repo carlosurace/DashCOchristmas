@@ -19,6 +19,10 @@ import dash_table
 from dash_table.Format import Format, Scheme, Sign, Symbol
 import dash_table.FormatTemplate as FormatTemplate
 import dash_html_components as html
+import base64
+import datetime
+import io
+import dash
 STYLE = {
     'boxShadow': '#313131' ,
     'background': '#313131' ,
@@ -623,6 +627,9 @@ def update_RDPTable(startdate,enddate,ADP,position
     table = dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True)
     return table
 
+
+
+
 @app.callback(
     Output(component_id='FCgraph',component_property='children'),
     [Input("Stat", "value"),Input("input1", "value"),Input("startdate", "value"),Input("enddate", "value"),
@@ -726,4 +733,109 @@ def toggle_collapse(n, is_open):
     return is_open
 
 
+def parse_contents(contents, filename):
+    content_type, content_string = contents.split(',')
+    decoded = base64.b64decode(content_string)
+    try:
+        if 'csv' in filename:
+            # Assume that the user uploaded a CSV file
+            df = pd.read_csv(
+                io.StringIO(decoded.decode('utf-8')))
+        elif 'xls' in filename:
+            # Assume that the user uploaded an excel file
+            df = pd.read_excel(io.BytesIO(decoded))
+        return df
+    except Exception as e:
+        print(e)
+        return None
 
+
+@app.callback(
+    Output(component_id='NewDraftTable',component_property='children'),
+    [Input("uploadNewDraftTable", "contents"),
+     Input("ApplyChanges", "n_clicks")],
+    [State(component_id='ChangeTable', component_property='data'),
+    State(component_id='ChangeTable', component_property='columns'),
+     State('uploadNewDraftTable', 'filename')]
+    )
+def update_NewDraftTable(list_of_contents,ApplyChanges,data,columns,Filename):
+    ctx = dash.callback_context
+    mess=html.H1("")
+    if ctx.triggered[0]['prop_id'].split('.')[0] == "uploadNewDraftTable":
+        df=parse_contents(list_of_contents,Filename)
+        if not isinstance(df, pd.DataFrame) or list(df.columns)!=['Date','DraftType','Overall','Pick','Player','Position','league_id','Name','Lineup','Scoring','Teams','Copies','Decision?']:
+            mess=html.H1("Error Uploading")
+        else:
+            df=df[['Date','DraftType','Overall','Pick','Player','Position','league_id','Name','Lineup','Scoring','Teams','Copies',"Decision?"]]
+            df.to_csv(os.path.join(THIS_FOLDER,"data/ForReview.csv"),index=False)
+            mess=html.H1("Upload Succesful")
+    if ctx.triggered[0]['prop_id'].split('.')[0] == "ApplyChanges":
+        df = pd.DataFrame(data, columns=[c['name'][1] if type(c['name'])==list else c['name'] for c in columns])
+        df["Decision?"]=df["Decision?"].fillna("")
+        Add=df[df["Decision?"]=="Yes"]
+        Add=Add[["league_id"]]
+        
+        leagues=pd.read_csv(os.path.join(THIS_FOLDER,"data/2021IDsConfirmed.csv"))
+        leagues=leagues.append(Add)
+        leagues.to_csv(os.path.join(THIS_FOLDER,"data/2021IDsConfirmed.csv"),index=False)
+        Already=df[(df["Decision?"]=="Yes")|(df["Decision?"]=="No")]
+        draftpath=os.path.join(THIS_FOLDER,'data/2021DraftsAll.csv')
+        draftpathcsv=pd.read_csv(draftpath)
+        draftpathcsv=draftpathcsv.append(Already)
+        draftpathcsv.to_csv(draftpath,index=False)
+        df=df[df["Decision?"]==""]
+        df=df[['Date','DraftType','Overall','Pick','Player','Position','league_id','Name','Lineup','Scoring','Teams','Copies',"Decision?"]]
+        df.to_csv(os.path.join(THIS_FOLDER,"data/ForReview.csv"),index=False)
+    df=pd.read_csv(os.path.join(THIS_FOLDER,"data/ForReview.csv"),parse_dates=['Date'])
+    df["Player"]=df["Player"].fillna("")
+    df=df[df["Player"]!=""]
+    df["Date"]=df["Date"].dt.date
+    df=df[['Date','DraftType','Overall','Pick','Player','Position','league_id','Name','Lineup','Scoring','Teams','Copies',"Decision?"]]
+    return [mess,dash_table.DataTable(
+        id='ChangeTable',
+        columns=[{"name": i, "id": i,'presentation': 'dropdown',"editable": True} if i=='Decision?' else {"name": i, "id": i} for i in df.columns],
+        data=df.to_dict('records'),
+        export_columns='visible',
+        export_format='csv',
+        fixed_rows={'headers': True},
+        fixed_columns={'headers': True},
+        filter_action="native",
+        sort_action="native",
+        sort_mode="multi",
+        style_header={
+             'fontSize':14,
+            'fontFamily': 'helvetica',
+            'border': 'thin #a5d4d9 solid',
+            'color': '#a5d4d9',
+            'backgroundColor': '#313131',
+            'padding':'10px'
+            },
+        style_filter={'color': '#fff', "backgroundColor": "#313131"},
+        style_table={'minHeight':'1100px','height': '1100px','maxHeight':'1100px','border': '#000','height': '650px',"width":"95%"},
+        style_data={'whiteSpace': 'pre-line'},
+        style_cell={
+        'fontSize':12,
+        'border': 'thin #a5d4d9 solid',
+        'fontFamily': 'helvetica',
+        'textAlign': 'left',
+        'Width': 'auto',
+        'maxWidth': 0,
+        'height': 'auto',
+        'whiteSpace': 'normal',
+        'padding':'10px',
+        'color': '#a5d4d9',
+        'backgroundColor': '#313131'
+        },
+        style_data_conditional=[   
+                {'if': {'column_id': 'Date'},
+             'width': '10%'}],
+        dropdown={
+            'Decision?': {
+                'options': [
+                        {'label': i, 'value': i}
+                        for i in ["Yes","No",""]
+                    ]
+                }
+            }
+)]
+        

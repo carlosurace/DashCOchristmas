@@ -11,7 +11,7 @@ from App import app,cache
 #import ADPAPP
 #import DraftApp
 import dash_bootstrap_components as dbc
-from layouts import DraftHelper, RDP_graph,RDP_table,FCgraph,TradeFinder
+from layouts import DraftHelper, RDP_graph,RDP_table,FCgraph,TradeFinder,Admin
 import callbacks
 import os
 import datetime
@@ -93,6 +93,8 @@ def display_page(pathname):
         return DraftHelper
     elif pathname == '/WolfOfWallstreet':
         return TradeFinder
+    elif pathname == '/Admin':
+        return Admin
     else:
         return Join
 

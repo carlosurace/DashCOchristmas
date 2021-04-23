@@ -164,7 +164,7 @@ class mfl_service:
             return
         return(server)
 
-    def get_league_trades(self, league_id, year,days, csv_writer=None):
+    def get_league_trades(self, league_id, year, csv_writer=None):
         '''
         Finds all trades in league.  Should return real name of playesr?
 
@@ -176,7 +176,7 @@ class mfl_service:
             try:
                 server=i
                 trade_url = "http://www"+str(server)+".myfantasyleague.com/" + str(year) + "/export?TYPE=transactions&L=" \
-                    + str(league_id) + "&TRANS_TYPE=TRADE&DAYS="+ str(days) +"&JSON=1"
+                    + str(league_id) + "&TRANS_TYPE=TRADE&DAYS=365&JSON=1"
                 page = requests.get(trade_url)
                 page.raise_for_status()
 
@@ -390,9 +390,11 @@ class mfl_service:
         if not draft_dict:
             csv_writer.writerow(["No Data","", '','', '', league_id,''])
             return ["No Data","", '','', '', league_id,'']
+        print(draft_dict)
         try:
             try:
                 typ=draft_dict['draftResults']['draftUnit']['draftType']
+                
                 for Pick in draft_dict['draftResults']['draftUnit']['draftPick']:
                     # get players in trade, split into list, convert to real name
                     pos = Pick["round"]+"."+Pick["pick"]
@@ -416,7 +418,9 @@ class mfl_service:
                     csv_writer.writerow(single_pick)
                     trade_data.append(single_pick)
                     print(single_pick)
-                    #break
+                    break
+                print("Type is",typ)
+                print(single_pick)
                 return single_pick
             except:
                 d=0
@@ -447,7 +451,9 @@ class mfl_service:
                         csv_writer.writerow(single_pick)
                         trade_data.append(single_pick)
                         print(single_pick)
-                        #break
+                        break
+                print("Type is",typ)
+                print(single_pick)
                 return single_pick
         except:
             csv_writer.writerow( ["Fail","", '','', '', league_id,''])
@@ -538,6 +544,8 @@ class mfl_service:
                                     if x:
                                         if rule['event']['$t']=="#P":
                                             rules[pos] = rule['points']['$t']
+                                        elif rule['event']['$t']=="#TD":
+                                            rules[pos] = rule['points']['$t']
                                     else:
                                         continue
                                 else:
@@ -594,6 +602,7 @@ class mfl_service:
         try:
             league__single_rules = {}
             starterCount = rules_dict['league']['starters']['count']
+            starterTeams =rules_dict['league']['franchises']['count']
             copies=rules_dict['league']['rostersPerPlayer']
             best=rules_dict['league']["bestLineup"]
             headers=list()
@@ -601,8 +610,8 @@ class mfl_service:
             for pos in rules_dict['league']['starters']['position']:
                headers.append(pos['name'])
                info.append(pos['limit'])
-            rules=pd.DataFrame(columns=['ID','count','Copies','BestBall']+headers)
-            rules.loc[0]=[league_id,starterCount,copies,best]+info
+            rules=pd.DataFrame(columns=['ID','count',"Teams",'Copies','BestBall']+headers)
+            rules.loc[0]=[league_id,starterCount,starterTeams,copies,best]+info
             return rules
         except:
             rule=pd.DataFrame(columns=["ID","FailRules"])

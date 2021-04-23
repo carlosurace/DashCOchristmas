@@ -20,7 +20,7 @@ import pandas as pd
 from App import app
 import IdConverterMFL
 import base64
-
+import dash_table
 THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 
 
@@ -147,6 +147,22 @@ NavbarTrades=dbc.Navbar(
         #dbc.NavItem(dbc.NavLink("RDP Graph", href="/RDPGraph")),
         #dbc.NavItem(dbc.NavLink("RDP Table", href="/RDPTable")),
         #dbc.NavItem(dbc.NavLink("Floor-Ceiling Graphs", href="/FloorCeilingGraphs"))
+    ],
+    style={'text':{'color':'#313131 !important'},'color':'#313131 !important'},
+    color="primary",
+    dark=True,
+)
+
+
+NavbarAdmin=dbc.Navbar(
+    children=[html.A(dbc.Row(
+                [
+                    dbc.Col(html.Img(src=Logo, height="90px"))
+                ],
+                align="left",
+                no_gutters=True,
+            )),
+        html.H2("AOD Draft Selection Portal"),
     ],
     style={'text':{'color':'#313131 !important'},'color':'#313131 !important'},
     color="primary",
@@ -1154,4 +1170,37 @@ TradeFinder=html.Div([
                 type="default",
                 children=[html.Div(id='TradeTable')]
                 )]
-    )],style={'padding': '0px 100px 20px 20px'})
+    )],style={'padding': '0px'})
+
+
+Admin=html.Div([
+    NavbarAdmin,
+    html.Div(
+    children=[html.Br(),
+              dbc.Row([
+                  dcc.Upload(
+                    id='uploadNewDraftTable',
+                    children=html.Div([
+                        'Drag and Drop or ',
+                        html.A('Select Files')
+                    ]),
+                    style={
+                        'width': '100%',
+                        'height': '60px',
+                        'lineHeight': '60px',
+                        'borderWidth': '1px',
+                        'borderStyle': 'dashed',
+                        'borderRadius': '5px',
+                        'textAlign': 'center',
+                        'margin': '10px'
+                    }
+                    ),
+                  dbc.Button("Apply Changes",
+                            id="ApplyChanges",
+                            color='dark')]),
+              dcc.Loading(
+                type="default",
+                children=[html.Div(id='NewDraftTable',
+                                   children=[dash_table.DataTable(id='ChangeTable')])]
+                )]
+    )],style={'padding': '0px'})

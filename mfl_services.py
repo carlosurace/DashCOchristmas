@@ -92,11 +92,8 @@ class mfl_service:
             #try:
             xrow=[]
             SF=self.get_starter_rules(id,year)
-            print("Starters")
             PPR=self.get_scoring_rules(id,year)
-            print("Scoring")
             name=self.get_name(id,year)
-            print("name")
             df=pd.DataFrame(columns=["Name","QBTD","WRPPR","RBPPR","TEPPR"])
             xrow.append(name)
             xrow=xrow+PPR
@@ -378,6 +375,110 @@ class mfl_service:
             except:
                 continue
         if server==86:
+            csv_writer.writerow(["No Server","", '','', '', league_id,''])
+            return ["No Server","", '','', '', league_id,'']
+        #trades_dict = load_obj('trade_dict') # for easy testing
+        trade_data = []
+        # make sure transaction exists
+        n=1
+        p=1
+        if not draft_dict:
+            csv_writer.writerow(["No Data","", '','', '', league_id,''])
+            return ["No Data","", '','', '', league_id,'']
+        try:
+            try:
+                typ=draft_dict['draftResults']['draftUnit']['draftType']
+
+                for Pick in draft_dict['draftResults']['draftUnit']['draftPick']:
+                    # get players in trade, split into list, convert to real name
+                    pos = Pick["round"]+"."+Pick["pick"]
+                    overall=n
+                    n+=1
+                    try:
+                        player = self.id_to_player_converter.convert(Pick["player"])
+                    except:
+                        player = "Pick"
+                    if not player:
+                        player=["Rookie Pick "+str(p),"Pick"]
+                        p+=1
+                    if Pick['timestamp'] == "":
+                        timestamp=""
+                        player="  "
+                    else:
+                        timestamp=int(Pick['timestamp'])
+                    single_pick = [pos,overall, player[0],player[1], timestamp, league_id,typ]
+                    csv_writer.writerow(single_pick)
+                    trade_data.append(single_pick)
+                    break
+                return single_pick
+            except:
+                d=0
+                for div in draft_dict['draftResults']['draftUnit']:
+                    d+=1
+                    typ=div['draftType']
+                    n=1
+                    p=1
+                    for Pick in div['draftPick']:
+                        # get players in trade, split into list, convert to real name
+                        pos = Pick["round"]+"."+Pick["pick"]
+                        overall=n
+                        n+=1
+                        try:
+                            player = self.id_to_player_converter.convert(Pick["player"])
+                        except:
+                            player = "Pick"
+                        if not player:
+                            player=["Rookie Pick "+str(p),"Pick"]
+                            p+=1
+                        if Pick['timestamp'] == "":
+                            timestamp=""
+                            player="  "
+                        else:
+                            timestamp=int(Pick['timestamp'])
+                        single_pick = [pos,overall, player[0],player[1], timestamp, float(league_id)+(d*0.01),typ]
+                        csv_writer.writerow(single_pick)
+                        trade_data.append(single_pick)
+                        break
+                return single_pick
+        except:
+            csv_writer.writerow( ["Fail","", '','', '', league_id,''])
+            return ["Fail","", '','', '', league_id,'']
+
+    def get_multiple_leagues_drafts1(self, league_list, save_path, year, disable_progess_bar=False):
+        all_picks = []
+        with open(save_path, "w") as csv_file:
+            writer = csv.writer(csv_file, delimiter=',')
+            writer.writerow(["Pick", "Overall", "Player","Position","Date", "league_id","DraftType"])
+            for league in tqdm(league_list, disable=disable_progess_bar):
+                dat=self.get_Draft1(league, year, writer)
+                if not dat:
+                    continue
+        return all_picks
+
+
+    def get_DraftAll(self, league_id, year, csv_writer=None):
+        '''
+        Finds all trades in league.  Should return real name of playesr?
+
+        :param league_id: league id to gather trade data from
+        :return: list of all trades in league
+        '''
+        servers=range(55,87)
+
+
+        for server in servers:
+            try:
+                trade_url = "http://www"+str(server)+".myfantasyleague.com/" + str(year) +"/export?TYPE=draftResults&L="\
+                + str(league_id) +"&APIKEY=&JSON=1"
+                page = requests.get(trade_url)
+                page.raise_for_status()
+
+                # load json as dictionary
+                draft_dict = json.loads(page.text)
+                break
+            except:
+                continue
+        if server==86:
             print(trade_url)
             print('Error downloading:', league_id)
             csv_writer.writerow(["No Server","", '','', '', league_id,''])
@@ -394,7 +495,7 @@ class mfl_service:
         try:
             try:
                 typ=draft_dict['draftResults']['draftUnit']['draftType']
-                
+
                 for Pick in draft_dict['draftResults']['draftUnit']['draftPick']:
                     # get players in trade, split into list, convert to real name
                     pos = Pick["round"]+"."+Pick["pick"]
@@ -418,7 +519,6 @@ class mfl_service:
                     csv_writer.writerow(single_pick)
                     trade_data.append(single_pick)
                     print(single_pick)
-                    break
                 print("Type is",typ)
                 print(single_pick)
                 return single_pick
@@ -451,7 +551,6 @@ class mfl_service:
                         csv_writer.writerow(single_pick)
                         trade_data.append(single_pick)
                         print(single_pick)
-                        break
                 print("Type is",typ)
                 print(single_pick)
                 return single_pick
@@ -459,18 +558,17 @@ class mfl_service:
             csv_writer.writerow( ["Fail","", '','', '', league_id,''])
             return ["Fail","", '','', '', league_id,'']
 
-    def get_multiple_leagues_drafts1(self, league_list, save_path, year, disable_progess_bar=False):
+    def get_multiple_leagues_draftsAll(self, league_list, save_path, year, disable_progess_bar=False):
         all_picks = []
         with open(save_path, "w") as csv_file:
             writer = csv.writer(csv_file, delimiter=',')
             writer.writerow(["Pick", "Overall", "Player","Position","Date", "league_id","DraftType"])
             for league in tqdm(league_list, disable=disable_progess_bar):
                 print(league)
-                dat=self.get_Draft1(league, year, writer)
+                dat=self.get_DraftAll(league, year, writer)
                 if not dat:
                     continue
         return all_picks
-
 
     def get_name(self,league_id,year):
         servers=range(50,90)
@@ -509,72 +607,74 @@ class mfl_service:
                 break
             except:
                 continue
-        rules = {}
+        rules = {'RB':0,'WR':0,'TE':0,'QB':0}
         # get ppr scoring
         try:
             try:
                 x = scoring_rules_json['rules']['positionRules']["positions"]
-
+    
             except:
                 x=False
             if x:
                 for pos in scoring_rules_json['rules']['positionRules']["positions"].split("|"):
-                    for rule in scoring_rules_json['rules']['positionRules']["rule"]:
-                        try:
-                            x=rule['event']
-                        except:
-                            x=False
-                        if "QB" in pos:
-                            if x:
-                                if rule['event']['$t']=="#P":
-                                    rules[pos] = rule['points']['$t']
-                        else:
-                            if x:
-                                if rule['event']['$t']=="CC":
-                                    rules[pos] = rule['points']['$t']
+                    if pos in ['RB','WR','TE','QB']:
+                        for rule in scoring_rules_json['rules']['positionRules']["rule"]:
+                            try:
+                                x=rule['event']
+                            except:
+                                x=False
+                            if "QB" in pos:
+                                if x:
+                                    if rule['event']['$t']=="#P":
+                                        rules[pos] += float(rule['points']['$t'].replace("*",""))
+                            else:
+                                if x:
+                                    if rule['event']['$t']=="CC":
+                                        rules[pos] += float(rule['points']['$t'].replace("*",""))
             else:
                 for position in scoring_rules_json['rules']['positionRules']:
                         for pos in position["positions"].split("|"):
-                            for rule in position["rule"]:
-                                try:
-                                    x=rule['event']
-                                except:
-                                    x=False
-                                if "QB" in pos:
-                                    if x:
-                                        if rule['event']['$t']=="#P":
-                                            rules[pos] = rule['points']['$t']
-                                        elif rule['event']['$t']=="#TD":
-                                            rules[pos] = rule['points']['$t']
+                            if pos in ['RB','WR','TE','QB']:
+                                for rule in position["rule"]:
+                                    try:
+                                        x=rule['event']
+                                    except:
+                                        x=False
+                                    if "QB" in pos:
+                                        if x:
+                                            if rule['event']['$t']=="#P":
+                                                rules[pos] += float(rule['points']['$t'].replace("*",""))
+                                            elif rule['event']['$t']=="#TD":
+                                                rules[pos] += float(rule['points']['$t'].replace("*",""))
+                                        else:
+                                            continue
                                     else:
-                                        continue
-                                else:
-                                    if x:
-                                        if rule['event']['$t']=="CC":
-                                            rules[pos] = rule['points']['$t']
-                                    else:
-                                        continue
+                                        if x:
+                                            if rule['event']['$t']=="CC":
+                                                rules[pos] += float(rule['points']['$t'].replace("*",""))
+                                        else:
+                                            continue
             RBcol=[x for x in rules.keys() if 'RB' in x]
             RBPPR=0
             for i in RBcol:
                 p=rules[RBcol[0]]
-
-                RBPPR+=float(p.replace("*",""))
+    
+                RBPPR+=p
             WRcol=[x for x in rules.keys() if 'WR' in x]
             WRPPR=0
             for i in WRcol:
                 p=rules[WRcol[0]]
-                WRPPR+=float(p.replace("*",""))
+                WRPPR+=p
             TEcol=[x for x in rules.keys() if 'TE' in x]
             TEPPR=0
             for i in TEcol:
                 p=rules[TEcol[0]]
-                TEPPR+=float(p.replace("*",""))
+                TEPPR+=p
             QBcol=[x for x in rules.keys() if 'QB' in x]
             QB=0
             for i in QBcol:
                 p=rules[QBcol[0]]
-                QB+=float(p.replace("*",""))
+                QB+=p
             xrow=[QB,WRPPR,RBPPR,TEPPR]
             return(xrow)
         except:

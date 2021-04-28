@@ -22,7 +22,7 @@ import IdConverterMFL
 import base64
 import dash_table
 THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
-
+import ConfigF as Conf
 
 
 ImagePath=os.path.join(THIS_FOLDER,'data/analytics logo.jpg')
@@ -537,7 +537,10 @@ filtercard = dbc.Card(
             dbc.Row(
                 [
                     dbc.Col(
-                        dbc.Label("Position",style=STYLE),width=6
+                        dbc.Label("DraftType",style=STYLE),width=1
+                    ),
+                    dbc.Col(
+                        dbc.Label("Position",style=STYLE),width=5
                     ),
                     dbc.Col(
                         dbc.Label("ADP Range",style=STYLE),width=4
@@ -548,8 +551,19 @@ filtercard = dbc.Card(
                 no_gutters=True
             ),
             dbc.Row(
-                [
-
+                [   
+                    dbc.Col(
+                        [
+                            dcc.Dropdown(
+                                        id='DraftType',
+                                        options=[{'label': i, 'value':i} for i in ['StartUp','Rookie']],
+                                        value='StartUp',
+                                        searchable=True,
+                                        clearable=False
+                                    )
+                        ],
+                        width=1
+                    ),
                     dbc.Col(
                         [
                             dcc.Dropdown(
@@ -573,7 +587,7 @@ filtercard = dbc.Card(
                                 marks={i: '{}'.format('R'+str(int(i/12))) for i in range(12,400,12)}
                             )
                         ],
-                        width=11
+                        width=10
                     )
 
                 ],
@@ -1178,26 +1192,39 @@ Admin=html.Div([
     html.Div(
     children=[html.Br(),
               dbc.Row([
-                  dcc.Upload(
-                    id='uploadNewDraftTable',
-                    children=html.Div([
-                        'Drag and Drop or ',
-                        html.A('Select Files')
-                    ]),
-                    style={
-                        'width': '100%',
-                        'height': '60px',
-                        'lineHeight': '60px',
-                        'borderWidth': '1px',
-                        'borderStyle': 'dashed',
-                        'borderRadius': '5px',
-                        'textAlign': 'center',
-                        'margin': '10px'
-                    }
-                    ),
+                    dbc.Col([
+                      dcc.Upload(
+                        id='uploadNewDraftTable',
+                        children=html.Div([
+                            'Drag and Drop or ',
+                            html.A('Select Files')
+                        ]),
+                        style={
+                            'width': '100%',
+                            'height': '60px',
+                            'lineHeight': '60px',
+                            'borderWidth': '1px',
+                            'borderStyle': 'dashed',
+                            'borderRadius': '5px',
+                            'textAlign': 'center',
+                            'margin': '10px'
+                        }
+                        )
+                    ],width=2),
+                    dbc.Col([
+                        dcc.Dropdown(
+                                id='Type',
+                                options=[{'label': i, 'value':i} for i in Conf.Categories],
+                                value="ForReview",
+                                clearable=False
+                                ),
+                    ],width=2),
+                    dbc.Col([
                   dbc.Button("Apply Changes",
                             id="ApplyChanges",
-                            color='dark')]),
+                            color='dark')
+                  ],width=2),
+                ]),
               dcc.Loading(
                 type="default",
                 children=[html.Div(id='NewDraftTable',

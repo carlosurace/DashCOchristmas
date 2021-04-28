@@ -10,14 +10,14 @@ class id_converter:
         self.converter = load_obj('mfl_id_to_player')
 
     def update_id_to_player_dict(self):
-        page = requests.get("http://www63.myfantasyleague.com/2020/export?TYPE=players&L=11083&W=&JSON=1")
+        page = requests.get("http://www63.myfantasyleague.com/2021/export?TYPE=players&L=11083&W=&JSON=1")
         players_json = json.loads(page.text)
         for player in players_json['players']['player']:
             self.converter[player['id']] = (player['name'],player['position'])
         save_obj(self.converter, 'mfl_id_to_player')
     
     def Get_Players(self):    
-        page = requests.get("http://www63.myfantasyleague.com/2020/export?TYPE=players&L=11083&W=&JSON=1")
+        page = requests.get("http://www63.myfantasyleague.com/2021/export?TYPE=players&L=11083&W=&JSON=1")
         players_json = json.loads(page.text)
         players=[player['name']+", "+player['position'] for player in players_json['players']['player']]
         return players

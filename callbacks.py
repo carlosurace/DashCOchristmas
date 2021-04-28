@@ -23,6 +23,7 @@ import base64
 import datetime
 import io
 import dash
+import ConfigF as Conf
 STYLE = {
     'boxShadow': '#313131' ,
     'background': '#313131' ,
@@ -588,17 +589,19 @@ def GenerateMostTraded(TP):
     Output(component_id='RDPtable',component_property='children'),
     [Input("startdate", "value"),
      Input("enddate", "value"),Input('ADP', "value"),Input('position', "value"),
+     Input('DraftType', "value")
      ]
     )
-def update_RDPTable(startdate,enddate,ADP,position
+def update_RDPTable(startdate,enddate,ADP,position,DraftType
                  ):
 
     startdate=datetime.date(*(int(s) for s in startdate.split('-')))
     enddate=datetime.date(*(int(s) for s in enddate.split('-')))
     #start=start.strftime('%m/%d/%Y')
-
-    filt=QB[(QB.Date>=startdate)&(QB.Date<=enddate)&(QB.DraftType!="SAME")]
-
+    if DraftType=="StartUp":
+        filt=QB[(QB.Date>=startdate)&(QB.Date<=enddate)&(QB.DraftType!="SAME")]
+    else:
+        filt=QB[(QB.Date>=startdate)&(QB.Date<=enddate)&(QB.DraftType=="SAME")]
     filt['Median_Overall']=filt.groupby(["Player"])["Overall"].transform('median')
     filt = filt.sort_values(['Median_Overall'])
     filt['Median Overall']=filt['Median_Overall'].apply(lambda x: str(int(((x-1)//12)+1))+"."+str(int((x-1)%12+1)).zfill(2))
@@ -753,40 +756,47 @@ def parse_contents(contents, filename):
 @app.callback(
     Output(component_id='NewDraftTable',component_property='children'),
     [Input("uploadNewDraftTable", "contents"),
-     Input("ApplyChanges", "n_clicks")],
+     Input("ApplyChanges", "n_clicks"),
+     Input("Type", "value")],
     [State(component_id='ChangeTable', component_property='data'),
     State(component_id='ChangeTable', component_property='columns'),
      State('uploadNewDraftTable', 'filename')]
     )
-def update_NewDraftTable(list_of_contents,ApplyChanges,data,columns,Filename):
+def update_NewDraftTable(list_of_contents,ApplyChanges,Type,data,columns,Filename):
     ctx = dash.callback_context
     mess=html.H1("")
+    filepath=Conf.Filepathdict[Type]
+    print(ctx.triggered[0]['prop_id'].split('.')[0])
     if ctx.triggered[0]['prop_id'].split('.')[0] == "uploadNewDraftTable":
         df=parse_contents(list_of_contents,Filename)
         if not isinstance(df, pd.DataFrame) or list(df.columns)!=['Date','DraftType','Overall','Pick','Player','Position','league_id','Name','Lineup','Scoring','Teams','Copies','Decision?']:
             mess=html.H1("Error Uploading")
         else:
             df=df[['Date','DraftType','Overall','Pick','Player','Position','league_id','Name','Lineup','Scoring','Teams','Copies',"Decision?"]]
-            df.to_csv(os.path.join(THIS_FOLDER,"data/ForReview.csv"),index=False)
+            df.to_csv(os.path.join(THIS_FOLDER,filepath),index=False)
             mess=html.H1("Upload Succesful")
     if ctx.triggered[0]['prop_id'].split('.')[0] == "ApplyChanges":
         df = pd.DataFrame(data, columns=[c['name'][1] if type(c['name'])==list else c['name'] for c in columns])
         df["Decision?"]=df["Decision?"].fillna("")
-        Add=df[df["Decision?"]=="Yes"]
-        Add=Add[["league_id"]]
-        
-        leagues=pd.read_csv(os.path.join(THIS_FOLDER,"data/2021IDsConfirmed.csv"))
-        leagues=leagues.append(Add)
-        leagues.to_csv(os.path.join(THIS_FOLDER,"data/2021IDsConfirmed.csv"),index=False)
-        Already=df[(df["Decision?"]=="Yes")|(df["Decision?"]=="No")]
-        draftpath=os.path.join(THIS_FOLDER,'data/2021DraftsAll.csv')
-        draftpathcsv=pd.read_csv(draftpath)
-        draftpathcsv=draftpathcsv.append(Already)
-        draftpathcsv.to_csv(draftpath,index=False)
-        df=df[df["Decision?"]==""]
+        Add=df[(df["Decision?"]=="Yes")&(df["DraftType"]!="Same")]
+        Confirmed=pd.read_csv(Conf.ConfirmedPath)
+        Confirmed=Confirmed.append(Add)
+        Confirmed.to_csv(Conf.ConfirmedPath,index=False)
+        AddRookie=df[(df["Decision?"]=="Yes")&(df["DraftType"]=="Same")]
+        ConfirmedRookie=pd.read_csv(Conf.ConfirmedRookiePath)
+        ConfirmedRookie=ConfirmedRookie.append(AddRookie)
+        ConfirmedRookie.to_csv(Conf.ConfirmedRookiePath,index=False)
+        no=df[df["Decision?"]=="No"]
+        Exclude=pd.read_csv(Conf.ExcludePath)
+        Exclude=Exclude.append(no)
+        Exclude.to_csv(Conf.ExcludePath,index=False)
+        if Type in ["Confirmed","ConfirmedRookie"]:
+            df=df[df["Decision?"]!="No"]
+        else:
+            df=df[df["Decision?"]==""]
         df=df[['Date','DraftType','Overall','Pick','Player','Position','league_id','Name','Lineup','Scoring','Teams','Copies',"Decision?"]]
-        df.to_csv(os.path.join(THIS_FOLDER,"data/ForReview.csv"),index=False)
-    df=pd.read_csv(os.path.join(THIS_FOLDER,"data/ForReview.csv"),parse_dates=['Date'])
+        df.to_csv(os.path.join(THIS_FOLDER,filepath),index=False)
+    df=pd.read_csv(os.path.join(THIS_FOLDER,filepath),parse_dates=['Date'])
     df["Player"]=df["Player"].fillna("")
     df=df[df["Player"]!=""]
     if len(df)>0:

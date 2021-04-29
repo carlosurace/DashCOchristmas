@@ -9,7 +9,7 @@ from datetime import date
 from App import app,cache
 from mfl_services import mfl_service
 mfl = mfl_service(update_player_converter=True)
-from layouts import QB, Players, Dates,GameLogs,Stats,Seasons, SeasonWeeks,Players1,AllPlayers
+from layouts import QB,QBR, Players, Dates,GameLogs,Stats,Seasons, SeasonWeeks,Players1,AllPlayers
 import dash_bootstrap_components as dbc
 import pandas as pd
 pd.options.mode.chained_assignment = None  # default='warn'
@@ -488,9 +488,9 @@ def GenerateTradeTable(player,QBs,WRs,TEs,PTD,TEP):
     elif PTD=="6pt":
         Trades=Trades[Trades['Scoring'].str.contains("pTD: 6")].reset_index(drop=True)
     if TEP=="Yes":
-        Trades=Trades[Trades['Scoring'].str.contains("TE PPR: 1.5")|Trades['Scoring'].str.contains("TE PPR: 1.75")|Trades['Scoring'].str.contains("TE PPR: 2")].reset_index(drop=True)
+        Trades=Trades[Trades['Scoring'].str.contains("TE_PPR: 1.5")|Trades['Scoring'].str.contains("TE_PPR: 1.75")|Trades['Scoring'].str.contains("TE_PPR: 2")].reset_index(drop=True)
     elif TEP=="No":
-        Trades=Trades[~Trades['Scoring'].str.contains("TE PPR: 1.5") & ~Trades['Scoring'].str.contains("TE PPR: 1.75") & ~Trades['Scoring'].str.contains("TE PPR: 2")].reset_index(drop=True)
+        Trades=Trades[~Trades['Scoring'].str.contains("TE_PPR: 1.5") & ~Trades['Scoring'].str.contains("TE_PPR: 1.75") & ~Trades['Scoring'].str.contains("TE_PPR: 2")].reset_index(drop=True)
     print(Trades.columns)
     Trades["link"]=["www58.myfantasyleague.com/2021/options?L=30932&O=03" for i in Trades["LeagueID"]]
     Trades["link"]=display_links(Trades)
@@ -589,19 +589,45 @@ def GenerateMostTraded(TP):
     Output(component_id='RDPtable',component_property='children'),
     [Input("startdate", "value"),
      Input("enddate", "value"),Input('ADP', "value"),Input('position', "value"),
-     Input('DraftType', "value")
+     Input('DraftType', "value"),Input("QBs", "value"),
+     Input("WRs", "value"),Input("TEs", "value"),
+     Input("PassTD", "value"),Input("TEPrem", "value")
      ]
     )
-def update_RDPTable(startdate,enddate,ADP,position,DraftType
+def update_RDPTable(startdate,enddate,ADP,position,DraftType,QBs,WRs,TEs,PTD,TEP
                  ):
 
     startdate=datetime.date(*(int(s) for s in startdate.split('-')))
     enddate=datetime.date(*(int(s) for s in enddate.split('-')))
     #start=start.strftime('%m/%d/%Y')
+    
     if DraftType=="StartUp":
-        filt=QB[(QB.Date>=startdate)&(QB.Date<=enddate)&(QB.DraftType!="SAME")]
+        filt=QB[(QB.Date>=startdate)&(QB.Date<=enddate)]
     else:
-        filt=QB[(QB.Date>=startdate)&(QB.Date<=enddate)&(QB.DraftType=="SAME")]
+        filt=QBR[(QBR.Date>=startdate)&(QBR.Date<=enddate)]
+    filt=filt.dropna(subset=['Lineup','Scoring'])
+    if QBs=="1QB":
+        filt=filt[filt['Lineup'].str.contains("QB: 1,")].reset_index(drop=True)
+    elif QBs=="SuperFlex":
+        filt=filt[filt['Lineup'].str.contains("QB: 1-2")].reset_index(drop=True)
+    elif QBs=="2QB":
+        filt=filt[filt['Lineup'].str.contains("QB: 2-2")].reset_index(drop=True)
+    if WRs=="2WR":
+        filt=filt[filt['Lineup'].str.contains("WR: 2")].reset_index(drop=True)
+    elif WRs=="3WR":
+        filt=filt[filt['Lineup'].str.contains("WR: 3")].reset_index(drop=True)
+    if TEs=="1TE":
+        filt=filt[filt['Lineup'].str.contains("TE: 1")].reset_index(drop=True)
+    elif TEs=="2TE":
+        filt=filt[filt['Lineup'].str.contains("TE: 2")].reset_index(drop=True)
+    if PTD=="4pt":
+        filt=filt[filt['Scoring'].str.contains("pTD: 4")].reset_index(drop=True)
+    elif PTD=="6pt":
+        filt=filt[filt['Scoring'].str.contains("pTD: 6")].reset_index(drop=True)
+    if TEP=="Yes":
+        filt=filt[filt['Scoring'].str.contains("TE_PPR: 1.5")|filt['Scoring'].str.contains("TE_PPR: 1.75")|filt['Scoring'].str.contains("TE_PPR: 2")].reset_index(drop=True)
+    elif TEP=="No":
+        filt=filt[~filt['Scoring'].str.contains("TE_PPR: 1.5") & ~filt['Scoring'].str.contains("TE_PPR: 1.75") & ~filt['Scoring'].str.contains("TE_PPR: 2")].reset_index(drop=True)
     filt['Median_Overall']=filt.groupby(["Player"])["Overall"].transform('median')
     filt = filt.sort_values(['Median_Overall'])
     filt['Median Overall']=filt['Median_Overall'].apply(lambda x: str(int(((x-1)//12)+1))+"."+str(int((x-1)%12+1)).zfill(2))
@@ -623,7 +649,10 @@ def update_RDPTable(startdate,enddate,ADP,position,DraftType
         df =df[(df.Position==position)]
     else:
         df =df
-    maxcount=max(df["Draft Count"])
+    try:
+        maxcount=max(df["Draft Count"])
+    except:
+        maxcount=0
     df=df[(df["Draft Count"]>maxcount*0.3)]
 
 
@@ -778,11 +807,11 @@ def update_NewDraftTable(list_of_contents,ApplyChanges,Type,data,columns,Filenam
     if ctx.triggered[0]['prop_id'].split('.')[0] == "ApplyChanges":
         df = pd.DataFrame(data, columns=[c['name'][1] if type(c['name'])==list else c['name'] for c in columns])
         df["Decision?"]=df["Decision?"].fillna("")
-        Add=df[(df["Decision?"]=="Yes")&(df["DraftType"]!="Same")]
+        Add=df[(df["Decision?"]=="Yes")&(df["DraftType"]!="SAME")]
         Confirmed=pd.read_csv(Conf.ConfirmedPath)
         Confirmed=Confirmed.append(Add)
         Confirmed.to_csv(Conf.ConfirmedPath,index=False)
-        AddRookie=df[(df["Decision?"]=="Yes")&(df["DraftType"]=="Same")]
+        AddRookie=df[(df["Decision?"]=="Yes")&(df["DraftType"]=="SAME")]
         ConfirmedRookie=pd.read_csv(Conf.ConfirmedRookiePath)
         ConfirmedRookie=ConfirmedRookie.append(AddRookie)
         ConfirmedRookie.to_csv(Conf.ConfirmedRookiePath,index=False)

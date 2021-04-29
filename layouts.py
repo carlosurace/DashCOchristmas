@@ -71,11 +71,17 @@ Stats=GameLogs.columns[14:]
 
 
 
-QB =pd.read_csv(os.path.join(THIS_FOLDER,"data/All.csv"),parse_dates=['Date'])
+QB =pd.read_csv(Conf.StartupsPath,parse_dates=['Date'])
 QB['Date'] =QB['Date'].fillna(0)
 QB['Date'] = QB['Date'].astype(float)
 QB['Date'] = pd.to_datetime(QB['Date'].astype(int), unit='s')
 QB['Date'] = QB['Date'].dt.date
+
+QBR =pd.read_csv(Conf.RookiesPath,parse_dates=['Date'])
+QBR['Date'] =QBR['Date'].fillna(0)
+QBR['Date'] = QBR['Date'].astype(float)
+QBR['Date'] = pd.to_datetime(QBR['Date'].astype(int), unit='s')
+QBR['Date'] = QBR['Date'].dt.date
 
 
 Players=QB[(QB.DraftType!="SAME")]
@@ -598,58 +604,10 @@ filtercard = dbc.Card(
     ]
 )
 
-
-
-tradecard = dbc.Card(
+tradefiltercard = dbc.Card(
     [
     html.Div(id="wrapper",children=
-        [dbc.Modal(
-            [
-                dbc.ModalHeader("Most Traded Players",style={"backgroundColor":"#4a4a4a","color":"#fff"}),
-                dcc.Dropdown(
-                        id='TimePeriod',
-                        options=[{'label': i, 'value':i} for i in ["7Days","14Days","30Days"]],
-                        value="30Days",
-                        clearable=False,
-                        className="dash-bootstrap"
-                    ),
-                dcc.Loading(dbc.ModalBody(id="StatsDisplay",children=[html.Div(id="MostTraded")],
-                    style={"backgroundColor":"#4a4a4a","color":"#fff"}),type='circle'),
-                dbc.ModalFooter(
-                    dbc.Button("Close", id="CloseModal",color='dark'),style={"backgroundColor":"#4a4a4a","color":"#fff"}
-                ),
-            ],
-        id="TradeModal",
-        is_open=False,
-        style={"max-width": "none", "width": "60%","backgroundColor":"#fff","color":"#fff"}
-        ),
-        dbc.Row([dbc.Label("Player",style=HeaderSTYLE)]),
-        dbc.Row(
-            [
-                dbc.Col(
-                    dcc.Dropdown(
-                                    id='tradeplayer',
-                                    options=[{'label': i, 'value':i} for i in AllPlayers+AllPicks],
-                                    value=None,
-                                    searchable=True,
-                                    clearable=True,
-                                    multi=True,
-                                    className="dash-bootstrap"
-                                ),width=10),
-                dbc.Col(
-                    [dbc.Button(
-                            "Most Traded",
-                            id="OpenModal",
-                            color='dark',
-                        ),
-                    ],
-                    width=2
-                )
-                
-            ],
-            no_gutters=True
-        ),
-        html.Br(),
+        [
         dbc.Row([dbc.Label("Starter Format",style=HeaderSTYLE)]),
         dbc.Row(
             [
@@ -718,6 +676,61 @@ tradecard = dbc.Card(
             ],
             no_gutters=True
         ),
+    ],
+    className="dash-bootstrap"
+    ),
+],style={"padding":"20px","width":"95%"})
+
+tradecard = dbc.Card(
+    [
+    html.Div(id="wrapper",children=
+        [dbc.Modal(
+            [
+                dbc.ModalHeader("Most Traded Players",style={"backgroundColor":"#4a4a4a","color":"#fff"}),
+                dcc.Dropdown(
+                        id='TimePeriod',
+                        options=[{'label': i, 'value':i} for i in ["7Days","14Days","30Days"]],
+                        value="30Days",
+                        clearable=False,
+                        className="dash-bootstrap"
+                    ),
+                dcc.Loading(dbc.ModalBody(id="StatsDisplay",children=[html.Div(id="MostTraded")],
+                    style={"backgroundColor":"#4a4a4a","color":"#fff"}),type='circle'),
+                dbc.ModalFooter(
+                    dbc.Button("Close", id="CloseModal",color='dark'),style={"backgroundColor":"#4a4a4a","color":"#fff"}
+                ),
+            ],
+        id="TradeModal",
+        is_open=False,
+        style={"max-width": "none", "width": "60%","backgroundColor":"#fff","color":"#fff"}
+        ),
+        dbc.Row([dbc.Label("Player",style=HeaderSTYLE)]),
+        dbc.Row(
+            [
+                dbc.Col(
+                    dcc.Dropdown(
+                                    id='tradeplayer',
+                                    options=[{'label': i, 'value':i} for i in AllPlayers+AllPicks],
+                                    value=None,
+                                    searchable=True,
+                                    clearable=True,
+                                    multi=True,
+                                    className="dash-bootstrap"
+                                ),width=10),
+                dbc.Col(
+                    [dbc.Button(
+                            "Most Traded",
+                            id="OpenModal",
+                            color='dark',
+                        ),
+                    ],
+                    width=2
+                )
+                
+            ],
+            no_gutters=True
+        ),
+        
     ],
     className="dash-bootstrap"
     ),
@@ -1127,6 +1140,7 @@ RDP_table=html.Div([
     html.Div(
     children=[
         NavbarRDP,
+        tradefiltercard,
         html.Div(children=[html.Br(),
             dbc.Row(
                     [
@@ -1179,7 +1193,7 @@ FCgraph=html.Div(children=[
 TradeFinder=html.Div([
     NavbarTrades,
     html.Div(
-    children=[tradecard,html.Br(),dcc.Loading(
+    children=[tradecard,tradefiltercard,html.Br(),dcc.Loading(
                 id="loading-4",
                 type="default",
                 children=[html.Div(id='TradeTable')]

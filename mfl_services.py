@@ -564,9 +564,12 @@ class mfl_service:
             writer = csv.writer(csv_file, delimiter=',')
             writer.writerow(["Pick", "Overall", "Player","Position","Date", "league_id","DraftType"])
             for league in tqdm(league_list, disable=disable_progess_bar):
-                print(league)
-                dat=self.get_DraftAll(league, year, writer)
-                if not dat:
+                try:
+                    print(league)
+                    dat=self.get_DraftAll(league, year, writer)
+                    if not dat:
+                        continue
+                except:
                     continue
         return all_picks
 
@@ -609,6 +612,7 @@ class mfl_service:
                 continue
         rules = {'RB':0,'WR':0,'TE':0,'QB':0}
         # get ppr scoring
+        
         try:
             try:
                 x = scoring_rules_json['rules']['positionRules']["positions"]
@@ -626,16 +630,25 @@ class mfl_service:
                             if "QB" in pos:
                                 if x:
                                     if rule['event']['$t']=="#P":
-                                        rules[pos] += float(rule['points']['$t'].replace("*",""))
+                                        print(pos,float(rule['points']['$t'].replace("*","")))
+                                        rules[pos] =rules[pos]+ float(rule['points']['$t'].replace("*",""))
                             else:
                                 if x:
                                     if rule['event']['$t']=="CC":
-                                        rules[pos] += float(rule['points']['$t'].replace("*",""))
+                                        print(pos,float(rule['points']['$t'].replace("*","")))
+                                        rules[pos] =rules[pos]+ float(rule['points']['$t'].replace("*",""))
             else:
                 for position in scoring_rules_json['rules']['positionRules']:
+                        
                         for pos in position["positions"].split("|"):
+
                             if pos in ['RB','WR','TE','QB']:
-                                for rule in position["rule"]:
+                                if type(position["rule"])!=list:
+                                    positionrule=[position["rule"]]
+                                else:
+                                    positionrule=position["rule"]
+                                for rule in positionrule:
+                                    
                                     try:
                                         x=rule['event']
                                     except:
@@ -643,15 +656,18 @@ class mfl_service:
                                     if "QB" in pos:
                                         if x:
                                             if rule['event']['$t']=="#P":
-                                                rules[pos] += float(rule['points']['$t'].replace("*",""))
+                                                print(pos,float(rule['points']['$t'].replace("*","")))
+                                                rules[pos] =rules[pos]+ float(rule['points']['$t'].replace("*",""))
                                             elif rule['event']['$t']=="#TD":
-                                                rules[pos] += float(rule['points']['$t'].replace("*",""))
+                                                print(pos,float(rule['points']['$t'].replace("*","")))
+                                                rules[pos] =rules[pos]+ float(rule['points']['$t'].replace("*",""))
                                         else:
                                             continue
                                     else:
                                         if x:
                                             if rule['event']['$t']=="CC":
-                                                rules[pos] += float(rule['points']['$t'].replace("*",""))
+                                                print(pos,float(rule['points']['$t'].replace("*","")))
+                                                rules[pos] =rules[pos]+ float(rule['points']['$t'].replace("*",""))
                                         else:
                                             continue
             RBcol=[x for x in rules.keys() if 'RB' in x]

@@ -16,6 +16,10 @@ temppath=os.path.join(THIS_FOLDER,"data/DraftFiles/Temp.csv")
 ConfirmedPath=os.path.join(THIS_FOLDER,"data/DraftFiles/Confirmed.csv")
 ConfirmedRookiePath=os.path.join(THIS_FOLDER,"data/DraftFiles/ConfirmedRookie.csv")
 
+StartupsPath=os.path.join(THIS_FOLDER,"data/DraftFiles/Startups.csv")
+RookiesPath=os.path.join(THIS_FOLDER,"data/DraftFiles/Rookies.csv")
+
+
 Ngroup=10
 
 def FilterPlayer(df,Yes):

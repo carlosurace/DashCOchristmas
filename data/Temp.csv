@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 Pick,Overall,Player,Position,Date,league_id,DraftType
 01.01,1,"Lawrence, Trevor",QB,1613317089,17073,SAME
 01.02,2,"Chase, Ja'Marr",WR,1613317448,17073,SAME
@@ -7137,3 +7138,6 @@ Pick,Overall,Player,Position,Date,league_id,DraftType
 08.10,94, , ,,21991,SAME
 08.11,95, , ,,21991,SAME
 08.12,96, , ,,21991,SAME
+=======
+Pick,Overall,Player,Position,Date,league_id,DraftType
+>>>>>>> branch 'master' of https://github.com/carlosurace/AOD_Apps.git

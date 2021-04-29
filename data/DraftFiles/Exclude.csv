@@ -1940,6 +1940,7 @@ Date,DraftType,Overall,Pick,Player,Position,league_id,Name,Lineup,Scoring,Teams,
 2021-02-19,SFIRSTRANDOM,1.0,1.01,"Mahomes, Patrick",QB,39784,4 Man #1,"QB: 4-5, RB: 4-6, WR: 4-6, TE: 4-6, ","QB_pTD: 1.0, RB_PPR: 1.5, WR_PPR: 1.5, TE_PPR: 1.5",4.0,1.0,No
 2021-02-21,SFIRSTRANDOM,1.0,1.01,"Taylor, Jonathan",RB,19691,Copy of 24-to-life,"QB: 1, RB: 2-4, WR: 2-4, TE: 1-3, Def: 1, ","QB_pTD: 6.0, RB_PPR: 0.5, WR_PPR: 0.5, TE_PPR: 0.5",24.0,2.0,No
 2021-03-08,SFIRSTRANDOM,1.0,1.01,"McCaffrey, Christian",RB,23754,5 Yard Rush Best Ball 1,"QB: 1, RB: 2-4, WR: 2-4, TE: 1-3, PK: 1, Def: 1, ","QB_pTD: 4.0, RB_PPR: 1.0, WR_PPR: 1.0, TE_PPR: 1.0",17.0,1.0,No
+<<<<<<< HEAD
 2021-04-01,SDRAFT,1.0,1.01,"McCaffrey, Christian",RB,13957,FSN Best Ball Tourney One,"QB: 1, RB: 2-3, WR: 3-4, TE: 1-2, Def: 1, ","QB_pTD: 4.0, RB_PPR: 1.0, WR_PPR: 1.0, TE_PPR: 1.0",12.0,1.0,No
 2021-04-16,SDRAFT,1.0,1.01,"Cook, Dalvin",RB,32210,FSN Best Ball Tourney Two,"QB: 1, RB: 2-3, WR: 3-4, TE: 1-2, Def: 1, ","QB_pTD: 4.0, RB_PPR: 1.0, WR_PPR: 1.0, TE_PPR: 1.0",12.0,1.0,No
 2021-02-15,SDRAFT,1.0,1.01,"Cook, Dalvin",RB,27474,First 2021 League,"QB: 1, RB: 2-3, WR: 2-3, TE: 1, PK: 1, Def: 1, ","QB_pTD: 3.0, RB_PPR: 0, WR_PPR: 0, TE_PPR: 0",10.0,1.0,No
@@ -1968,3 +1969,5 @@ Date,DraftType,Overall,Pick,Player,Position,league_id,Name,Lineup,Scoring,Teams,
 2021-03-06,SDRAFT,1.0,1.01,"Kamara, Alvin",RB,53887,Redraft ADP Committee March 2021,"QB: 1, RB: 2-3, WR: 2-3, TE: 1-2, PK: 1, Def: 1, ","QB_pTD: 4.0, RB_PPR: 1.0, WR_PPR: 1.0, TE_PPR: 1.0",12.0,1.0,No
 2021-03-01,SFIRSTRANDOM,1.0,1.01,"Mahomes, Patrick",QB,38693,TheFanPub.com 2021 Best Ball I: Superflex/TE Premium,"QB: 1-2, RB: 2-4, WR: 2-4, TE: 1-3, ","QB_pTD: 4.0, RB_PPR: 0, WR_PPR: 0, TE_PPR: 0",12.0,1.0,No
 2021-03-18,SDRAFT,1.0,1.01,"Mahomes, Patrick",QB,27167,Devy Best Ball League #1,"QB: 1-2, RB: 1-7, WR: 1-7, TE: 1-7, ","QB_pTD: 4.0, RB_PPR: 1.0, WR_PPR: 1.0, TE_PPR: 1.0",12.0,1.0,No
+=======
+>>>>>>> branch 'master' of https://github.com/carlosurace/AOD_Apps.git

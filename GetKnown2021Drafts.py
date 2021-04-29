@@ -30,7 +30,7 @@ for letter in ["ENFL(D)"]:
 
     temppath=os.path.join(THIS_FOLDER,"data/Temp.csv")
 
-    picks=mfl.get_multiple_leagues_drafts1(Newleagues, temppath, year=2021, disable_progess_bar=False)
+    picks=mfl.get_multiple_leagues_draftsAll(Newleagues, temppath, year=2021, disable_progess_bar=False)
     temp=pd.read_csv(temppath)
     newcodes=list(set(temp["league_id"].map(int)))
     draft["league_id"]=draft["league_id"].map(int)

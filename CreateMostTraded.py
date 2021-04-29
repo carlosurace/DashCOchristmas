@@ -39,6 +39,6 @@ for dif in tradediffs:
     df=df.sort_values("Volume", ascending=False)
     MostDict[dif]=df
 
-MostDict[7].to_csv(os.path.join(THIS_FOLDER,'data/Most7.csv'),Index=False)
-MostDict[14].to_csv(os.path.join(THIS_FOLDER,'data/Most14.csv'),Index=False)
-MostDict[30].to_csv(os.path.join(THIS_FOLDER,'data/Most30.csv'),Index=False)
+MostDict[7].to_csv(os.path.join(THIS_FOLDER,'data/Most7.csv'),index=False)
+MostDict[14].to_csv(os.path.join(THIS_FOLDER,'data/Most14.csv'),index=False)
+MostDict[30].to_csv(os.path.join(THIS_FOLDER,'data/Most30.csv'),index=False)

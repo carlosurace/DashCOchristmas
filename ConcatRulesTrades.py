@@ -52,17 +52,16 @@ for col in ["Side1","Side2"]:
     RuleTrades[col]=["\n".join([", ".join(list(i)) if type(i)==tuple else i for i in RuleTrades[col].loc[n]]) if type(RuleTrades[col].loc[n])==list else RuleTrades[col].loc[n] for n in range(len(RuleTrades))]
     '''
     for letter in ["'),","\),","', '"]:
-        RuleTrades[col]=RuleTrades[col].str.replace(letter,' \n')     
+        RuleTrades[col]=RuleTrades[col].str.replace(letter,' \n')
     for letter in ["\['","'\]","\[","\]","\('","\("]:
         RuleTrades[col]=RuleTrades[col].str.replace(letter,'')
     for letter in ["',"]:
-        RuleTrades[col]=RuleTrades[col].str.replace(letter,',')  
+        RuleTrades[col]=RuleTrades[col].str.replace(letter,',')
     for letter in ["'\)","\)"," '"]:
-        RuleTrades[col]=RuleTrades[col].str.replace(letter,' ')     
+        RuleTrades[col]=RuleTrades[col].str.replace(letter,' ')
     '''
 RuleTrades=RuleTrades.sort_values("Date",ascending=False).reset_index(drop=True)
 print(max(Trades['Date']))
 RuleTrades=RuleTrades[["Side1","Side2","Date","LeagueID","Scoring","Lineup"]]
 RuleTrades=RuleTrades.drop_duplicates()
 RuleTrades.to_csv(Save)
-    

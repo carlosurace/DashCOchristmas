@@ -34,19 +34,19 @@ def GetNewDrafts():
         Newleagues=[str(league) for league in Newleagues if str(league) not in already]
         print(len(Newleagues),"New Leagues")
         picks=mfl.get_multiple_leagues_drafts1(Newleagues, temppath, year=2021, disable_progess_bar=False)
-    
+
         #newcodes=list(set(temp["league_id"].map(int)))
         #draft["league_id"]=draft["league_id"].map(int)
         #draft=draft[~draft.league_id.map(int).isin(newcodes)]
         #draft=draft.append(temp)
         #draft["posrank"] = draft.groupby(["league_id","Position"])["Overall"].rank("dense")
         #draft.to_csv(draftpath)
-    
+
     temp=pd.read_csv(temppath)
     temp["Date"]=temp["Date"].fillna(0)
     temp["Date"]=pd.to_datetime(temp["Date"].astype(int), unit='s')
-    temp["Player"]=temp["Player"].fillna("")
-    temp=temp[temp["Player"]!=""]
+    temp["Player"]=temp["Player"].fillna(" ")
+    temp=temp[temp["Player"]!=" "]
     NewDrafts=list(set(temp["league_id"].map(int).map(str)))
     rules=pd.DataFrame()
     n=0
@@ -58,14 +58,14 @@ def GetNewDrafts():
         if isinstance(rule, pd.DataFrame):
             rules=pd.concat([rules,rule], axis=0, ignore_index=False)
             print(rule)
-    
+
             print(n,"/",len(NewDrafts),"Rules")
         else:
             print("Not Df")
             rule=pd.DataFrame(columns=["ID"])
             rule["ID"].loc[0]=i
             rules=pd.concat([rules,rule], axis=0, ignore_index=False)
-    
+
     pos=['QB','RB','WR','TE','WR+TE','RB+WR+TE','FB','KR','PK','PN','Off','TMQB','TMRB','TMWR','TMTE','TMPK','TMPN','TMDL','TMLB','TMDB',
     'Def','ST','DE','DT','DT+DE','LB','CB','S','CB+S']
     realpos=[]
@@ -78,7 +78,7 @@ def GetNewDrafts():
             continue
     rules["Lineup"]=rules[realpos].apply(lambda row: ''.join(row.values.astype(str)), axis=1)
     #RuleDrafts["Lineup"]=np.where(RuleDrafts["Lineup"]!="nan",RuleDrafts["Lineup"].str[:-2],"")
-    
+
     ppr=["QBTD","RBPPR","WRPPR","TEPPR"]
     for col in ppr:
         rules[col].map(str)
@@ -96,7 +96,7 @@ def GetNewDrafts():
     temp=temp.merge(rules, left_on="league_id", right_on="ID")
     ForReview=ForReview.append(temp)
     ForReview=ForReview[['Date','DraftType','Overall','Pick','Player','Position','league_id','Name','Lineup','Scoring','Teams','Copies']]
-    ForReview["Decision?"]
+    ForReview["Decision?"]=""
     ForReview.to_csv(os.path.join(THIS_FOLDER,"data/ForReview.csv"),index=False)
 #draftpathcsv=draftpathcsv.append(temp)
 #draftpathcsv.to_csv(draftpath)

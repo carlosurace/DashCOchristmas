@@ -35,63 +35,66 @@ def GetNewDrafts():
     Newleagues = GetUnaccountedDrafts(" ")
     print(len(Newleagues),"Unaccounted Leagues")
     for n in range(len(Newleagues)//Conf.Ngroup):
-        print("iteration",n,"Groups of",Conf.Ngroup)
-        draftlist=Newleagues[n*Conf.Ngroup:(n+1)*Conf.Ngroup]
-        mfl.get_multiple_leagues_drafts1(draftlist, Conf.temppath, year=2021, disable_progess_bar=False)
-        temp=pd.read_csv(Conf.temppath)
-        temp["Date"]=temp["Date"].fillna(0)
-        temp["Date"]=pd.to_datetime(temp["Date"].astype(int), unit='s')
-        temp=temp[(temp["DraftType"]!=" ")&temp["DraftType"]!=""]
-        draftlist=list(set(temp["league_id"].map(int).map(str)))
-        rules=pd.DataFrame()
-        n=0
-        for i in draftlist:
-            print(i)
-            n+=1
-            print(n,"/",len(draftlist),"Rules")
-            rule=mfl.get_league_info([i],2021)
-            if isinstance(rule, pd.DataFrame):
-                rules=pd.concat([rules,rule], axis=0, ignore_index=False)
-                print(rule)
-
+        try:
+            print("iteration",n,"Groups of",Conf.Ngroup)
+            draftlist=Newleagues[n*Conf.Ngroup:(n+1)*Conf.Ngroup]
+            mfl.get_multiple_leagues_drafts1(draftlist, Conf.temppath, year=2021, disable_progess_bar=False)
+            temp=pd.read_csv(Conf.temppath)
+            temp["Date"]=temp["Date"].fillna(0)
+            temp["Date"]=pd.to_datetime(temp["Date"].astype(int), unit='s')
+            temp=temp[(temp["DraftType"]!=" ")&temp["DraftType"]!=""]
+            draftlist=list(set(temp["league_id"].map(int).map(str)))
+            rules=pd.DataFrame()
+            n=0
+            for i in draftlist:
+                print(i)
+                n+=1
                 print(n,"/",len(draftlist),"Rules")
-            else:
-                print("Not Df")
-                rule=pd.DataFrame(columns=["ID"])
-                rule["ID"].loc[0]=i
-                rules=pd.concat([rules,rule], axis=0, ignore_index=False)
-        pos=['QB','RB','WR','TE','WR+TE','RB+WR+TE','FB','KR','PK','PN','Off','TMQB','TMRB','TMWR','TMTE','TMPK','TMPN','TMDL','TMLB','TMDB',
-        'Def','ST','DE','DT','DT+DE','LB','CB','S','CB+S']
-        realpos=[]
-        for col in pos:
-            try:
-                rules[col]=rules[col].map(str)
-                rules[col]=np.where(rules[col]!="nan",col+": "+rules[col]+", ","")
-                realpos.append(col)
-            except:
-                continue
-        rules["Lineup"]=rules[realpos].apply(lambda row: ''.join(row.values.astype(str)), axis=1)
-        #RuleDrafts["Lineup"]=np.where(RuleDrafts["Lineup"]!="nan",RuleDrafts["Lineup"].str[:-2],"")
+                rule=mfl.get_league_info([i],2021)
+                if isinstance(rule, pd.DataFrame):
+                    rules=pd.concat([rules,rule], axis=0, ignore_index=False)
+                    print(rule)
 
-        ppr=["QBTD","RBPPR","WRPPR","TEPPR"]
-        for col in ppr:
-            if col not in rule.columns:
-                rules[col]=rules[col]
-        rules["QBTD"]="QB_pTD: "+rules["QBTD"].map(str)
-        rules["RBPPR"]="RB_PPR: "+rules["RBPPR"].map(str)
-        rules["WRPPR"]="WR_PPR: "+rules["WRPPR"].map(str)
-        rules["TEPPR"]="TE_PPR: "+rules["TEPPR"].map(str)
-        rules["Scoring"]=rules[ppr].apply(lambda row: ', '.join(row.values.astype(str)), axis=1)
-        rules=rules[["ID","Name","Lineup","Scoring","Teams","Copies"]]
-        temp["league_id"]=temp["league_id"].map(int)
-        temp["league_id"]=temp["league_id"].map(str)
-        rules["ID"]=rules["ID"].map(int)
-        rules["ID"]=rules["ID"].map(str)
-        temp=temp.merge(rules, left_on="league_id", right_on="ID")
-        temp["Player"]=temp["Player"].fillna(" ")
-        for a in range(4):
-            ApplyFiling(Conf.Paths[a],Conf.Filters[a],temp,Conf.Categories[a])
-            
+                    print(n,"/",len(draftlist),"Rules")
+                else:
+                    print("Not Df")
+                    rule=pd.DataFrame(columns=["ID"])
+                    rule["ID"].loc[0]=i
+                    rules=pd.concat([rules,rule], axis=0, ignore_index=False)
+            pos=['QB','RB','WR','TE','WR+TE','RB+WR+TE','FB','KR','PK','PN','Off','TMQB','TMRB','TMWR','TMTE','TMPK','TMPN','TMDL','TMLB','TMDB',
+            'Def','ST','DE','DT','DT+DE','LB','CB','S','CB+S']
+            realpos=[]
+            for col in pos:
+                try:
+                    rules[col]=rules[col].map(str)
+                    rules[col]=np.where(rules[col]!="nan",col+": "+rules[col]+", ","")
+                    realpos.append(col)
+                except:
+                    continue
+            rules["Lineup"]=rules[realpos].apply(lambda row: ''.join(row.values.astype(str)), axis=1)
+            #RuleDrafts["Lineup"]=np.where(RuleDrafts["Lineup"]!="nan",RuleDrafts["Lineup"].str[:-2],"")
+
+            ppr=["QBTD","RBPPR","WRPPR","TEPPR"]
+            for col in ppr:
+                if col not in rule.columns:
+                    rules[col]=rules[col]
+            rules["QBTD"]="QB_pTD: "+rules["QBTD"].map(str)
+            rules["RBPPR"]="RB_PPR: "+rules["RBPPR"].map(str)
+            rules["WRPPR"]="WR_PPR: "+rules["WRPPR"].map(str)
+            rules["TEPPR"]="TE_PPR: "+rules["TEPPR"].map(str)
+            rules["Scoring"]=rules[ppr].apply(lambda row: ', '.join(row.values.astype(str)), axis=1)
+            rules=rules[["ID","Name","Lineup","Scoring","Teams","Copies"]]
+            temp["league_id"]=temp["league_id"].map(int)
+            temp["league_id"]=temp["league_id"].map(str)
+            rules["ID"]=rules["ID"].map(int)
+            rules["ID"]=rules["ID"].map(str)
+            temp=temp.merge(rules, left_on="league_id", right_on="ID")
+            temp["Player"]=temp["Player"].fillna(" ")
+            for a in range(4):
+                ApplyFiling(Conf.Paths[a],Conf.Filters[a],temp,Conf.Categories[a])
+        except:
+            continue
+
 '''
 def UpdateLeagueList():
     ForReview=pd.read_csv(os.path.join(THIS_FOLDER,"data/ForReview.csv"))

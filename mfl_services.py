@@ -656,7 +656,7 @@ class mfl_service:
                                     if "QB" in pos:
                                         if x:
                                             if rule['event']['$t']=="#P":
-                                                print(pos,float(rule['points']['$t'].replace("*","")))
+                                                
                                                 rules[pos] =rules[pos]+ float(rule['points']['$t'].replace("*",""))
                                             elif rule['event']['$t']=="#TD":
                                                 print(pos,float(rule['points']['$t'].replace("*","")))
@@ -666,7 +666,7 @@ class mfl_service:
                                     else:
                                         if x:
                                             if rule['event']['$t']=="CC":
-                                                print(pos,float(rule['points']['$t'].replace("*","")))
+                                                
                                                 rules[pos] =rules[pos]+ float(rule['points']['$t'].replace("*",""))
                                         else:
                                             continue

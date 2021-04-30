@@ -614,9 +614,9 @@ tradefiltercard = dbc.Card(
                 dbc.Label("QBs:  ",style=STYLE),
                 dbc.Col(
                     dbc.RadioItems(id="QBs",
-                        options=[{'label': i, 'value':i} for i in ["Any","1QB","SuperFlex","2QB"]],
+                        options=[{'label': i, 'value':i} for i in ["1QB","SuperFlex"]],
                         inline=True,
-                        value="Any",
+                        value="SuperFlex",
                         style={'color':'#000 !important'},
                         inputStyle={"color": "#ccff00"}
                         ),

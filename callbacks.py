@@ -603,8 +603,10 @@ def update_RDPTable(startdate,enddate,ADP,position,DraftType,QBs,WRs,TEs,PTD,TEP
     
     if DraftType=="StartUp":
         filt=QB[(QB.Date>=startdate)&(QB.Date<=enddate)]
+        filt=filt[(filt.Position!="Pick")]
     else:
         filt=QBR[(QBR.Date>=startdate)&(QBR.Date<=enddate)]
+        filt=filt[(filt.Position!="Pick")]
     filt=filt.dropna(subset=['Lineup','Scoring'])
     if QBs=="1QB":
         filt=filt[filt['Lineup'].str.contains("QB: 1,")].reset_index(drop=True)

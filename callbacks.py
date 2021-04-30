@@ -798,11 +798,16 @@ def update_NewDraftTable(list_of_contents,ApplyChanges,Type,data,columns,Filenam
     print(ctx.triggered[0]['prop_id'].split('.')[0])
     if ctx.triggered[0]['prop_id'].split('.')[0] == "uploadNewDraftTable":
         df=parse_contents(list_of_contents,Filename)
+        df.to_csv("test.csv")
         if not isinstance(df, pd.DataFrame) or list(df.columns)!=['Date','DraftType','Overall','Pick','Player','Position','league_id','Name','Lineup','Scoring','Teams','Copies','Decision?']:
             mess=html.H1("Error Uploading")
         else:
             df=df[['Date','DraftType','Overall','Pick','Player','Position','league_id','Name','Lineup','Scoring','Teams','Copies',"Decision?"]]
-            df.to_csv(os.path.join(THIS_FOLDER,filepath),index=False)
+            original=pd.read_csv(os.path.join(THIS_FOLDER,filepath),parse_dates=['Date'])
+            newIDs=list(set(df["league_id"]))
+            original=original[~original["league_id"].isin(newIDs)]
+            original=original.append(df)
+            original.to_csv(os.path.join(THIS_FOLDER,filepath),index=False)
             mess=html.H1("Upload Succesful")
     if ctx.triggered[0]['prop_id'].split('.')[0] == "ApplyChanges":
         df = pd.DataFrame(data, columns=[c['name'][1] if type(c['name'])==list else c['name'] for c in columns])
@@ -829,6 +834,7 @@ def update_NewDraftTable(list_of_contents,ApplyChanges,Type,data,columns,Filenam
     df["Player"]=df["Player"].fillna("")
     df=df[df["Player"]!=""]
     if len(df)>0:
+        df["Date"]=pd.to_datetime(df['Date'], errors='coerce')
         df["Date"]=df["Date"].dt.date
     df=df[['Date','DraftType','Overall','Pick','Player','Position','league_id','Name','Lineup','Scoring','Teams','Copies',"Decision?"]]
     return [mess,dash_table.DataTable(

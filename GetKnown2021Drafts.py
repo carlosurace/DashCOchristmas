@@ -14,7 +14,7 @@ THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 
 Startups=pd.read_csv(Conf.StartupsPath)
 
-<<<<<<< HEAD
+
 Confirmed=pd.read_csv(Conf.ConfirmedPath)
 Newleagues=Confirmed['league_id'].map(str)
 Newleagues=list(set(Newleagues))
@@ -24,7 +24,7 @@ print(len(Newleagues),"New Leagues")
 
 temppath=os.path.join(THIS_FOLDER,"data/Temp.csv")
 
-#picks=mfl.get_multiple_leagues_draftsAll(Newleagues, temppath, year=2021, disable_progess_bar=False)
+picks=mfl.get_multiple_leagues_draftsAll(Newleagues, temppath, year=2021, disable_progess_bar=False)
 temp=pd.read_csv(temppath)
 
 temp=temp.merge(Confirmed[["Name","Lineup","Scoring","Teams","Copies","league_id"]], on="league_id")
@@ -36,13 +36,4 @@ Startups=Startups[~Startups.league_id.map(int).isin(newcodes)]
 Startups=Startups.append(temp)
 
 temp.to_csv(Conf.StartupsPath)
-=======
-    picks=mfl.get_multiple_leagues_draftsAll(Newleagues, temppath, year=2021, disable_progess_bar=False)
-    temp=pd.read_csv(temppath)
-    newcodes=list(set(temp["league_id"].map(int)))
-    draft["league_id"]=draft["league_id"].map(int)
-    draft=draft[~draft.league_id.map(int).isin(newcodes)]
-    draft=draft.append(temp)
-    draft["posrank"] = draft.groupby(["league_id","Position"])["Overall"].rank("dense")
-    draft.to_csv(draftpath)
->>>>>>> branch 'master' of https://github.com/carlosurace/AOD_Apps.git
+

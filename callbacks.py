@@ -67,7 +67,7 @@ app.callback(
               [Input("teams", "value")])
 def update_pick(teams):
     return [{'label': str(((i-1)//teams)+1)+"."+str((i-1)%teams+1).zfill(2), 'value':i} for i in range(1,200)]
-
+'''
 @app.callback(Output(component_id='SampleCount',component_property='children'),
               [Input("startdate", "value"),
                Input("enddate", "value")])
@@ -78,7 +78,7 @@ def update_count(startdate,enddate):
     filt=QB[(QB.Date>=startdate)&(QB.Date<=enddate)&(QB.DraftType!="SAME")]
     count=len(set(filt['league_id']))
     return dbc.Label("Set Sample Range: "+str(count)+" Drafts",style=STYLE)
-
+'''
 @app.callback(Output(component_id='franchise',component_property='options'),
               [Input("LeagueId", "value")])
 def update_drop(LeagueId):
@@ -532,11 +532,11 @@ def GenerateTradeTable(player,QBs,WRs,TEs,PTD,TEP):
         'color': '#a5d4d9',
         'backgroundColor': '#313131'
         },
-        style_data_conditional=[   
+        style_data_conditional=[
                 {'if': {'column_id': 'Date'},
              'width': '10%'}])
     return Table
-    
+
 @app.callback(
     Output(component_id='MostTraded',component_property='children'),
     [Input("TimePeriod", "value")]
@@ -582,7 +582,7 @@ def GenerateMostTraded(TP):
         'color': '#a5d4d9',
         'backgroundColor': '#313131'
         },
-        style_data_conditional=[   
+        style_data_conditional=[
                 {'if': {'column_id': 'Date'},
              'width': '10%'}])
     return Table
@@ -600,11 +600,11 @@ def GenerateMostTraded(TP):
     )
 def update_RDPTable(startdate,enddate,ADP,position,DraftType,QBs,WRs,TEs,PTD,TEP
                  ):
-    
+
     startdate=datetime.date(*(int(s) for s in startdate.split('-')))
     enddate=datetime.date(*(int(s) for s in enddate.split('-')))
     #start=start.strftime('%m/%d/%Y')
-    
+
     if DraftType=="StartUp":
         filt=QB[(QB.Date>=startdate)&(QB.Date<=enddate)]
         filt=filt[(filt.Position!="Pick")]
@@ -879,7 +879,7 @@ def update_NewDraftTable(list_of_contents,ApplyChanges,Type,data,columns,Filenam
         'color': '#a5d4d9',
         'backgroundColor': '#313131'
         },
-        style_data_conditional=[   
+        style_data_conditional=[
                 {'if': {'column_id': 'Date'},
              'width': '10%'}],
         dropdown={
@@ -891,7 +891,7 @@ def update_NewDraftTable(list_of_contents,ApplyChanges,Type,data,columns,Filenam
                 }
             }
 )]
-        
+
 @app.callback(
     Output(component_id='DraftChecker',component_property='children'),
     [Input("DraftPlayer", "value"),
@@ -943,7 +943,7 @@ def update_DraftChecker(Player,ID,Type):
         'color': '#a5d4d9',
         'backgroundColor': '#313131'
         },
-        style_data_conditional=[   
+        style_data_conditional=[
                 {'if': {'column_id': 'Date'},
              'width': '10%'}])
     return Table

@@ -88,7 +88,7 @@ def GetNewDrafts():
             rules["ID"]=rules["ID"].map(str)
             temp=temp.merge(rules, left_on="league_id", right_on="ID")
             temp["Player"]=temp["Player"].fillna(" ")
-            temp["Player"]=temp[temp["Player"]!=" "]
+            temp=temp[temp["Player"]!=" "]
             newIDs=list(set(temp["league_id"]))
             print(len(newIDs),"New Drafts Kicked off")
             for file in [Conf.EmptyRookiePath,Conf.EmptyPath]:

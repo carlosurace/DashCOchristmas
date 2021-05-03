@@ -15,10 +15,8 @@ THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 def GetEmptyDrafts(search):
 
     already=pd.DataFrame()
-    for Path in [Conf.ForReviewPath,Conf.ForReviewRookiePath]:
-        tempfle=pd.read_csv(Path)
-        tempfle=tempfle[tempfle["Player"]=='1.01']
-        already=already.append(tempfle)
+    for Path in [Conf.ExcludePath]:
+        already=already.append(pd.read_csv(Path))
     already=list(set(already["league_id"].map(int).map(str)))
     return already
 
@@ -33,14 +31,13 @@ def ApplyFiling(filename,filters,df,category):
     print(str(len(tempfile)),"drafts entered into",category)
 def GetNewDrafts():
     Newleagues = GetEmptyDrafts(" ")
-    print(len(Newleagues),"101 Leagues")
+    print(len(Newleagues),"Empty Leagues")
     for n in range(len(Newleagues)//Conf.Ngroup):
         try:
             print("iteration",n,"Groups of",Conf.Ngroup)
             draftlist=Newleagues[n*Conf.Ngroup:(n+1)*Conf.Ngroup]
             mfl.get_multiple_leagues_drafts1(draftlist, Conf.temppath, year=2021, disable_progess_bar=False)
             temp=pd.read_csv(Conf.temppath)
-            print(temp)
             temp["Date"]=temp["Date"].fillna(0)
             temp["Date"]=pd.to_datetime(temp["Date"].astype(int), unit='s')
             temp=temp[(temp["DraftType"]!=" ")&temp["DraftType"]!=""]
@@ -91,10 +88,10 @@ def GetNewDrafts():
             rules["ID"]=rules["ID"].map(str)
             temp=temp.merge(rules, left_on="league_id", right_on="ID")
             temp["Player"]=temp["Player"].fillna(" ")
-            temp=temp[temp["Player"]!=" "]
+            temp["Player"]=temp[temp["Player"]!=" "]
             newIDs=list(set(temp["league_id"]))
             print(len(newIDs),"New Drafts Kicked off")
-            for file in [Conf.ForReviewPath,Conf.ForReviewRookiePath]:
+            for file in [Conf.ExcludePath]:
                 Empty=pd.read_csv(file)
                 Empty=Empty[~Empty["league_id"].isin(newIDs)]
                 Empty.to_csv(file)

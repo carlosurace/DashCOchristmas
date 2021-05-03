@@ -26,7 +26,8 @@ temppath=os.path.join(THIS_FOLDER,"data/Temp.csv")
 
 picks=mfl.get_multiple_leagues_draftsAll(Newleagues, temppath, year=2021, disable_progess_bar=False)
 temp=pd.read_csv(temppath)
-
+temp["Date"]=temp["Date"].fillna(0)
+temp["Date"]=pd.to_datetime(temp["Date"].astype(int), unit='s')
 temp=temp.merge(Confirmed[["Name","Lineup","Scoring","Teams","Copies","league_id"]], on="league_id")
 temp["posrank"] = temp.groupby(["league_id","Position"])["Overall"].rank("dense")
 

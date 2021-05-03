@@ -30,6 +30,8 @@ temp=pd.read_csv(temppath)
 temp=temp.merge(Confirmed[["Name","Lineup","Scoring","Teams","Copies","league_id"]], on="league_id")
 temp["posrank"] = temp.groupby(["league_id","Position"])["Overall"].rank("dense")
 
+temp["Date"]=temp["Date"].fillna(0)
+temp["Date"]=pd.to_datetime(temp["Date"].astype(int), unit='s')
 newcodes=list(set(temp["league_id"].map(int)))
 Startups["league_id"]=Startups["league_id"].map(int)
 Startups=Startups[~Startups.league_id.map(int).isin(newcodes)]

@@ -1940,3 +1940,21 @@ Date,DraftType,Overall,Pick,Player,Position,league_id,Name,Lineup,Scoring,Teams,
 2021-02-19,SFIRSTRANDOM,1.0,1.01,"Mahomes, Patrick",QB,39784,4 Man #1,"QB: 4-5, RB: 4-6, WR: 4-6, TE: 4-6, ","QB_pTD: 1.0, RB_PPR: 1.5, WR_PPR: 1.5, TE_PPR: 1.5",4.0,1.0,No
 2021-02-21,SFIRSTRANDOM,1.0,1.01,"Taylor, Jonathan",RB,19691,Copy of 24-to-life,"QB: 1, RB: 2-4, WR: 2-4, TE: 1-3, Def: 1, ","QB_pTD: 6.0, RB_PPR: 0.5, WR_PPR: 0.5, TE_PPR: 0.5",24.0,2.0,No
 2021-03-08,SFIRSTRANDOM,1.0,1.01,"McCaffrey, Christian",RB,23754,5 Yard Rush Best Ball 1,"QB: 1, RB: 2-4, WR: 2-4, TE: 1-3, PK: 1, Def: 1, ","QB_pTD: 4.0, RB_PPR: 1.0, WR_PPR: 1.0, TE_PPR: 1.0",17.0,1.0,No
+2021-03-07,SDRAFT,1.0,1.01,"Mahomes, Patrick",QB,68572,Best Ball 1,"QB: 1-2, RB: 3-5, WR: 3-5, TE: 1-3, Def: 1, ","QB_pTD: 6.0, RB_PPR: 0.5, WR_PPR: 0.5, TE_PPR: 0.5",15.0,1.0,No
+2021-04-23,SDRAFT,1.0,1.01,"McCaffrey, Christian",RB,49435,Hard Knocks IV,"QB: 1-2, RB: 2-4, WR: 3-5, TE: 1-3, Def: 1, ","QB_pTD: 4.0, RB_PPR: 1.0, WR_PPR: 1.0, TE_PPR: 1.5",12.0,1.0,No
+2021-04-01,SDRAFT,1.0,1.01,"McCaffrey, Christian",RB,13957,FSN Best Ball Tourney One,"QB: 1, RB: 2-3, WR: 3-4, TE: 1-2, Def: 1, ","QB_pTD: 4.0, RB_PPR: 1.0, WR_PPR: 1.0, TE_PPR: 1.0",12.0,1.0,No
+2021-03-06,SFIRSTRANDOM,1.0,1.01,"McCaffrey, Christian",RB,65854,Alien Invasion I 2021,"QB: 1-2, RB: 2-4, WR: 3-5, TE: 1-3, Def: 1, ","QB_pTD: 4.0, RB_PPR: 1.0, WR_PPR: 1.0, TE_PPR: 1.5",12.0,1.0,No
+2021-03-20,SDRAFT,1.0,1.01,"McCaffrey, Christian",RB,60718,Copy of Dynasty Revolution,"QB: 1-2, RB: 2-4, WR: 3-5, TE: 1-3, PK: 1, Def: 1, ","QB_pTD: 6.0, RB_PPR: 1.0, WR_PPR: 1.0, TE_PPR: 1.5",12.0,1.0,No
+2021-03-07,SFIRSTRANDOM,1.0,1.01,"Mahomes, Patrick",QB,14517,Alien Invasion II 2021,"QB: 1-2, RB: 2-4, WR: 3-5, TE: 1-3, Def: 1, ","QB_pTD: 4.0, RB_PPR: 1.0, WR_PPR: 1.0, TE_PPR: 1.5",12.0,1.0,No
+2021-03-06,SDRAFT,1.0,1.01,"Kamara, Alvin",RB,53887,Redraft ADP Committee March 2021,"QB: 1, RB: 2-3, WR: 2-3, TE: 1-2, PK: 1, Def: 1, ","QB_pTD: 4.0, RB_PPR: 1.0, WR_PPR: 1.0, TE_PPR: 1.0",12.0,1.0,No
+2021-04-26,SDRAFT,1.0,1.01,"Kelce, Travis",TE,33703,$20 On The Clock 2021 Bestball Draft,"QB: 1-2, RB: 2-6, WR: 0-6, TE: 2-6, Def: 1-2, ","QB_pTD: 6.0, RB_PPR: 0.75, WR_PPR: 1.15, TE_PPR: 1.25",13.0,1.0,No
+2021-04-17,RANDOM,1.0,1.01,"Chase, Ja'Marr",WR,22270,"FF Addicts Rookie Mock (PPR, Pre NFL Draft) - 2021","QB: 1, RB: 2-3, WR: 2-3, TE: 1-2, PK: 1, Def: 1, ","QB_pTD: 4.0, RB_PPR: 1.0, WR_PPR: 1.0, TE_PPR: 1.0",4.0,1.0,No
+2021-04-24,SFIRSTRANDOM,1.0,1.01,"McCaffrey, Christian",RB,35455,Alien Invasion IV 2021,"QB: 1-2, RB: 2-4, WR: 3-5, TE: 1-3, Def: 1, ","QB_pTD: 4.0, RB_PPR: 1.0, WR_PPR: 1.0, TE_PPR: 1.5",12.0,1.0,No
+2021-04-24,SFIRSTRANDOM,1.0,1.01,"McCaffrey, Christian",RB,41763,Alien Invasion III 2021,"QB: 1-2, RB: 2-4, WR: 3-5, TE: 1-3, Def: 1, ","QB_pTD: 4.0, RB_PPR: 1.0, WR_PPR: 1.0, TE_PPR: 1.5",12.0,1.0,No
+2021-04-30,SAME,1.0,1.01,"Lawrence, Trevor",QB,61268,The Flock 10,"QB: 1-2, RB: 1-8, WR: 1-8, TE: 1-8, ","QB_pTD: 4.0, RB_PPR: 1.0, WR_PPR: 1.0, TE_PPR: 1.5",12.0,1.0,No
+2021-04-30,SAME,1.0,1.01,"Lance, Trey",QB,48679,The Flock 4,"QB: 1-2, RB: 1-8, WR: 1-8, TE: 1-8, ","QB_pTD: 4.0, RB_PPR: 1.0, WR_PPR: 1.0, TE_PPR: 1.5",12.0,1.0,No
+2021-04-30,SAME,1.0,1.01,"Lawrence, Trevor",QB,53642,The Flock 3,"QB: 1-2, RB: 1-8, WR: 1-8, TE: 1-8, ","QB_pTD: 4.0, RB_PPR: 1.0, WR_PPR: 1.0, TE_PPR: 1.5",12.0,1.0,No
+2021-04-29,SDRAFT,1.0,1.01,"Mahomes, Patrick",QB,16669,Joe Kapp League,"QB: 2, RB: 1-2, WR: 3-4, TE: 1, PK: 1, Def: 1, ","QB_pTD: Fail, RB_PPR: Fail, WR_PPR: Fail, TE_PPR: Fail",12.0,1.0,No
+2021-04-29,SDRAFT,1.0,1.01,"Agholor, Nelson",WR,33704,The Avengers League,"QB: 1-2, RB: 2-3, WR: 3-5, TE: 1-2, PK: 1, DE: 1-3, DT: 1-3, LB: 3-4, CB: 1-3, S: 1-3, ","QB_pTD: 6.0, RB_PPR: 1.0, WR_PPR: 1.0, TE_PPR: 1.0",16.0,1.0,No
+2021-04-27,SFIRSTRANDOM,1.0,1.01,"McCaffrey, Christian",RB,70422,Patreon/ All Stars Eliminator Best Ball ,"QB: 1, RB: 2-4, WR: 2-4, TE: 1-3, PK: 1, Def: 1, ","QB_pTD: 4.0, RB_PPR: 1.0, WR_PPR: 1.0, TE_PPR: 1.0",17.0,1.0,No
+2021-04-25,3RDROUNDFIRSTRANDOM,1.0,1.01,"McCaffrey, Christian",RB,73220,delete ,"QB: 1-2, RB: 2-4, WR: 2-4, TE: 1-4, PK: 1, DE: 1-4, DT: 1-4, LB: 2-4, CB: 1-4, S: 1-4, ","QB_pTD: 5.0, RB_PPR: 1.05, WR_PPR: 1.05, TE_PPR: 2.05",14.0,1.0,No

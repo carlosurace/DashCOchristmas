@@ -72,15 +72,11 @@ Stats=GameLogs.columns[14:]
 
 
 QB =pd.read_csv(Conf.StartupsPath,parse_dates=['Date'])
-QB['Date'] =QB['Date'].fillna(0)
-QB['Date'] = QB['Date'].astype(float)
-QB['Date'] = pd.to_datetime(QB['Date'].astype(int), unit='s')
+QB['Date'] = pd.to_datetime(QB['Date'], unit='s')
 QB['Date'] = QB['Date'].dt.date
 
 QBR =pd.read_csv(Conf.RookiesPath,parse_dates=['Date'])
-QBR['Date'] =QBR['Date'].fillna(0)
-QBR['Date'] = QBR['Date'].astype(float)
-QBR['Date'] = pd.to_datetime(QBR['Date'].astype(int), unit='s')
+QBR['Date'] = pd.to_datetime(QBR['Date'], unit='s')
 QBR['Date'] = QBR['Date'].dt.date
 
 
@@ -92,7 +88,7 @@ Players.drop_duplicates(subset ="Player",
 Players=Players['Player'].map(str)
 Players=list(Players)
 
-Dates=set(QB['Date'])
+Dates=set(QB['Date'].dropna())
 Dates=list(Dates)
 Dates=sorted(Dates)
 DraftTypes=["Overall","Positional"]
@@ -147,7 +143,7 @@ NavbarTrades=dbc.Navbar(
                 no_gutters=True,
             )),
         html.H2("AOD Trade Database"),
-        
+
         #dbc.NavItem(dbc.NavLink("Welcome", href="/Home")),
         #dbc.NavItem(dbc.NavLink("MFL Draft Helper", href="/DraftHelper")),
         #dbc.NavItem(dbc.NavLink("RDP Graph", href="/RDPGraph")),
@@ -557,7 +553,7 @@ filtercard = dbc.Card(
                 no_gutters=True
             ),
             dbc.Row(
-                [   
+                [
                     dbc.Col(
                         [
                             dcc.Dropdown(
@@ -726,11 +722,11 @@ tradecard = dbc.Card(
                     ],
                     width=2
                 )
-                
+
             ],
             no_gutters=True
         ),
-        
+
     ],
     className="dash-bootstrap"
     ),

@@ -1,27 +1,11 @@
-<<<<<<< HEAD
 Pick,Overall,Player,Position,Date,league_id,DraftType
-01.01,1, , ,,13115,SAME
-01.01,1, , ,,24604,
-01.01,1, , ,,17614.01,SAME
-01.01,1, , ,,17614.02,SAME
-01.01,1, , ,,23152,SAME
-01.01,1, , ,,37416,SAME
-01.01,1, , ,,64673,
-Fail,,,,,45635,
-01.01,1, , ,,27219,SAME
-01.01,1, , ,,64531,SAME
-Fail,,,,,27287,
-=======
-Pick,Overall,Player,Position,Date,league_id,DraftType
-01.01,1, , ,,13115,SAME
-01.01,1, , ,,24604,
-01.01,1, , ,,17614.01,SAME
-01.01,1, , ,,17614.02,SAME
-01.01,1, , ,,23152,SAME
-01.01,1, , ,,37416,SAME
-01.01,1, , ,,64673,
-Fail,,,,,45635,
-01.01,1, , ,,27219,SAME
-01.01,1, , ,,64531,SAME
-Fail,,,,,27287,
->>>>>>> branch 'master' of https://github.com/carlosurace/AOD_Apps.git
+01.01,1, , ,,24625,SAME
+01.01,1,Rookie Pick 1,Pick,1619796612,50740,SAME
+01.01,1, , ,,53551,SAME
+01.01,1,Rookie Pick 1,Pick,1616210135,73929,SDRAFT
+01.01,1,Rookie Pick 1,Pick,1619448351,21424,SAME
+01.01,1,Rookie Pick 1,Pick,1616173183,47020,SAME
+01.01,1,Rookie Pick 1,Pick,1614795364,58445,SAME
+01.01,1,Rookie Pick 1,Pick,1618204547,30737,SAME
+01.01,1,Rookie Pick 1,Pick,1618446645,18923,SAME
+01.01,1,Rookie Pick 1,Pick,1618761717,26460,SAME

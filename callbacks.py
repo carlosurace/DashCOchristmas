@@ -609,7 +609,9 @@ def update_RDPTable(startdate,enddate,ADP,position,DraftType,QBs,WRs,TEs,PTD,TEP
         filt=QB[(QB.Date>=startdate)&(QB.Date<=enddate)]
         filt=filt[(filt.Position!="Pick")]
     else:
+        QBR.to_csv("RookieTest.csv")
         filt=QBR[(QBR.Date>=startdate)&(QBR.Date<=enddate)]
+        QBR.to_csv("RookieTestDate.csv")
         filt=filt[(filt.Teams<16)]
     filt=filt.dropna(subset=['Lineup','Scoring'])
     filt=filt.dropna(subset=['Lineup','Scoring'])
@@ -660,7 +662,7 @@ def update_RDPTable(startdate,enddate,ADP,position,DraftType,QBs,WRs,TEs,PTD,TEP
         maxcount=max(df["Draft Count"])
     except:
         maxcount=0
-    df=df[(df["Draft Count"]>maxcount*0.3)]
+    df=df[(df["Draft Count"]>maxcount*0.07)]
 
 
     table = dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True)

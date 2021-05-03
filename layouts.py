@@ -42,6 +42,12 @@ Players1=set(GameLogs['Rk'])
 Players1=list(Players1)
 Players1=sorted(Players1)
 
+AllDrafts=pd.DataFrame()
+for file in [Conf.ConfirmedPath,Conf.ConfirmedRookiePath]:
+    n=pd.read_csv(file)
+    AllDrafts=AllDrafts.append(n)
+AllDrafts=list(set(AllDrafts["league_id"].map(str)))
+
 AllPicks=[str(i)+"." + str(n).zfill(2) for i in range(1,35) for n in range(1,13,1)]+["2022 Round " + str(n) for n in range(1,5,1)]+["2021 Round " + str(n) for n in range(1,5,1)]
 
 Seasons=set(GameLogs['season'])
@@ -384,6 +390,47 @@ playercard1 = dbc.Card(
     body=True,
 )
 
+
+DraftCheckerModal=html.Div(
+    [
+        dbc.Button("Open Draft modal", id="Draftopen"),
+        dbc.Modal(
+            [
+                dbc.ModalHeader("Draft Checker"),
+                
+                dbc.ModalBody([
+                    dcc.Dropdown(
+                        id='DraftPlayer',
+                        options=[{'label': i[0:-4], 'value':i[0:-4]} for i in AllPlayers],
+                        value=None,
+                        clearable=True,
+                        searchable=True
+                        ),
+                     dcc.Dropdown(
+                        id='DraftID',
+                        options=[{'label': i, 'value':i} for i in AllDrafts],
+                        value=None,
+                        clearable=True,
+                        searchable=True
+                        ),
+                     dcc.Dropdown(
+                        id='DraftType',
+                        options=[{'label': i, 'value':i} for i in ["Rookie","Startup"]],
+                        value=None,
+                        clearable=True,
+                        searchable=True
+                        ),
+                     html.Div(id="DraftChecker")
+                    ]),
+                dbc.ModalFooter(
+                    dbc.Button("Close", id="Draftclose", className="ml-auto")
+                ),
+            ],
+            style={"max-width": "none", "width": "90%"},
+            id="Draftmodal",
+        ),
+    ]
+)
 
 
 pickcard =dbc.Card(
@@ -1235,6 +1282,7 @@ Admin=html.Div([
                             color='dark')
                   ],width=2),
                 ]),
+              DraftCheckerModal,
               dcc.Loading(
                 type="default",
                 children=[html.Div(id='NewDraftTable',

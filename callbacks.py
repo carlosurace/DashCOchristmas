@@ -36,6 +36,10 @@ colors =  {
     'accent': '#D46C39'
 }
 
+AllDrafts=pd.DataFrame()
+for file in [Conf.StartupsPath,Conf.RookiesPath]:
+    n=pd.read_csv(file)
+    AllDrafts=AllDrafts.append(n)
 
 THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 
@@ -596,7 +600,7 @@ def GenerateMostTraded(TP):
     )
 def update_RDPTable(startdate,enddate,ADP,position,DraftType,QBs,WRs,TEs,PTD,TEP
                  ):
-
+    
     startdate=datetime.date(*(int(s) for s in startdate.split('-')))
     enddate=datetime.date(*(int(s) for s in enddate.split('-')))
     #start=start.strftime('%m/%d/%Y')
@@ -606,7 +610,8 @@ def update_RDPTable(startdate,enddate,ADP,position,DraftType,QBs,WRs,TEs,PTD,TEP
         filt=filt[(filt.Position!="Pick")]
     else:
         filt=QBR[(QBR.Date>=startdate)&(QBR.Date<=enddate)]
-        filt=filt[(filt.Position!="Pick")]
+        filt=filt[(filt.Teams<16)]
+    filt=filt.dropna(subset=['Lineup','Scoring'])
     filt=filt.dropna(subset=['Lineup','Scoring'])
     if QBs=="1QB":
         filt=filt[filt['Lineup'].str.contains("QB: 1,")].reset_index(drop=True)
@@ -887,3 +892,68 @@ def update_NewDraftTable(list_of_contents,ApplyChanges,Type,data,columns,Filenam
             }
 )]
         
+@app.callback(
+    Output(component_id='DraftChecker',component_property='children'),
+    [Input("DraftPlayer", "value"),
+     Input("DraftID", "value"),
+     Input("DraftType", "value")
+     ]
+    )
+def update_DraftChecker(Player,ID,Type):
+    temp=AllDrafts[AllDrafts.columns]
+    if Player:
+        temp=temp[temp["Player"]==Player]
+    if Player:
+        temp=temp[temp["league_id"]==str(ID)]
+    if Type:
+        if Type=="Rookie":
+            temp=temp[temp["league_id"]=="SAME"]
+        else:
+            temp=temp[temp["league_id"]!="SAME"]
+    Table=dash_table.DataTable(
+        id='TradeTab',
+        columns=[{"name": i, "id": i,'presentation':'markdown'} if i=="link" else{"name": i, "id": i}for i in temp.columns],
+        data=temp.to_dict('records'),
+        fixed_rows={'headers': True},
+        fixed_columns={'headers': True},
+        filter_action="native",
+        sort_action="native",
+        sort_mode="multi",
+        style_header={
+             'fontSize':14,
+            'fontFamily': 'helvetica',
+            'border': 'thin #a5d4d9 solid',
+            'color': '#a5d4d9',
+            'backgroundColor': '#313131',
+            'padding':'10px'
+            },
+        style_filter={'color': '#fff', "backgroundColor": "#313131"},
+        style_table={'minHeight':'1100px','height': '1100px','maxHeight':'1100px','border': '#000','height': '650px',"width":"95%"},
+        style_data={'whiteSpace': 'pre-line'},
+        style_cell={
+        'fontSize':12,
+        'border': 'thin #a5d4d9 solid',
+        'fontFamily': 'helvetica',
+        'textAlign': 'left',
+        'Width': 'auto',
+        'maxWidth': 0,
+        'height': 'auto',
+        'whiteSpace': 'normal',
+        'padding':'10px',
+        'color': '#a5d4d9',
+        'backgroundColor': '#313131'
+        },
+        style_data_conditional=[   
+                {'if': {'column_id': 'Date'},
+             'width': '10%'}])
+    return Table
+
+@app.callback(
+    Output("Draftmodal", "is_open"),
+    [Input("Draftopen", "n_clicks"), Input("Draftclose", "n_clicks")],
+    [State("Draftmodal", "is_open")],
+)
+def toggle_modalDraft(n1, n2, is_open):
+    if n1 or n2:
+        return not is_open
+    return is_open

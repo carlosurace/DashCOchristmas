@@ -546,6 +546,29 @@ datecard = dbc.Card(
             ),
             dbc.Row(
                 [
+                    
+                    dbc.Col(
+                        dbc.Label("Start Date",style=STYLE),width=2
+                    ),
+                    dbc.Col(
+                        dbc.Label("End Date",style=STYLE),width=2
+                    ),
+                    dbc.Col(
+                        dbc.Label("",style=STYLE),width=2
+                    ),
+                    dbc.Col(
+                        dbc.Label("DraftType",style=STYLE),width=2
+                    ),
+                    dbc.Col(
+                        dbc.Label("Position",style=STYLE),width=2
+                    ),
+
+
+                ],
+                no_gutters=True
+            ),
+            dbc.Row(
+                [
 
                     dbc.Col(
                         [
@@ -557,7 +580,7 @@ datecard = dbc.Card(
                                         clearable=False
                                     )
                         ],
-                        width=6
+                        width=2
                     ),
                     dbc.Col(
                         [
@@ -568,39 +591,18 @@ datecard = dbc.Card(
                                         searchable=True,
                                         clearable=False)
                         ],
-                        width=6
-                    )
-                ],
-                no_gutters=True
-            )
-        ],
-        className="dash-bootstrap"),
-    ]
-)
-
-filtercard = dbc.Card(
-    [
-    html.Div(
-        [
-
-            dbc.Row(
-                [
-                    dbc.Col(
-                        dbc.Label("DraftType",style=STYLE),width=1
+                        width=2
                     ),
                     dbc.Col(
-                        dbc.Label("Position",style=STYLE),width=5
+                        [
+                            dbc.Button(
+                            "Post NFL Draft",
+                            id="PostDraft",
+                            color='dark',
+                        ),
+                        ],
+                        width=2
                     ),
-                    dbc.Col(
-                        dbc.Label("ADP Range",style=STYLE),width=4
-                    ),
-
-
-                ],
-                no_gutters=True
-            ),
-            dbc.Row(
-                [
                     dbc.Col(
                         [
                             dcc.Dropdown(
@@ -611,7 +613,7 @@ filtercard = dbc.Card(
                                         clearable=False
                                     )
                         ],
-                        width=1
+                        width=2
                     ),
                     dbc.Col(
                         [
@@ -623,22 +625,9 @@ filtercard = dbc.Card(
                                         clearable=False
                                     )
                         ],
-                        width=1
+                        width=2
                     ),
-                    dbc.Col(
-                        [
-                            dcc.RangeSlider(
-                                id='ADP',
-                                min=0,
-                                max=400,
-                                step=1,
-                                value=[0, 400],
-                                marks={i: '{}'.format('R'+str(int(i/12))) for i in range(12,400,12)}
-                            )
-                        ],
-                        width=10
-                    )
-
+                    
                 ],
                 no_gutters=True
             )
@@ -646,6 +635,8 @@ filtercard = dbc.Card(
         className="dash-bootstrap"),
     ]
 )
+
+
 
 tradefiltercard = dbc.Card(
     [
@@ -1117,12 +1108,6 @@ DraftHelper=html.Div([
                     ],
                 align='center'
                 ),
-            dbc.Row(
-                    [
-                    dbc.Col(filtercard, width=12)
-                    ],
-                align='center'
-                ),
             html.Br()
             ])
         ],
@@ -1188,12 +1173,6 @@ RDP_table=html.Div([
             dbc.Row(
                     [
                     dbc.Col([datecard], width=12)],
-                align='center'
-                ),
-            dbc.Row(
-                    [
-                    dbc.Col(filtercard, width=12)
-                    ],
                 align='center'
                 ),
             html.Br()

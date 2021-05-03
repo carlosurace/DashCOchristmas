@@ -100,11 +100,11 @@ def update_drop(LeagueId):
     Output(component_id='outputtable',component_property='children'),
     [Input("startdate", "value"),
      Input("enddate", "value"),Input("drafted", "value"),Input("LeagueId", "value"),
-     Input('franchise', "value"),Input('ADP', "value"),Input('position', "value"),
+     Input('franchise', "value"),Input('position', "value"),
      Input('pick', "value"),Input('teams', "value")]
     )
 def update_Table(startdate,enddate,drafted,
-                 LeagueId,franchise,ADP,position,pick,teams
+                 LeagueId,franchise,position,pick,teams
                  ):
     print(franchise)
     nextpickP=""
@@ -217,10 +217,6 @@ def update_Table(startdate,enddate,drafted,
     df=filt
     df=df.drop_duplicates(subset='Player', keep='first')
 
-    if position != 'All':
-        df =df[(df.Median_Overall>ADP[0])&(df.Median_Overall<ADP[1])&(df.Position==position)]
-    else:
-        df =df[(df.Median_Overall>ADP[0])&(df.Median_Overall<ADP[1])]
 
     df=df[headers]
 
@@ -592,13 +588,13 @@ def GenerateMostTraded(TP):
 @app.callback(
     Output(component_id='RDPtable',component_property='children'),
     [Input("startdate", "value"),
-     Input("enddate", "value"),Input('ADP', "value"),Input('position', "value"),
+     Input("enddate", "value"),Input('position', "value"),
      Input('DraftType', "value"),Input("QBs", "value"),
      Input("WRs", "value"),Input("TEs", "value"),
      Input("PassTD", "value"),Input("TEPrem", "value")
      ]
     )
-def update_RDPTable(startdate,enddate,ADP,position,DraftType,QBs,WRs,TEs,PTD,TEP
+def update_RDPTable(startdate,enddate,position,DraftType,QBs,WRs,TEs,PTD,TEP
                  ):
 
     startdate=datetime.date(*(int(s) for s in startdate.split('-')))
@@ -638,6 +634,7 @@ def update_RDPTable(startdate,enddate,ADP,position,DraftType,QBs,WRs,TEs,PTD,TEP
         filt=filt[filt['Scoring'].str.contains("TE_PPR: 1.5")|filt['Scoring'].str.contains("TE_PPR: 1.75")|filt['Scoring'].str.contains("TE_PPR: 2")].reset_index(drop=True)
     elif TEP=="No":
         filt=filt[~filt['Scoring'].str.contains("TE_PPR: 1.5") & ~filt['Scoring'].str.contains("TE_PPR: 1.75") & ~filt['Scoring'].str.contains("TE_PPR: 2")].reset_index(drop=True)
+    filt["Overall"]=filt["Overall"]/filt["Copies"]
     filt['Median_Overall']=filt.groupby(["Player"])["Overall"].transform('median')
     filt = filt.sort_values(['Median_Overall'])
     filt['Median Overall']=filt['Median_Overall'].apply(lambda x: str(int(((x-1)//12)+1))+"."+str(int((x-1)%12+1)).zfill(2))
@@ -960,3 +957,11 @@ def toggle_modalDraft(n1, n2, is_open):
     if n1 or n2:
         return not is_open
     return is_open
+
+@app.callback(
+    [Output("startdate", "value"),Output("enddate", "value")],
+    [Input("PostDraft", "n_clicks")], prevent_initial_call=True
+)
+def PostDraft(n1):
+    if n1:
+        return [datetime.date(2021, 5, 1),max(Dates)]

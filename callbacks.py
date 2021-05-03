@@ -611,6 +611,7 @@ def update_RDPTable(startdate,enddate,ADP,position,DraftType,QBs,WRs,TEs,PTD,TEP
     else:
         QBR.to_csv("RookieTest.csv")
         filt=QBR[(QBR.Date>=startdate)&(QBR.Date<=enddate)]
+        filt=filt[(filt.Position!="Pick")]
         QBR.to_csv("RookieTestDate.csv")
         filt=filt[(filt.Teams<16)]
     filt=filt.dropna(subset=['Lineup','Scoring'])

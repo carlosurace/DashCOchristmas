@@ -650,14 +650,14 @@ def update_RDPTable(startdate,enddate,position,DraftType,QBs,WRs,TEs,PTD,TEP,pot
     filt['Availability']=filt['Availability'].map(str)
     filt['Availability']=filt['Availability']+"%"
     filt['percentile']= filt['Draft Count'].pct_change().fillna(0)+0.5
-    filt=filt[filt['percentile']>0.5]
+    filt=filt[filt['percentile']>0]
     df=filt
     df=df.drop_duplicates(subset='Player', keep='first')
     
 
-    headers=["Player","Position","Draft Count","Median Overall","Median Positional",'Availability']
+    headers=["Player","Position","Draft Count","Median Overall","Median Positional",'Availability','percentile']
     df=df[headers]
-    df.columns=["Player","Position","Draft Count","Median Overall","Median Positional",'Availability at pick '+str(int(((potpick-1)//12)+1))+"."+str(int((potpick-1)%12+1)).zfill(2)]
+    df.columns=["Player","Position","Draft Count","Median Overall","Median Positional",'Availability at pick '+str(int(((potpick-1)//12)+1))+"."+str(int((potpick-1)%12+1)).zfill(2),'percentile']
     if position != 'All':
         df =df[(df.Position==position)]
     else:
@@ -666,7 +666,6 @@ def update_RDPTable(startdate,enddate,position,DraftType,QBs,WRs,TEs,PTD,TEP,pot
         maxcount=max(df["Draft Count"])
     except:
         maxcount=0
-    df=df[(df["Draft Count"]>maxcount*0.07)]
 
 
     table = dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True)

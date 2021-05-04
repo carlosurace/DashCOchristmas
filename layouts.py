@@ -610,7 +610,7 @@ datecard = dbc.Card(
                         [
                             dcc.Dropdown(
                                         id='potentialpick',
-                                        options=[{'label': str(int(((x-1)//12)+1))+"."+str(int((x-1)%12+1)).zfill(2), 'value':x} for x in range(1,49)],
+                                        options=[{'label': str(int(((x-1)//12)+1))+"."+str(int((x-1)%12+1)).zfill(2), 'value':x} for x in range(1,121)],
                                         value=1,
                                         searchable=True,
                                         clearable=False)

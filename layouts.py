@@ -554,7 +554,10 @@ datecard = dbc.Card(
                         dbc.Label("End Date",style=STYLE),width=2
                     ),
                     dbc.Col(
-                        dbc.Label("",style=STYLE),width=2
+                        dbc.Label("",style=STYLE),width=1
+                    ),
+                    dbc.Col(
+                        dbc.Label("Pick Availability",style=STYLE),width=1
                     ),
                     dbc.Col(
                         dbc.Label("DraftType",style=STYLE),width=2
@@ -601,7 +604,18 @@ datecard = dbc.Card(
                             color='dark',
                         ),
                         ],
-                        width=2
+                        width=1
+                    ),
+                    dbc.Col(
+                        [
+                            dcc.Dropdown(
+                                        id='potentialpick',
+                                        options=[{'label': str(int(((x-1)//12)+1))+"."+str(int((x-1)%12+1)).zfill(2), 'value':x} for x in range(1,49)],
+                                        value=1,
+                                        searchable=True,
+                                        clearable=False)
+                        ],
+                        width=1
                     ),
                     dbc.Col(
                         [

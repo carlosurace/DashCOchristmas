@@ -691,6 +691,17 @@ tradefiltercard = dbc.Card(
                             inputStyle={"color": "#ccff00"}
                         ),
                     width=2
+                ),
+                dbc.Label("IDP:  ",style=STYLE),
+                dbc.Col(
+                    dbc.RadioItems(id="IDP",
+                            options=[{'label': i, 'value':i} for i in ["Yes","No"]],
+                            inline=True,
+                            value="No",
+                            style={'color':'#000 !important'},
+                            inputStyle={"color": "#ccff00"}
+                        ),
+                    width=2
                 )
             ],
             no_gutters=True

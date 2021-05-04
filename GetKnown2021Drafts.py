@@ -9,6 +9,7 @@ import ConfigF as Conf
 # create a mfl service instance and create/update the player_id to name converter
 mfl = mfl_service(update_player_converter=True)
 import os
+import numpy as np
 THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 
 
@@ -37,5 +38,9 @@ Startups["league_id"]=Startups["league_id"].map(int)
 Startups=Startups[~Startups.league_id.map(int).isin(newcodes)]
 Startups=Startups.append(temp)
 
-temp.to_csv(Conf.StartupsPath)
-
+IDPPos=['ST','DE','DT','DT+DE','LB','CB','S','CB+S']
+IDPPos=[i+":" for i in IDPPos]
+Startups["IDP"]=0
+for pos in IDPPos:
+    Startups["IDP"]=np.where(Startups["Lineup"].str.contains(pos, regex=False),1,Startups["IDP"])
+Startups.to_csv(Conf.StartupsPath)

@@ -592,10 +592,11 @@ def GenerateMostTraded(TP):
      Input("enddate", "value"),Input('position', "value"),
      Input('DraftType', "value"),Input("QBs", "value"),
      Input("WRs", "value"),Input("TEs", "value"),
-     Input("PassTD", "value"),Input("TEPrem", "value"),Input("potentialpick", "value")
+     Input("PassTD", "value"),Input("TEPrem", "value"),
+     Input("potentialpick", "value"),Input("IDP", "value")
      ]
     )
-def update_RDPTable(startdate,enddate,position,DraftType,QBs,WRs,TEs,PTD,TEP,potpick
+def update_RDPTable(startdate,enddate,position,DraftType,QBs,WRs,TEs,PTD,TEP,potpick,IDP
                  ):
 
     startdate=datetime.date(*(int(s) for s in startdate.split('-')))
@@ -613,6 +614,10 @@ def update_RDPTable(startdate,enddate,position,DraftType,QBs,WRs,TEs,PTD,TEP,pot
         filt=filt[(filt.Teams<16)]
     filt=filt.dropna(subset=['Lineup','Scoring'])
     filt=filt.dropna(subset=['Lineup','Scoring'])
+    if IDP=="Yes":
+        filt=filt[filt['IDP']==1].reset_index(drop=True)
+    else:
+        filt=filt[filt['IDP']==0].reset_index(drop=True)
     if QBs=="1QB":
         filt=filt[filt['Lineup'].str.contains("QB: 1,")].reset_index(drop=True)
     elif QBs=="SuperFlex":

@@ -655,7 +655,7 @@ def update_RDPTable(startdate,enddate,position,DraftType,QBs,WRs,TEs,PTD,TEP,pot
 
     headers=["Player","Position","Draft Count","Median Overall","Median Positional",'Availability']
     df=df[headers]
-
+    df.columns=["Player","Position","Draft Count","Median Overall","Median Positional",'Availability at pick '+str(int(((potpick-1)//12)+1))+"."+str(int((potpick-1)%12+1)).zfill(2)]
     if position != 'All':
         df =df[(df.Position==position)]
     else:

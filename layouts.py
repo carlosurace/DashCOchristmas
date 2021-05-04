@@ -557,7 +557,7 @@ datecard = dbc.Card(
                         dbc.Label("",style=STYLE),width=1
                     ),
                     dbc.Col(
-                        dbc.Label("Pick Availability",style=STYLE),width=1
+                        dbc.Label("Availability at pick:",style=STYLE),width=1
                     ),
                     dbc.Col(
                         dbc.Label("DraftType",style=STYLE),width=2

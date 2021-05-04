@@ -655,9 +655,9 @@ def update_RDPTable(startdate,enddate,position,DraftType,QBs,WRs,TEs,PTD,TEP,pot
     df=df.drop_duplicates(subset='Player', keep='first')
     
 
-    headers=["Player","Position","Draft Count","Median Overall","Median Positional",'Availability','percentile']
+    headers=["Player","Position","Draft Count","Median Overall","Median Positional",'Availability']
     df=df[headers]
-    df.columns=["Player","Position","Draft Count","Median Overall","Median Positional",'Availability at pick '+str(int(((potpick-1)//12)+1))+"."+str(int((potpick-1)%12+1)).zfill(2),'percentile']
+    df.columns=["Player","Position","Draft Count","Median Overall","Median Positional",'Availability at pick '+str(int(((potpick-1)//12)+1))+"."+str(int((potpick-1)%12+1)).zfill(2)]
     if position != 'All':
         df =df[(df.Position==position)]
     else:

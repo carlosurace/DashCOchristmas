@@ -24,6 +24,7 @@ import datetime
 import io
 import dash
 import ConfigF as Conf
+import numpy as np
 STYLE = {
     'boxShadow': '#313131' ,
     'background': '#313131' ,
@@ -591,10 +592,10 @@ def GenerateMostTraded(TP):
      Input("enddate", "value"),Input('position', "value"),
      Input('DraftType', "value"),Input("QBs", "value"),
      Input("WRs", "value"),Input("TEs", "value"),
-     Input("PassTD", "value"),Input("TEPrem", "value")
+     Input("PassTD", "value"),Input("TEPrem", "value"),Input("potentialpick", "value")
      ]
     )
-def update_RDPTable(startdate,enddate,position,DraftType,QBs,WRs,TEs,PTD,TEP
+def update_RDPTable(startdate,enddate,position,DraftType,QBs,WRs,TEs,PTD,TEP,potpick
                  ):
 
     startdate=datetime.date(*(int(s) for s in startdate.split('-')))
@@ -635,6 +636,7 @@ def update_RDPTable(startdate,enddate,position,DraftType,QBs,WRs,TEs,PTD,TEP
     elif TEP=="No":
         filt=filt[~filt['Scoring'].str.contains("TE_PPR: 1.5") & ~filt['Scoring'].str.contains("TE_PPR: 1.75") & ~filt['Scoring'].str.contains("TE_PPR: 2")].reset_index(drop=True)
     filt["Overall"]=filt["Overall"]/filt["Copies"]
+    filt["Available"]=np.where(filt["Overall"]>=potpick,1,0)
     filt['Median_Overall']=filt.groupby(["Player"])["Overall"].transform('median')
     filt = filt.sort_values(['Median_Overall'])
     filt['Median Overall']=filt['Median_Overall'].apply(lambda x: str(int(((x-1)//12)+1))+"."+str(int((x-1)%12+1)).zfill(2))
@@ -642,14 +644,16 @@ def update_RDPTable(startdate,enddate,position,DraftType,QBs,WRs,TEs,PTD,TEP
     filt['Median Positional']=filt['Position']+filt['Median Positional'].map(str)
 
     filt['Draft Count']=filt.groupby(["Player"])["Pick"].transform('count')
-
-
-
+    filt['Availability']=filt.groupby(["Player"])["Available"].transform('sum')
+    filt['Availability']=filt['Availability']*100/filt['Draft Count']
+    filt['Availability']=filt['Availability'].map(int)
+    filt['Availability']=filt['Availability'].map(str)
+    filt['Availability']=filt['Availability']+"%"
     df=filt
     df=df.drop_duplicates(subset='Player', keep='first')
 
 
-    headers=["Player","Position","Draft Count","Median Overall","Median Positional"]
+    headers=["Player","Position","Draft Count","Median Overall","Median Positional",'Availability']
     df=df[headers]
 
     if position != 'All':

@@ -649,9 +649,11 @@ def update_RDPTable(startdate,enddate,position,DraftType,QBs,WRs,TEs,PTD,TEP,pot
     filt['Availability']=filt['Availability'].map(int)
     filt['Availability']=filt['Availability'].map(str)
     filt['Availability']=filt['Availability']+"%"
+    filt['percentile']= filt['Draft Count'].pct_change().fillna(0)+0.5
+    filt=filt[filt['percentile']>0.5]
     df=filt
     df=df.drop_duplicates(subset='Player', keep='first')
-
+    
 
     headers=["Player","Position","Draft Count","Median Overall","Median Positional",'Availability']
     df=df[headers]

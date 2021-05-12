@@ -10,22 +10,27 @@ Created on Jun 24, 2020
 '''
 from mfl_services import mfl_service
 import pandas as pd
+import ConfigF as Conf
 # create a mfl service instance and create/update the player_id to name converter
 mfl = mfl_service(update_player_converter=True)
 import os
 THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 
-Rules=os.path.join(THIS_FOLDER,'data/MasterRules.csv')
-Rules=pd.read_csv(Rules)
-Rules=Rules["ID"].map(str)
-print(len(Rules))
+RulesList=[]
+for file in [os.path.join(THIS_FOLDER,'data/MasterRules.csv'),Conf.ConfirmedPath,Conf.ConfirmedRookiePath]:
+    Rules=os.path.join(THIS_FOLDER,'data/MasterRules.csv')
+    Rules=pd.read_csv(Rules)
+    RulesList+=list(Rules["ID"].map(str))
+RulesList=list(set(RulesList))
+
+print(len(RulesList))
 Tradepath=os.path.join(THIS_FOLDER,'data/TradesMaster.csv')
 Trades=pd.read_csv(Tradepath)
 trades=[]
-print(len(Rules))
-for league in Rules:
+print(len(RulesList))
+for league in RulesList:
     try:
-        trades+=mfl.get_league_trades(league, 2021,4, csv_writer=None)
+        trades+=mfl.get_league_trades(league, 2021,15)
         print(league,"success")
     except:
         print(league,"fail")

@@ -88,7 +88,7 @@ class mfl_service:
         rules=pd.DataFrame()
         for id in leaguelist:
             count+=1
-            print(count)
+            #print(count)
             #try:
             xrow=[]
             SF=self.get_starter_rules(id,year)
@@ -104,12 +104,12 @@ class mfl_service:
                 rules=SF
             else:
                 rules=pd.concat([rules,SF], axis=1, ignore_index=False)
-            print(count)
+            #print(count)
             count+=1
         return rules
     '''
             except:
-                print("league Failed Concat",id)
+                #print("league Failed Concat",id)
                 rule=pd.DataFrame(columns=["ID","Fail"])
                 rule.loc[0]=[i,"Concat"]
                 return rule
@@ -119,7 +119,7 @@ class mfl_service:
     def make_trade_side_list(self, trade, side, convert_to_player=True):
         # can get errors and pass string when should be dict
         if isinstance(trade, str):
-            #print('Lost another one')
+            ##print('Lost another one')
             return
             #trade = json.loads(trade)
 
@@ -156,12 +156,12 @@ class mfl_service:
             # load json as dictionary
             draft_dict = json.loads(page.text)
         except:
-            print(trade_url)
-            print('Error downloading:', league_id)
+            #print(trade_url)
+            #print('Error downloading:', league_id)
             return
         return(server)
 
-    def get_league_trades(self, league_id, year, csv_writer=None):
+    def get_league_trades(self, league_id, year,days, csv_writer=None):
         '''
         Finds all trades in league.  Should return real name of playesr?
 
@@ -173,7 +173,7 @@ class mfl_service:
             try:
                 server=i
                 trade_url = "http://www"+str(server)+".myfantasyleague.com/" + str(year) + "/export?TYPE=transactions&L=" \
-                    + str(league_id) + "&TRANS_TYPE=TRADE&DAYS=365&JSON=1"
+                    + str(league_id) + "&TRANS_TYPE=TRADE&DAYS=" + str(days) + "&JSON=1"
                 page = requests.get(trade_url)
                 page.raise_for_status()
 
@@ -183,8 +183,8 @@ class mfl_service:
             except:
                 continue
         if server==87:
-            print(trade_url)
-            print('Error downloading:', league_id)
+            #print(trade_url)
+            #print('Error downloading:', league_id)
             return
 
         #trades_dict = load_obj('trade_dict') # for easy testing
@@ -213,7 +213,7 @@ class mfl_service:
                 if csv_writer is not None:
                     csv_writer.writerow(single_trade)
         self.num_trades_collected += len(trade_data)
-        print(len(trade_data), ", Total:", self.num_trades_collected)
+        #print(len(trade_data), ", Total:", self.num_trades_collected)
         return trade_data
 
 
@@ -249,8 +249,8 @@ class mfl_service:
             except:
                 continue
         if server==86:
-            print(trade_url)
-            print('Error downloading:', league_id)
+            #print(trade_url)
+            #print('Error downloading:', league_id)
             return
         #trades_dict = load_obj('trade_dict') # for easy testing
         trade_data = []
@@ -304,8 +304,8 @@ class mfl_service:
             except:
                 continue
         if server==86:
-            print(trade_url)
-            print('Error downloading:', league_id)
+            #print(trade_url)
+            #print('Error downloading:', league_id)
             return
         #trades_dict = load_obj('trade_dict') # for easy testing
         trade_data = []
@@ -335,7 +335,7 @@ class mfl_service:
             if csv_writer is not None:
                 csv_writer.writerow(single_pick)
         self.num_trades_collected += len(trade_data)
-        print(len(trade_data), ", Total:", self.num_trades_collected)
+        #print(len(trade_data), ", Total:", self.num_trades_collected)
         return [trade_data,typ]
     def get_multiple_leagues_drafts(self, league_list, save_path, year, disable_progess_bar=False):
         all_picks = []
@@ -479,8 +479,8 @@ class mfl_service:
             except:
                 continue
         if server==86:
-            print(trade_url)
-            print('Error downloading:', league_id)
+            #print(trade_url)
+            #print('Error downloading:', league_id)
             csv_writer.writerow(["No Server","", '','', '', league_id,''])
             return ["No Server","", '','', '', league_id,'']
         #trades_dict = load_obj('trade_dict') # for easy testing
@@ -491,7 +491,6 @@ class mfl_service:
         if not draft_dict:
             csv_writer.writerow(["No Data","", '','', '', league_id,''])
             return ["No Data","", '','', '', league_id,'']
-        print(draft_dict)
         try:
             try:
                 typ=draft_dict['draftResults']['draftUnit']['draftType']
@@ -513,15 +512,9 @@ class mfl_service:
                         player="  "
                     else:
                         timestamp=int(Pick['timestamp'])
-                    print(Pick["player"])
-                    print("Player is",player)
                     single_pick = [pos,overall, player[0],player[1], timestamp, league_id,typ]
                     csv_writer.writerow(single_pick)
                     trade_data.append(single_pick)
-                    print(single_pick)
-                print("Type is",typ)
-                print(single_pick)
-                return single_pick
             except:
                 d=0
                 for div in draft_dict['draftResults']['draftUnit']:
@@ -546,14 +539,9 @@ class mfl_service:
                             player="  "
                         else:
                             timestamp=int(Pick['timestamp'])
-                        print(Pick["player"])
                         single_pick = [pos,overall, player[0],player[1], timestamp, float(league_id)+(d*0.01),typ]
                         csv_writer.writerow(single_pick)
                         trade_data.append(single_pick)
-                        print(single_pick)
-                print("Type is",typ)
-                print(single_pick)
-                return single_pick
         except:
             csv_writer.writerow( ["Fail","", '','', '', league_id,''])
             return ["Fail","", '','', '', league_id,'']
@@ -565,7 +553,7 @@ class mfl_service:
             writer.writerow(["Pick", "Overall", "Player","Position","Date", "league_id","DraftType"])
             for league in tqdm(league_list, disable=disable_progess_bar):
                 try:
-                    print(league)
+                    #print(league)
                     dat=self.get_DraftAll(league, year, writer)
                     if not dat:
                         continue
@@ -590,7 +578,7 @@ class mfl_service:
         try:
             return info['league']['name']
         except:
-            print("Failed Name")
+            #print("Failed Name")
             return "Fail"
 
 
@@ -612,11 +600,11 @@ class mfl_service:
                 continue
         rules = {'RB':0,'WR':0,'TE':0,'QB':0}
         # get ppr scoring
-        
+
         try:
             try:
                 x = scoring_rules_json['rules']['positionRules']["positions"]
-    
+
             except:
                 x=False
             if x:
@@ -630,16 +618,14 @@ class mfl_service:
                             if "QB" in pos:
                                 if x:
                                     if rule['event']['$t']=="#P":
-                                        print(pos,float(rule['points']['$t'].replace("*","")))
                                         rules[pos] =rules[pos]+ float(rule['points']['$t'].replace("*",""))
                             else:
                                 if x:
                                     if rule['event']['$t']=="CC":
-                                        print(pos,float(rule['points']['$t'].replace("*","")))
                                         rules[pos] =rules[pos]+ float(rule['points']['$t'].replace("*",""))
             else:
                 for position in scoring_rules_json['rules']['positionRules']:
-                        
+
                         for pos in position["positions"].split("|"):
 
                             if pos in ['RB','WR','TE','QB']:
@@ -648,7 +634,7 @@ class mfl_service:
                                 else:
                                     positionrule=position["rule"]
                                 for rule in positionrule:
-                                    
+
                                     try:
                                         x=rule['event']
                                     except:
@@ -656,17 +642,17 @@ class mfl_service:
                                     if "QB" in pos:
                                         if x:
                                             if rule['event']['$t']=="#P":
-                                                
+
                                                 rules[pos] =rules[pos]+ float(rule['points']['$t'].replace("*",""))
                                             elif rule['event']['$t']=="#TD":
-                                                print(pos,float(rule['points']['$t'].replace("*","")))
+                                                #print(pos,float(rule['points']['$t'].replace("*","")))
                                                 rules[pos] =rules[pos]+ float(rule['points']['$t'].replace("*",""))
                                         else:
                                             continue
                                     else:
                                         if x:
                                             if rule['event']['$t']=="CC":
-                                                
+
                                                 rules[pos] =rules[pos]+ float(rule['points']['$t'].replace("*",""))
                                         else:
                                             continue
@@ -674,7 +660,7 @@ class mfl_service:
             RBPPR=0
             for i in RBcol:
                 p=rules[RBcol[0]]
-    
+
                 RBPPR+=p
             WRcol=[x for x in rules.keys() if 'WR' in x]
             WRPPR=0
@@ -694,7 +680,7 @@ class mfl_service:
             xrow=[QB,WRPPR,RBPPR,TEPPR]
             return(xrow)
         except:
-            print("Failed Scoring")
+            #print("Failed Scoring")
             return ["Fail","Fail","Fail","Fail"]
 
 
@@ -732,7 +718,7 @@ class mfl_service:
         except:
             rule=pd.DataFrame(columns=["ID","FailRules"])
             rule.loc[0]=[league_id,league_id]
-            print("Failed Starters")
+            #print("Failed Starters")
             return rule
 
 
@@ -758,7 +744,7 @@ class mfl_service:
         #soup_rules = BeautifulSoup(league_rules.content, 'html.parser')
 
         rules_dict = json.loads(league_rules.text)
-        print(rules_dict)
+        #print(rules_dict)
 
         league__single_rules = {}
         starterCount = rules_dict['league']['starters']['count']
@@ -802,8 +788,8 @@ class mfl_service:
                 try:
                     rules_dict = json.loads(league_rules.text)
                 except:
-                    print(league_rules_url)
-                    print('Error downloading starters:', league_id)
+                    #print(league_rules_url)
+                    #print('Error downloading starters:', league_id)
                     return
         frandict={}
         for fran in rules_dict['league']['franchises']['franchise']:

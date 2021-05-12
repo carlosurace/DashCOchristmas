@@ -658,7 +658,7 @@ def update_RDPTable(startdate,enddate,position,DraftType,QBs,WRs,TEs,PTD,TEP,pot
     filt=filt[filt['percentile']>0]
     df=filt
     df=df.drop_duplicates(subset='Player', keep='first')
-    
+
 
     headers=["Player","Position","Draft Count","Median Overall","Median Positional",'Availability']
     df=df[headers]
@@ -671,7 +671,7 @@ def update_RDPTable(startdate,enddate,position,DraftType,QBs,WRs,TEs,PTD,TEP,pot
         maxcount=max(df["Draft Count"])
     except:
         maxcount=0
-
+    df=df[(df["Draft Count"]>maxcount*0.25)]
 
     table = dbc.Table.from_dataframe(df, striped=True, bordered=True, hover=True)
     return table

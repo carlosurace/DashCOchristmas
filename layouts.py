@@ -80,6 +80,10 @@ Stats=GameLogs.columns[14:]
 QB =pd.read_csv(Conf.StartupsPath,parse_dates=['Date'])
 QB['Date'] = pd.to_datetime(QB['Date'], unit='s')
 QB['Date'] = QB['Date'].dt.date
+QB['Pick']=pd.to_numeric(QB['Pick'], errors='coerce')
+Startups=list(set(QB[QB['Pick'].map(float)>7]['league_id'].map(int)))
+QB=QB[QB['league_id'].isin(Startups)]   
+
 
 QBR =pd.read_csv(Conf.RookiesPath,parse_dates=['Date'])
 QBR['Date'] = pd.to_datetime(QBR['Date'], unit='s')

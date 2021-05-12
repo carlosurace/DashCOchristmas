@@ -88,6 +88,8 @@ QB=QB[QB['league_id'].isin(Startups)]
 QBR =pd.read_csv(Conf.RookiesPath,parse_dates=['Date'])
 QBR['Date'] = pd.to_datetime(QBR['Date'], unit='s')
 QBR['Date'] = QBR['Date'].dt.date
+Startups=list(set(QBR[QBR['Pick'].map(float)>7]['league_id'].map(int)))
+QBR=QBR[~QBR['league_id'].isin(Startups)]   
 
 
 Players=QB[(QB.DraftType!="SAME")]

@@ -82,14 +82,15 @@ QB['Date'] = pd.to_datetime(QB['Date'], unit='s')
 QB['Date'] = QB['Date'].dt.date
 QB['Pick']=pd.to_numeric(QB['Pick'], errors='coerce')
 Startups=list(set(QB[QB['Pick'].map(float)>7]['league_id'].map(int)))
-QB=QB[QB['league_id'].isin(Startups)]   
+QB=QB[QB['league_id'].isin(Startups)]
 
 
 QBR =pd.read_csv(Conf.RookiesPath,parse_dates=['Date'])
 QBR['Date'] = pd.to_datetime(QBR['Date'], unit='s')
 QBR['Date'] = QBR['Date'].dt.date
+QBR['Pick']=pd.to_numeric(QBR['Pick'], errors='coerce')
 Startups=list(set(QBR[QBR['Pick'].map(float)>7]['league_id'].map(int)))
-QBR=QBR[~QBR['league_id'].isin(Startups)]   
+QBR=QBR[~QBR['league_id'].isin(Startups)]
 
 
 Players=QB[(QB.DraftType!="SAME")]
@@ -403,7 +404,7 @@ DraftCheckerModal=html.Div(
         dbc.Modal(
             [
                 dbc.ModalHeader("Draft Checker"),
-                
+
                 dbc.ModalBody([
                     dcc.Dropdown(
                         id='DraftPlayer',
@@ -552,7 +553,7 @@ datecard = dbc.Card(
             ),
             dbc.Row(
                 [
-                    
+
                     dbc.Col(
                         dbc.Label("Start Date",style=STYLE),width=2
                     ),
@@ -647,7 +648,7 @@ datecard = dbc.Card(
                         ],
                         width=2
                     ),
-                    
+
                 ],
                 no_gutters=True
             )

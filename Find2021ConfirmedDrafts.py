@@ -12,16 +12,15 @@ mfl = mfl_service(update_player_converter=True)
 import os
 THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 
-def GetEmptyDrafts(search):
-
+def GetConfirmedDrafts(search):
     already=pd.DataFrame()
-    for Path in [Conf.EmptyRookiePath,Conf.EmptyPath]:
+    for Path in [Conf.ConfirmedPath,Conf.ConfirmedRookiePath]:
         already=already.append(pd.read_csv(Path))
     already=list(set(already["league_id"].map(int).map(str)))
     return already
 
 def GetNewDrafts():
-    Newleagues = GetEmptyDrafts(" ")
+    Newleagues = GetConfirmedDrafts(" ")
     print(len(Newleagues),"Empty Leagues")
     for n in range(len(Newleagues)//Conf.Ngroup):
         try:
@@ -82,8 +81,13 @@ def GetNewDrafts():
             temp=temp[temp["Player"]!=" "]
             newIDs=list(set(temp["league_id"]))
             print(len(newIDs),"New Drafts Kicked off")
+            
+            for file in [Conf.ConfirmedPath,Conf.ConfirmedRookiePath]:
+                Empty=pd.read_csv(file)
+                Empty=Empty[~Empty["league_id"].isin(newIDs)]
+                Empty.to_csv(file)
             for a in range(2):
-                Conf.ApplyFiling(Conf.Paths[a],Conf.Filters[a],temp,Conf.Categories[a])
+                Conf.ApplyFiling(Conf.Paths[a],Conf.Filters[a],temp,Conf.Categories[a],"Yes")
         except:
             continue
 

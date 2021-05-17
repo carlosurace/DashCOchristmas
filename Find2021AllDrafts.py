@@ -22,15 +22,7 @@ def GetUnaccountedDrafts(search):
     Newleagues=[str(league) for league in Leagues2021 if str(league) not in already]
     return Newleagues
 
-def ApplyFiling(filename,filters,df,category):
-    tempfile=pd.read_csv(filename)
-    df=Conf.FilterPlayer(df,filters[0])
-    df=Conf.FilterRookie(df,filters[1])
-    df["Decision?"]=""
-    tempfile=tempfile.append(df)
-    tempfile=tempfile[['Date','DraftType','Overall','Pick','Player','Position','league_id','Name','Lineup','Scoring','Teams','Copies',"Decision?"]]
-    tempfile.to_csv(filename,index=False)
-    print(str(len(tempfile)),"drafts entered into",category)
+
 def GetNewDrafts():
     Newleagues = GetUnaccountedDrafts(" ")
     print(len(Newleagues),"Unaccounted Leagues")
@@ -91,7 +83,7 @@ def GetNewDrafts():
             temp=temp.merge(rules, left_on="league_id", right_on="ID")
             temp["Player"]=temp["Player"].fillna(" ")
             for a in range(4):
-                ApplyFiling(Conf.Paths[a],Conf.Filters[a],temp,Conf.Categories[a])
+                Conf.ApplyFiling(Conf.Paths[a],Conf.Filters[a],temp,Conf.Categories[a])
         except:
             continue
 

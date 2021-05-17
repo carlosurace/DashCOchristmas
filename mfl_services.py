@@ -392,6 +392,8 @@ class mfl_service:
                 for Pick in draft_dict['draftResults']['draftUnit']['draftPick']:
                     # get players in trade, split into list, convert to real name
                     pos = Pick["round"]+"."+Pick["pick"]
+                    lastpick=draft_dict['draftResults']['draftUnit']['draftPick'][len(draft_dict['draftResults']['draftUnit']['draftPick'])]
+                    lastpos = lastpick["round"]+"."+lastpick["pick"]
                     overall=n
                     n+=1
                     try:
@@ -406,7 +408,7 @@ class mfl_service:
                         player="  "
                     else:
                         timestamp=int(Pick['timestamp'])
-                    single_pick = [pos,overall, player[0],player[1], timestamp, league_id,typ]
+                    single_pick = [pos,overall, player[0],player[1], timestamp, league_id,typ,lastpos,lastpick["round"]-Pick["round"]+1]
                     csv_writer.writerow(single_pick)
                     trade_data.append(single_pick)
                     break
@@ -421,6 +423,8 @@ class mfl_service:
                     for Pick in div['draftPick']:
                         # get players in trade, split into list, convert to real name
                         pos = Pick["round"]+"."+Pick["pick"]
+                        lastpick=div['draftPick'][len(div['draftPick'])]
+                        lastpos = lastpick["round"]+"."+lastpick["pick"]
                         overall=n
                         n+=1
                         try:
@@ -435,7 +439,7 @@ class mfl_service:
                             player="  "
                         else:
                             timestamp=int(Pick['timestamp'])
-                        single_pick = [pos,overall, player[0],player[1], timestamp, float(league_id)+(d*0.01),typ]
+                        single_pick = [pos,overall, player[0],player[1], timestamp, float(league_id)+(d*0.01),typ,lastpos,lastpick["round"]-Pick["round"]+1]
                         csv_writer.writerow(single_pick)
                         trade_data.append(single_pick)
                         break
@@ -448,7 +452,7 @@ class mfl_service:
         all_picks = []
         with open(save_path, "w") as csv_file:
             writer = csv.writer(csv_file, delimiter=',')
-            writer.writerow(["Pick", "Overall", "Player","Position","Date", "league_id","DraftType"])
+            writer.writerow(["Pick", "Overall", "Player","Position","Date", "league_id","DraftType","Last Pick","Draft length"])
             for league in tqdm(league_list, disable=disable_progess_bar):
                 dat=self.get_Draft1(league, year, writer)
                 if not dat:

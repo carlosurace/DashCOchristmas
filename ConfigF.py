@@ -4,7 +4,7 @@ Created on Apr 28, 2021
 @author: Carlo Surace
 '''
 import os
-
+import pandas as pd
 THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 
 ForReviewPath=os.path.join(THIS_FOLDER,"data/DraftFiles/ForReview.csv")
@@ -30,10 +30,21 @@ def FilterPlayer(df,Yes):
     return df
 def FilterRookie(df,Yes):
     if Yes:
-        df=df[df["DraftType"]=="SAME"]
+        df=df[df["Draft Length"]>8]
     else:
-        df=df[df["DraftType"]!="SAME"]
+        df=df[df["Draft Length"]<7]
     return df
+
+def ApplyFiling(filename,filters,df,category,decision=''):
+    tempfile=pd.read_csv(filename)
+    df=FilterPlayer(df,filters[0])
+    df=FilterRookie(df,filters[1])
+    df["Decision?"]=decision
+    tempfile=tempfile.append(df)
+    tempfile=tempfile[['Date','DraftType','Overall','Pick','Player','Position',"Last Pick","Draft length",'league_id','Name','Lineup','Scoring','Teams','Copies',"Decision?"]]
+    tempfile.to_csv(filename,index=False)
+    print(str(len(tempfile)),"drafts entered into",category)
+
 
 Categories=["ForReview","ForReviewRookie","Empty","EmptyRookie","Confirmed","ConfirmedRookie","Exclude"]
 Paths=[ForReviewPath,ForReviewRookiePath,EmptyPath,EmptyRookiePath,ConfirmedPath,ConfirmedRookiePath,ExcludePath]

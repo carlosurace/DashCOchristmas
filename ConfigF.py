@@ -30,9 +30,9 @@ def FilterPlayer(df,Yes):
     return df
 def FilterRookie(df,Yes):
     if Yes:
-        df=df[df["Draft Length"]>8]
+        df=df[df["Draft length"]<7]
     else:
-        df=df[df["Draft Length"]<7]
+        df=df[df["Draft length"]>8]
     return df
 
 def ApplyFiling(filename,filters,df,category,decision=''):
@@ -40,10 +40,11 @@ def ApplyFiling(filename,filters,df,category,decision=''):
     df=FilterPlayer(df,filters[0])
     df=FilterRookie(df,filters[1])
     df["Decision?"]=decision
+    print(str(len(df)),"drafts entered into",category)
     tempfile=tempfile.append(df)
     tempfile=tempfile[['Date','DraftType','Overall','Pick','Player','Position',"Last Pick","Draft length",'league_id','Name','Lineup','Scoring','Teams','Copies',"Decision?"]]
     tempfile.to_csv(filename,index=False)
-    print(str(len(tempfile)),"drafts entered into",category)
+    
 
 
 Categories=["ForReview","ForReviewRookie","Empty","EmptyRookie","Confirmed","ConfirmedRookie","Exclude"]

@@ -1,11 +1,11 @@
-Pick,Overall,Player,Position,Date,league_id,DraftType
-Fail,,,,,10621,
-Fail,,,,,71549,
-01.01,1, , ,,19212,SAME
-01.01,1, , ,,71131,SAME
-Fail,,,,,28002,
-01.01,1, , ,,43950,SDRAFT
-Fail,,,,,61253,
-01.01,1, , ,,31025,SAME
-01.01,1, , ,,54198,SAME
-01.01,1, , ,,46824,SAME
+Pick,Overall,Player,Position,Date,league_id,DraftType,Last Pick,Draft length
+01.01,1,"Lawrence, Trevor",QB,1620058404,19255,SAME,06.12,6
+01.01,1,"Mahomes, Patrick",QB,1619100023,28098,SFIRSTRANDOM,28.12,28
+01.01,1,"Pitts, Kyle",TE,1620402763,51996,SAME,06.12,6
+01.01,1, , ,,38220,SAME,04.12,4
+01.01,1, , ,,31681,SAME,03.12,3
+01.01,1, , ,,35404,SAME,03.12,3
+01.01,1, , ,,63518,SAME,04.12,4
+01.01,1, , ,,65794,SAME,03.12,3
+01.01,1,"Mahomes, Patrick",QB,1618074812,56931,3RDROUNDFIRSTRANDOM,10.12,10
+01.01,1, , ,,58376,SAME,03.12,3

@@ -471,7 +471,7 @@ def GenerateTradeTable(player,QBs,WRs,TEs,PTD,TEP):
             print(player)
             Trades=Trades[Trades['Side1'].str.contains(p)|Trades['Side2'].str.contains(p)].reset_index(drop=True)
     if QBs=="1QB":
-        Trades=Trades[Trades['Lineup'].str.contains("QB: 1-1")].reset_index(drop=True)
+        Trades=Trades[Trades['Lineup'].str.contains("QB: 1,")].reset_index(drop=True)
     elif QBs=="SuperFlex":
         Trades=Trades[Trades['Lineup'].str.contains("QB: 1-2")].reset_index(drop=True)
     elif QBs=="2QB":
@@ -816,10 +816,10 @@ def update_NewDraftTable(list_of_contents,ApplyChanges,Type,data,columns,Filenam
     if ctx.triggered[0]['prop_id'].split('.')[0] == "uploadNewDraftTable":
         df=parse_contents(list_of_contents,Filename)
         df.to_csv("test.csv")
-        if not isinstance(df, pd.DataFrame) or list(df.columns)!=['Date','DraftType','Overall','Pick','Player','Position','league_id','Name','Lineup','Scoring','Teams','Copies','Decision?']:
+        if not isinstance(df, pd.DataFrame) or list(df.columns)!=['Date','DraftType','Overall','Pick','Player','Position',"Last Pick","Draft length",'league_id','Name','Lineup','Scoring','Teams','Copies','Decision?']:
             mess=html.H1("Error Uploading")
         else:
-            df=df[['Date','DraftType','Overall','Pick','Player','Position','league_id','Name','Lineup','Scoring','Teams','Copies',"Decision?"]]
+            df=df[['Date','DraftType','Overall','Pick','Player','Position',"Last Pick","Draft length",'league_id','Name','Lineup','Scoring','Teams','Copies',"Decision?"]]
             original=pd.read_csv(os.path.join(THIS_FOLDER,filepath),parse_dates=['Date'])
             newIDs=list(set(df["league_id"]))
             original=original[~original["league_id"].isin(newIDs)]
@@ -829,11 +829,11 @@ def update_NewDraftTable(list_of_contents,ApplyChanges,Type,data,columns,Filenam
     if ctx.triggered[0]['prop_id'].split('.')[0] == "ApplyChanges":
         df = pd.DataFrame(data, columns=[c['name'][1] if type(c['name'])==list else c['name'] for c in columns])
         df["Decision?"]=df["Decision?"].fillna("")
-        Add=df[(df["Decision?"]=="Yes")&(df["DraftType"]!="SAME")]
+        Add=df[(df["Decision?"]=="Yes")&(df["Draft length"]>8)]
         Confirmed=pd.read_csv(Conf.ConfirmedPath)
         Confirmed=Confirmed.append(Add)
         Confirmed.to_csv(Conf.ConfirmedPath,index=False)
-        AddRookie=df[(df["Decision?"]=="Yes")&(df["DraftType"]=="SAME")]
+        AddRookie=df[(df["Decision?"]=="Yes")&(df["Draft length"]<7)]
         ConfirmedRookie=pd.read_csv(Conf.ConfirmedRookiePath)
         ConfirmedRookie=ConfirmedRookie.append(AddRookie)
         ConfirmedRookie.to_csv(Conf.ConfirmedRookiePath,index=False)
@@ -845,7 +845,7 @@ def update_NewDraftTable(list_of_contents,ApplyChanges,Type,data,columns,Filenam
             df=df[df["Decision?"]!="No"]
         else:
             df=df[df["Decision?"]==""]
-        df=df[['Date','DraftType','Overall','Pick','Player','Position','league_id','Name','Lineup','Scoring','Teams','Copies',"Decision?"]]
+        df=df[['Date','DraftType','Overall','Pick','Player','Position',"Last Pick","Draft length",'league_id','Name','Lineup','Scoring','Teams','Copies',"Decision?"]]
         df.to_csv(os.path.join(THIS_FOLDER,filepath),index=False)
     df=pd.read_csv(os.path.join(THIS_FOLDER,filepath),parse_dates=['Date'])
     df["Player"]=df["Player"].fillna("")
@@ -853,7 +853,7 @@ def update_NewDraftTable(list_of_contents,ApplyChanges,Type,data,columns,Filenam
     if len(df)>0:
         df["Date"]=pd.to_datetime(df['Date'], errors='coerce')
         df["Date"]=df["Date"].dt.date
-    df=df[['Date','DraftType','Overall','Pick','Player','Position','league_id','Name','Lineup','Scoring','Teams','Copies',"Decision?"]]
+    df=df[['Date','DraftType','Overall','Pick','Player','Position',"Last Pick","Draft length",'league_id','Name','Lineup','Scoring','Teams','Copies',"Decision?"]]
     return [mess,dash_table.DataTable(
         id='ChangeTable',
         columns=[{"name": i, "id": i,'presentation': 'dropdown',"editable": True} if i=='Decision?' else {"name": i, "id": i} for i in df.columns],

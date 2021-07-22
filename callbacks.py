@@ -1,3 +1,4 @@
+
 '''
 Created on Jun 24, 2020
 
@@ -485,13 +486,13 @@ def GenerateTradeTable(player,QBs,WRs,TEs,PTD,TEP):
     elif TEs=="2TE":
         Trades=Trades[Trades['Lineup'].str.contains("TE: 2")].reset_index(drop=True)
     if PTD=="4pt":
-        Trades=Trades[Trades['Scoring'].str.contains("QB pTD: 4")].reset_index(drop=True)
+        Trades=Trades[Trades['Scoring'].str.contains("pTD: 4")].reset_index(drop=True)
     elif PTD=="6pt":
-        Trades=Trades[Trades['Scoring'].str.contains("QB pTD: 6")].reset_index(drop=True)
+        Trades=Trades[Trades['Scoring'].str.contains("pTD: 6")].reset_index(drop=True)
     if TEP=="Yes":
-        Trades=Trades[Trades['Scoring'].str.contains("TE PPR: 1.5")|Trades['Scoring'].str.contains("TE PPR: 1.75")|Trades['Scoring'].str.contains("TE PPR: 2")].reset_index(drop=True)
+        Trades=Trades[Trades['Scoring'].str.contains("TE_PPR: 1.5")|Trades['Scoring'].str.contains("TE_PPR: 1.75")|Trades['Scoring'].str.contains("TE_PPR: 2")].reset_index(drop=True)
     elif TEP=="No":
-        Trades=Trades[~Trades['Scoring'].str.contains("TE PPR: 1.5") & ~Trades['Scoring'].str.contains("TE PPR: 1.75") & ~Trades['Scoring'].str.contains("TE PPR: 2")].reset_index(drop=True)
+        Trades=Trades[~Trades['Scoring'].str.contains("TE_PPR: 1.5") & ~Trades['Scoring'].str.contains("TE_PPR: 1.75") & ~Trades['Scoring'].str.contains("TE_PPR: 2")].reset_index(drop=True)
     print(Trades.columns)
     Trades["link"]=["www58.myfantasyleague.com/2021/options?L=30932&O=03" for i in Trades["LeagueID"]]
     Trades["link"]=display_links(Trades)

@@ -81,7 +81,7 @@ def GetNewDrafts():
             temp=temp[temp["Player"]!=" "]
             newIDs=list(set(temp["league_id"]))
             print(len(newIDs),"New Drafts Kicked off")
-            
+
             for file in [Conf.ConfirmedPath,Conf.ConfirmedRookiePath]:
                 Empty=pd.read_csv(file)
                 Empty=Empty[~Empty["league_id"].isin(newIDs)]

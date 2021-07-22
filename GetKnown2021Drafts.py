@@ -15,7 +15,6 @@ THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 
 Startups=pd.read_csv(Conf.StartupsPath)
 
-
 Confirmed=pd.read_csv(Conf.ConfirmedPath)
 Newleagues=Confirmed['league_id'].map(str)
 Newleagues=list(set(Newleagues))

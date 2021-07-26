@@ -9994,7 +9994,7 @@ legend {
 .dash-bootstrap .is-open > .Select-control {
   border-bottom-right-radius: 0;
   border-bottom-left-radius: 0;
-  color: #000 !important;
+  color: #fff!important;
   background-color: #313131!important;
 }
 
@@ -10035,7 +10035,7 @@ legend {
   line-height: calc(1.5em + 0.75rem);
   padding-left: 1rem;
   padding-right: 1rem;
-  color: #fff;
+  color: #fff!important;
   background-color: #313131!important;
 }
 
@@ -10043,7 +10043,7 @@ legend {
   height: calc(1.5em + 0.75rem);
   padding: 0;
   margin-left: 1rem;
-  color: #fff;
+  color: #fff!important;
   background-color: #313131!important;
 }
 
@@ -10052,7 +10052,7 @@ legend {
   padding-top: 0.375rem;
   padding-bottom: 0.375rem;
   background-color: #313131!important;
-  color: #a5d4d9;
+  color: #fff!important;
 }
 
 .dash-bootstrap .Select--multi .Select-value {
@@ -10061,7 +10061,7 @@ legend {
   border-radius: 0.125rem;
   box-sizing: content-box;
   font-size: 0.875rem;
-  color: #a5d4d9;
+  color: #a5d4d9!important;
   height: calc(0.875rem * 1.5);
   margin-top: calc(0.375rem - 1px);
 }
@@ -10186,3 +10186,16 @@ legend {
 .dash-bootstrap .rc-slider-mark-text.rc-slider-mark-text-active {
   color: #fff;
 }
+
+#wrapper .Select-control {
+  background-color: #131415 !important;
+  color: #fff!important;
+  border-color: #fff;
+}
+
+
+#wrapper .Select-value-label {
+     color: #fff;
+     border-color: #fff;
+     font-weight: 700
+    }

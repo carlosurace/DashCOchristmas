@@ -18,6 +18,7 @@ import datetime
 import pandas as pd
 import dash_daq as daq
 import base64
+from ADPComps import ADPComps
 
 THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 ImagePath=os.path.join(THIS_FOLDER,'data/analytics logo.jpg')
@@ -93,6 +94,8 @@ def display_page(pathname):
         return DraftHelper
     elif pathname == '/WolfOfWallstreet':
         return TradeFinder
+    elif pathname == '/ADPComps':
+        return ADPComps
     elif pathname == '/Admin':
         return Admin
     else:

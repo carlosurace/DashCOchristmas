@@ -178,7 +178,7 @@ def dashtable ( stats,Pos,Age,Current,Finish):
     scaled = min_max_scaler.fit_transform(bballtrial[stats])
     #rename scaled data columns
     x=pd.DataFrame(scaled,columns=scaledstatcolumns) # was scaled stats before
-    bballtrial=pd.concat([bballtrial[['Player','Current Year',"Position","Current Year Finish","Next Year Pos ADP"]+statscolumns],x],axis=1, ignore_index=False)
+    bballtrial=pd.concat([bballtrial[['Player','Current Year',"Position"]+statscolumns+["Next Year Pos ADP"]],x],axis=1, ignore_index=False)
     PlayerData = bballtrial[(bballtrial["Player"]=="TestPlayer") & (bballtrial['Current Year']==2021)].reset_index(drop=True)
     bballtrial=bballtrial[bballtrial["Position"]==PlayerData["Position"].iloc[0]]
     #remove visual columns, leaving only scaled data
@@ -190,7 +190,7 @@ def dashtable ( stats,Pos,Age,Current,Finish):
     bballtrial["Euc"]=euclidean_distances(y,arr)[0] #assign list of euclidean distances to a new column, list must be exactly the same length as the df
     bballtrial=bballtrial.sort_values("Euc").reset_index(drop=True)
     bballtrial = bballtrial.iloc[0:10]
-    bballtrial=bballtrial[['Player','Current Year','Position']+stats+["Current Year Finish","Next Year Pos ADP"]]
+    bballtrial=bballtrial[['Player','Current Year',"Position"]+statscolumns+["Next Year Pos ADP"]]
     arr=NEWx.values 
     # print(len(bballtrial))
     return [dt.DataTable(

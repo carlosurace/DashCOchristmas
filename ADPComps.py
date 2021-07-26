@@ -46,9 +46,9 @@ import numpy as np
 
 #reset print options for debugging
 pd.set_option("display.max_columns", 100) 
-
+THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 #load data
-ADP = pd.read_csv("data/ADP.csv")
+ADP= pd.read_csv(os.path.join(THIS_FOLDER,"data/ADP.csv"))
 
 statscolumns = ["Current Year Age","Current Year Pos ADP","Current Year Finish"]
 

@@ -210,7 +210,7 @@ def dashtable ( Player,Season,stats,dispstats):
         bballtrial=bballtrial[bballtrial["POS"]==PlayerData["POS"].iloc[0]]
         #remove visual columns, leaving only scaled data
         y=PlayerData[scaledstats].iloc[0].values.reshape(1,-1)
-        bballtrial=bballtrial.dropna(subset=scaledstats)
+        bballtrial=bballtrial.dropna(subset=scaledstats+dispstats)
         NEWx=bballtrial[scaledstats]
         arr=NEWx.values # converts from df to array 
         print(PlayerData)

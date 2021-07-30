@@ -52,9 +52,10 @@ ADP= pd.read_csv(os.path.join(THIS_FOLDER,"data/ADP.csv"))
 
 statscolumns = [col for col in ADP.columns if col not in ["Year in League","Age Entering Y1"]]
 
-logcols=[col for col in ADP.columns if "ADP" in col or "Finish" in col]
+logcols=[col for col in ADP.columns if "ADP" in col or "Finish" in col or "YPRR" in col]
 
 for col in logcols:
+    ADP=ADP[ADP[col]!=0]
     ADP[col]=np.log(ADP[col])
 # dash lay out
 
@@ -227,7 +228,8 @@ def dashtable ( Player,stats,dispstats,match,min):
         
         PlayerData=PlayerData[['Player','Year',"POS","Year in League","Age Entering Y1"]+stats+dispstats+scaledstats]
         print(PlayerData)
-        bballtrial=bballtrial[(bballtrial["Y1 Games"]>=min)].reset_index(drop=True)
+        if POS!="QB":
+            balltrial=bballtrial[(bballtrial["Y1 Games"]>=min)].reset_index(drop=True)
         if match =="Both" or match =="Experience":
             bballtrial=bballtrial[(bballtrial["Year in League"]==PlayerData["Year in League"].iloc[0])].reset_index(drop=True)
         if match =="Both" or match =="Age":
@@ -246,7 +248,7 @@ def dashtable ( Player,stats,dispstats,match,min):
             bballtrial=bballtrial.sort_values("Euc").reset_index(drop=True)
             bballtrial=bballtrial[(bballtrial["Player"]!=Player)]
             bballtrial = bballtrial.iloc[0:10]
-            bballtrial=bballtrial[['Player','Year',"POS","Year in League","Age Entering Y1"]+stats+dispstats]
+            bballtrial=bballtrial[['Player','Year',"POS","Year in League","Age Entering Y1"]+stats+dispstats+["Euc"]]
         except:
             PlayerData=PlayerData[['Player','Year',"POS"]+stats]
             return [dt.DataTable(
@@ -267,6 +269,7 @@ def dashtable ( Player,stats,dispstats,match,min):
             style_filter={'color': '#fff', "backgroundColor": "#313131"},
             style_table={'minHeight':'auto','height': 'auto','maxHeight':'auto','border': '#000','height': 'auto',"width":"95%"},
             style_data={'whiteSpace': 'pre-line'},
+            
             style_cell={
             'fontSize':12,
             'border': 'thin #a5d4d9 solid',
@@ -283,12 +286,16 @@ def dashtable ( Player,stats,dispstats,match,min):
         
         arr=NEWx.values 
         PlayerData=PlayerData[['Player','Year',"POS","Year in League","Age Entering Y1"]+stats+dispstats]
-        templogcols=[col for col in bballtrial.columns if "ADP" in col or "Finish" in col]
+        templogcols=[col for col in bballtrial.columns if col in logcols]
         for col in templogcols:
             PlayerData[col]=np.exp(PlayerData[col])
-            PlayerData[col]=PlayerData[col].round(0)
             bballtrial[col]=np.exp(bballtrial[col])
-            bballtrial[col]=bballtrial[col].round(0)
+            if "YPRR" in col:
+                PlayerData[col]=PlayerData[col].round(2)
+                bballtrial[col]=bballtrial[col].round(2)
+            else:
+                PlayerData[col]=PlayerData[col].round(0)
+                bballtrial[col]=bballtrial[col].round(0)
         # print(len(bballtrial))
         return [dt.DataTable(
                 id='Ctable',
@@ -325,6 +332,7 @@ def dashtable ( Player,stats,dispstats,match,min):
         id='Euc return table',
         columns=[{"name": i, "id": i} for i in bballtrial.columns],
         data=bballtrial.to_dict('records'),
+        sort_action="native",
         style_header={
              'fontSize':14,
             'fontFamily': 'helvetica',
@@ -349,5 +357,5 @@ def dashtable ( Player,stats,dispstats,match,min):
         'color': '#a5d4d9',
         'backgroundColor': '#313131'
         },
-        )]+[dbc.Row([dbc.Col([html.H1("Comp Summary")]+[html.H2(cstat+": "+str(round(bballtrial[cstat].mean(),2))+" vs "+str(round(PlayerData[cstat].iloc[0],2))) for cstat in stats],width=6),
-                    dbc.Col([html.H1("Comp Averages")]+[html.H2(cstat+": "+str(round(bballtrial[cstat].mean(),2))) for cstat in dispstats],width=6)])]
+        )]+[dbc.Row([dbc.Col([html.H3("Comp Summary")]+[html.H5(cstat+": "+str(round(bballtrial[cstat].mean(),2))+" vs "+str(round(PlayerData[cstat].iloc[0],2))) for cstat in stats],width=6),
+                    dbc.Col([html.H3("Comp Averages")]+[html.H5(cstat+": "+str(round(bballtrial[cstat].mean(),2))) for cstat in dispstats],width=6)])]

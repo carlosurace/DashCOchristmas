@@ -19,6 +19,7 @@ import pandas as pd
 import dash_daq as daq
 import base64
 from ADPComps import ADPComps
+from Brent import Brent
 
 THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 ImagePath=os.path.join(THIS_FOLDER,'data/analytics logo.jpg')
@@ -96,6 +97,8 @@ def display_page(pathname):
         return TradeFinder
     elif pathname == '/ADPComps':
         return ADPComps
+    elif pathname == '/DakIsTop3':
+        return Brent
     elif pathname == '/Admin':
         return Admin
     else:

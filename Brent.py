@@ -232,12 +232,12 @@ def dashtable ( View,click):
     if trigger=="BrentRefresh":
         updatedata()
     if View =="Rankings":
-        file = "BaseballStandings/MasterRankings.csv"
+        file = "/BaseballStandings/MasterRankings.csv"
         data=pd.read_csv(THIS_FOLDER+file)
         data = data[[col for col in data.columns if col not in [""] and "Unnamed" not in col]]
         data=data.sort_values(by='Rank', ascending=True)
     else:
-        file = "BaseballStandings/MasterStats.csv"
+        file = "/BaseballStandings/MasterStats.csv"
         data=pd.read_csv(THIS_FOLDER+file)
         data = data[[col for col in data.columns if col not in ["Rank"] and "Unnamed" not in col]]
         

@@ -34,7 +34,7 @@ import plotly.express as px
 import pandas as pd
 import numpy as np
 
-
+THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 s = requests.Session()
 r = s.get('https://www.espn.com')
 
@@ -165,9 +165,9 @@ def updatedata():
             row+=[i["valuesByStat"]['34']/3]
             row+=[i["transactionCounter"]["matchupAcquisitionTotals"]['1']]
             df.loc[len(df)]=row
-        df.to_csv("BaseballStandings/"+str(LID)+".csv",index=False)
+        df.to_csv(THIS_FOLDER+"BaseballStandings/"+str(LID)+".csv",index=False)
         master=pd.concat([master,df], axis=0, ignore_index=False)
-    master.to_csv("BaseballStandings/MasterStats.csv",index=False)
+    master.to_csv(THIS_FOLDER+"BaseballStandings/MasterStats.csv",index=False)
     rankcols=["R","HR","RBI","SB","OBP","K","W","SV"]
     for col in rankcols:
         master[col] = master[col].rank(ascending=True)
@@ -176,11 +176,11 @@ def updatedata():
         master[col+"Rank"]= master[col].rank(ascending=False)
     master["Sum"]=master[rankcols+rankcols1].sum(axis=1)
     master["Rank"] = master["Sum"].rank(ascending=False)
-    master.to_csv("BaseballStandings/MasterRankings.csv") 
+    master.to_csv(THIS_FOLDER+"BaseballStandings/MasterRankings.csv") 
 
 master=pd.DataFrame(columns=["Division","Rank","Team","R","HR","RBI","SB","OBP","K","W","SV","ERA","WHIP","GP","IP","Moves"])
 for LID in LeagueIds:
-    df=pd.read_csv("BaseballStandings/"+str(LID)+".csv")
+    df=pd.read_csv(THIS_FOLDER+"BaseballStandings/"+str(LID)+".csv")
     master=pd.concat([master,df], axis=0, ignore_index=False)
 rankcols=["R","HR","RBI","SB","OBP","K","W","SV"]
 for col in rankcols:
@@ -190,7 +190,7 @@ for col in rankcols1:
     master[col]= master[col].rank(ascending=False)
 master["Sum"]=master[rankcols+rankcols1].sum(axis=1)
 master["Rank"] = master["Sum"].rank(ascending=False)
-master.to_csv("BaseballStandings/MasterRankings.csv",index=False)
+master.to_csv(THIS_FOLDER+"BaseballStandings/MasterRankings.csv",index=False)
 #updatedata()
 
 
@@ -233,12 +233,12 @@ def dashtable ( View,click):
         updatedata()
     if View =="Rankings":
         file = "BaseballStandings/MasterRankings.csv"
-        data=pd.read_csv(file)
+        data=pd.read_csv(THIS_FOLDER+file)
         data = data[[col for col in data.columns if col not in [""]]]
         data=data.sort_values(by='Rank', ascending=True)
     else:
         file = "BaseballStandings/MasterStats.csv"
-        data=pd.read_csv(file)
+        data=pd.read_csv(THIS_FOLDER+file)
         data = data[[col for col in data.columns if col not in ["Rank"]]]
         
     tab=dt.DataTable(

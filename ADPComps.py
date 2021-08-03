@@ -52,7 +52,7 @@ ADP= pd.read_csv(os.path.join(THIS_FOLDER,"data/ADP.csv"))
 
 statscolumns = [col for col in ADP.columns if col not in ["Year in League","Age Entering Y1"]]
 
-logcols=[col for col in ADP.columns if "ADP" in col or "Finish" in col or "YPRR" in col]
+logcols=[col for col in ADP.columns if "ADP" in col or "Finish" in col or "YPRR" in col or "PPG" in col]
 
 for col in logcols:
     ADP=ADP[ADP[col]!=0]
@@ -259,11 +259,12 @@ def dashtable ( Player,stats,dispstats,match,min):
                 fixed_rows={'headers': True},
                 fixed_columns={'headers': True},
                 style_header={
-             'fontSize':14,
+             'fontSize':20,
             'fontFamily': 'helvetica',
             'border': 'thin #a5d4d9 solid',
             'color': '#a5d4d9',
             'backgroundColor': '#313131',
+            'font-weight': 'bold',
             'padding':'10px'
             },
             style_filter={'color': '#fff', "backgroundColor": "#313131"},
@@ -271,7 +272,7 @@ def dashtable ( Player,stats,dispstats,match,min):
             style_data={'whiteSpace': 'pre-line'},
             
             style_cell={
-            'fontSize':12,
+            'fontSize':16,
             'border': 'thin #a5d4d9 solid',
             'fontFamily': 'helvetica',
             'textAlign': 'left',
@@ -290,7 +291,7 @@ def dashtable ( Player,stats,dispstats,match,min):
         for col in templogcols:
             PlayerData[col]=np.exp(PlayerData[col])
             bballtrial[col]=np.exp(bballtrial[col])
-            if "YPRR" in col:
+            if "YPRR" in col or "PPG" in col:
                 PlayerData[col]=PlayerData[col].round(2)
                 bballtrial[col]=bballtrial[col].round(2)
             else:

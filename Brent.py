@@ -167,6 +167,7 @@ def updatedata():
             df.loc[len(df)]=row
         df.to_csv(THIS_FOLDER+"/BaseballStandings/"+str(LID)+".csv",index=False)
         master=pd.concat([master,df], axis=0, ignore_index=False)
+        print(LeagueIds[LID],"Done")
     master.to_csv(THIS_FOLDER+"/BaseballStandings/MasterStats.csv",index=False)
     rankcols=["R","HR","RBI","SB","OBP","K","W","SV"]
     for col in rankcols:
@@ -182,6 +183,7 @@ master=pd.DataFrame(columns=["Division","Rank","Team","R","HR","RBI","SB","OBP",
 for LID in LeagueIds:
     df=pd.read_csv(THIS_FOLDER+"/BaseballStandings/"+str(LID)+".csv")
     master=pd.concat([master,df], axis=0, ignore_index=False)
+master.to_csv(THIS_FOLDER+"/BaseballStandings/MasterStats.csv",index=False)
 rankcols=["R","HR","RBI","SB","OBP","K","W","SV"]
 for col in rankcols:
     master[col] = master[col].rank(ascending=True)

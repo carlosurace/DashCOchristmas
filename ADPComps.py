@@ -228,12 +228,14 @@ def dashtable ( Player,stats,dispstats,match,min):
         
         PlayerData=PlayerData[['Player','Year',"POS","Year in League","Age Entering Y1"]+stats+dispstats+scaledstats]
         print(PlayerData)
-        if POS!="QB":
-            balltrial=bballtrial[(bballtrial["Y1 Games"]>=min)].reset_index(drop=True)
+        
         if match =="Both" or match =="Experience":
             bballtrial=bballtrial[(bballtrial["Year in League"]==PlayerData["Year in League"].iloc[0])].reset_index(drop=True)
         if match =="Both" or match =="Age":
             bballtrial=bballtrial[(bballtrial["Age Entering Y1"]==PlayerData["Age Entering Y1"].iloc[0])].reset_index(drop=True)
+        if POS!="QB":
+            bballtrial=bballtrial[(bballtrial["Y1 Games"]>=min)].reset_index(drop=True)
+
         bballtrial=bballtrial[['Player','Year',"POS","Year in League","Age Entering Y1"]+stats+dispstats+scaledstats]
         
         
@@ -297,6 +299,7 @@ def dashtable ( Player,stats,dispstats,match,min):
             else:
                 PlayerData[col]=PlayerData[col].round(0)
                 bballtrial[col]=bballtrial[col].round(0)
+        
         # print(len(bballtrial))
         return [dt.DataTable(
                 id='Ctable',

@@ -50,11 +50,12 @@ THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 #load data
 ADP= pd.read_csv(os.path.join(THIS_FOLDER,"data/ADP.csv"))
 
-statscolumns = [col for col in ADP.columns if col not in ["Year in League","Age Entering Y1"]]
+statscolumns = [col for col in ADP.columns if col not in ["Year in League","Age Entering"]]
 
-logcols=[col for col in ADP.columns if "ADP" in col or "Finish" in col or "YPRR" in col or "PPG" in col]
+logcols=[col for col in ADP.columns if "ADP" in col or "Finish" in col or "YPRR" in col or "PPG" in col or "ADOT" in col]
 
 for col in logcols:
+    ADP[col]=pd.to_numeric(ADP[col],errors='coerce')
     ADP=ADP[ADP[col]!=0]
     ADP[col]=np.log(ADP[col])
 # dash lay out
@@ -94,7 +95,7 @@ ADPComps =html.Div([
                         options=[
                             {'label': i, 'value': i} for i in statscolumns],
                         multi=True
-                        ,value=["POS.ADP","Prior Season PPG"]
+                        ,value=["POS.ADP","Y-1 PPG"]
                         ,className="dash-bootstrap"
                     )],width=11),
         ]),
@@ -104,7 +105,7 @@ ADPComps =html.Div([
                         options=[
                             {'label': i, 'value': i} for i in statscolumns],
                         multi=True
-                        ,value=["POS ADP Y2","Y1 PPG"]
+                        ,value=["POS ADP Y2","Y PPG"]
                         ,className="dash-bootstrap"
                     )],width=11),
         ]),
@@ -226,17 +227,17 @@ def dashtable ( Player,stats,dispstats,match,min):
         bballtrial=pd.concat([bballtrial,x],axis=1, ignore_index=False)
         PlayerData = bballtrial[(bballtrial["Player"]==Player)&(bballtrial["Year"]==2021)].reset_index(drop=True)
         
-        PlayerData=PlayerData[['Player','Year',"POS","Year in League","Age Entering Y1"]+stats+dispstats+scaledstats]
+        PlayerData=PlayerData[['Player','Year',"POS","Year in League","Age Entering"]+stats+dispstats+scaledstats]
         print(PlayerData)
         
         if match =="Both" or match =="Experience":
             bballtrial=bballtrial[(bballtrial["Year in League"]==PlayerData["Year in League"].iloc[0])].reset_index(drop=True)
         if match =="Both" or match =="Age":
-            bballtrial=bballtrial[(bballtrial["Age Entering Y1"]==PlayerData["Age Entering Y1"].iloc[0])].reset_index(drop=True)
+            bballtrial=bballtrial[(bballtrial["Age Entering"]==PlayerData["Age Entering"].iloc[0])].reset_index(drop=True)
         if POS!="QB":
-            bballtrial=bballtrial[(bballtrial["Y1 Games"]>=min)].reset_index(drop=True)
+            bballtrial=bballtrial[(bballtrial["Y Games"]>=min)].reset_index(drop=True)
 
-        bballtrial=bballtrial[['Player','Year',"POS","Year in League","Age Entering Y1"]+stats+dispstats+scaledstats]
+        bballtrial=bballtrial[['Player','Year',"POS","Year in League","Age Entering"]+stats+dispstats+scaledstats]
         
         
         #remove visual columns, leaving only scaled data
@@ -250,7 +251,7 @@ def dashtable ( Player,stats,dispstats,match,min):
             bballtrial=bballtrial.sort_values("Euc").reset_index(drop=True)
             bballtrial=bballtrial[(bballtrial["Player"]!=Player)]
             bballtrial = bballtrial.iloc[0:10]
-            bballtrial=bballtrial[['Player','Year',"POS","Year in League","Age Entering Y1"]+stats+dispstats+["Euc"]]
+            bballtrial=bballtrial[['Player','Year',"POS","Year in League","Age Entering"]+stats+dispstats+["Euc"]]
         except:
             PlayerData=PlayerData[['Player','Year',"POS"]+stats]
             return [dt.DataTable(
@@ -288,7 +289,7 @@ def dashtable ( Player,stats,dispstats,match,min):
             }),html.H1("Error, Check that Comparison Stats are present for this Player/Season")]
         
         arr=NEWx.values 
-        PlayerData=PlayerData[['Player','Year',"POS","Year in League","Age Entering Y1"]+stats+dispstats]
+        PlayerData=PlayerData[['Player','Year',"POS","Year in League","Age Entering"]+stats+dispstats]
         templogcols=[col for col in bballtrial.columns if col in logcols]
         for col in templogcols:
             PlayerData[col]=np.exp(PlayerData[col])

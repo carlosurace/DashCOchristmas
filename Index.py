@@ -20,7 +20,8 @@ import dash_daq as daq
 import base64
 from ADPComps import ADPComps
 from Brent import Brent
-
+from CarofferChristmas import  CarOfferContest,CarOfferLeaderBoard,CarOfferTransactions
+import time
 THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 ImagePath=os.path.join(THIS_FOLDER,'data/analytics logo.jpg')
 Image=base64.b64encode(open(ImagePath,'rb').read()).decode('ascii')
@@ -50,7 +51,11 @@ NavbarSignUp=dbc.Navbar(
 
 Join=html.Div([NavbarSignUp,html.Br(),html.P("Not a subscriber?"),
     html.Br(),html.P("Join us! Get access to our live REAL draft data and the entire suite of Analytics of Dynasty offerings. Click the Link Below!"),
-    html.Br(),dbc.NavItem(dbc.NavLink("Subscribe to AOD Now", active=True, href="https://analyticsofdynasty.com/register/analytics-of-dynasty-subscription/"))],style={'padding': '30px 30px 30px 30px','color': '#fff'})
+    html.Br(),dbc.NavItem(dbc.NavLink("Subscribe to AOD Now", active=True, href="https://analyticsofdynasty.com/register/analytics-of-dynasty-subscription/")),
+    dcc.Input(id="loading-input-1", value="Input triggers local spinner"),
+    dcc.Loading(
+            id="loading-1", type="default", children=html.Div(id="loading-output-1")
+        )],style={'padding': '30px 30px 30px 30px','color': '#fff'})
 
 NavbarSignUp=dbc.Navbar(
     children=[html.A(dbc.Row(
@@ -84,6 +89,15 @@ app.layout = html.Div([
 ])
 
 
+@app.callback(
+    Output("loading-output-1", "children"),
+    [Input("loading-input-1", "value")],
+    prevent_initial_call=True,
+)
+def input_triggers_spinner(value):
+    time.sleep(4)
+    return value
+
 
 @app.callback(Output('page-content', 'children'),
               [Input('url', 'pathname')])
@@ -101,6 +115,12 @@ def display_page(pathname):
         return Brent
     elif pathname == '/Admin':
         return Admin
+    elif pathname.lower() == '/caroffer/contest':
+        return CarOfferContest
+    elif pathname.lower() == '/caroffer':
+        return CarOfferLeaderBoard
+    elif pathname.lower() == '/caroffer/transactions':
+        return CarOfferTransactions
     else:
         return Join
 

@@ -20,6 +20,8 @@ import pandas as pd
 import numpy as np
 from datetime import datetime
 import dash_bootstrap_components as dbc
+import random
+
 
 UserDict={'ID'+str(i).zfill(3):'User'+str(i) for i in range(0,400)}
 '''
@@ -29,7 +31,7 @@ for i in range(0,350):
 '''   
 CarOfferContest =html.Div([
         html.H1(children='Car Offer Christmas'),
-        html.Div(id="wrapper",)
+        html.Div(id="wrapper",children=[html.Div(id="contest",)])
         ])
 
 CarOfferTransactions =html.Div([
@@ -126,9 +128,28 @@ def UpdateDrop (ID,D,W,Amount,Notes):
     [Input(component_id='int', component_property='n_interval')])
     
 def Leader (Int):
+    print("tRY")
     leaderboard=pd.read_csv('Accounts/Leaderboard.csv')
     leaderboard=leaderboard.sort_values('Balance').reset_index(drop=True)
     led=[]
     for i in range(0,10):
         led.append(dbc.Row([dbc.Col(html.H5(str(i)),width=2),dbc.Col(html.H5(str(leaderboard["Name"].iloc[i])),width=2),dbc.Col(html.H5(str(leaderboard["Balance"].iloc[i])),width=2)]))
     return [led]
+
+
+@app.callback(
+    [Output(component_id='contest', component_property='children')], # or is there a different one for table
+    [Input(component_id='sub-int1', component_property='n_interval')], prevent_initial_call=True)
+def contest (Int):
+    print("tRY")
+    num=random.randint(0,400)
+    return [html.H1(str(num))]
+'''
+@app.callback(
+    [Output(component_id='main-int', component_property='interval')], # or is there a different one for table
+    [Input(component_id='sub-int1', component_property='n_interval')],
+    [State(component_id='main-int', component_property='interval')]
+    )
+def change (trig,int):
+    return [int*10]
+'''

@@ -5,10 +5,12 @@ Created on Sep 27, 2021
 '''
 
 import urllib
+from urllib.parse import quote_plus
 import xml.etree.ElementTree as ET
 import time
 import datetime
 import sys
+from _pylief import NONE
 
 # TODO: these are duplicated from api.py
 def convert_to_timestamp(date_string):
@@ -19,37 +21,48 @@ def concat(values):
 
 class ImportApi:
 
-    def __init__(self, year):
+    def __init__(self, year,printURL):
         opener = urllib.request.build_opener()
-        mfl_url = 'http://football.myfantasyleague.com'
+        mfl_url = 'https://www53.myfantasyleague.com'
         self.opener = opener
         self.mfl_import_url = '{}/{}/import'.format(mfl_url, year)
         self.mfl_export_url = '{}/{}/export'.format(mfl_url, year)
         self.mfl_login_url = '{}/{}/login'.format(mfl_url, year)
+        if printURL:
+            self.print_url=True
+        else:
+            self.print_url=False
+        
 
     _logged_in = False
 
-    def _import(self, params, json=True):
+    def _import(self, params, json=False):
         if json:
             params['JSON'] = 1
         encoded_params = urllib.parse.urlencode(params)
+        #encoded_params="&".join("{}={}".format(*i) for i in params.items())
         url = '{}?{}'.format(self.mfl_import_url, encoded_params)
+        if self.print_url:
+            print(url)
         resp = self.opener.open(url)
         return resp.read()
 
     # To login as commissioner, franchise_id = '0000'
-    def login(self, league_id, franchise_id, password):
+    def login(self, username, password):
+        
         params = urllib.parse.urlencode({
-            'L': league_id,
-            'FRANCHISE_ID': franchise_id,
+            'USERNAME':username,
             'PASSWORD': password,
-            'XML': 1}) # is 'XML' required?
+            'XML': 1},quote_via=quote_plus) # is 'XML' required?
         url = '{}?{}'.format(self.mfl_login_url, params)
+        print(url)
         resp = urllib.request.urlopen(url)
-        user_id = ET.fromstring(resp.read()).attrib['session_id']
-        self.opener.addheaders.append(('Cookie', 'USER_ID={}'.format(user_id)))
-        self.league_id = league_id
-        self.franchise_id = franchise_id
+        print(resp)
+        root=ET.fromstring(resp.read())
+        print(root.attrib)
+        user_id = root.attrib['MFL_USER_ID']
+        self.opener.addheaders.append(('Cookie', 'MFL_USER_ID={}'.format(user_id)))
+        
         self._logged_in = True # may not be needed
 
     def franchises(self):
@@ -130,13 +143,28 @@ class ImportApi:
             params['DROP'] = concat(drop)
         return self._import(params)
 
-    def waiver_request(self, round_, picks):
+    def waiver_request(self, round_, picks,L,Franchise=None):
         params = {
             'TYPE': 'waiverRequest',
-            'ROUND': round_,
             'PICKS': concat(picks),
-            'L': self.league_id
+            'L': str(L)
         }
+        if round_ is not None:
+            params["ROUND"]=str(round_)
+        if Franchise is not None:
+            params["FRANCHISE_ID"]=str(Franchise)
+        return self._import(params)
+    
+    def blind_bid_waiver_request(self, round_, picks,L,Franchise=None):
+        params = {
+            'TYPE': 'blindBidWaiverRequest',
+            'PICKS': concat(picks),
+            'L': str(L)
+        }
+        if round_ is not None:
+            params["ROUND"]=str(round_)
+        if Franchise is not None:
+            params["FRANCHISE_ID"]=str(Franchise)
         return self._import(params)
 
     def ir(self, activate=None, deactivate=None):

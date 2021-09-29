@@ -5,6 +5,7 @@ Created on Jun 24, 2020
 '''
 import dash
 from flask_caching import Cache
+
 app = dash.Dash( suppress_callback_exceptions=True)
 server = app.server
 cache = Cache(app.server, config={

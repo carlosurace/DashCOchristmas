@@ -6,18 +6,29 @@ Created on Sep 27, 2021
 
 import requests
 from util import *
-
+import urllib
+from urllib.parse import quote_plus
+from json import loads
+import xml.etree.ElementTree as ET
 """A library that provides a Python interface to the MyFantasyLeague (MFL) API."""
 
 class ExportApi:
     """A python interface to the MFL export API."""
 
-    def __init__(self, year):
+    def __init__(self, year,print_url):
+        
+        opener = urllib.request.build_opener()
+        self.opener = opener
         """Create an instance of the MFL API.
         Args:
             year (int): The year to get data for (e.g. 2013).
         """
-        self.mfl_export_url = 'http://www58.myfantasyleague.com/{}/export'.format(year)
+        mfl_url = 'https://www53.myfantasyleague.com'
+        self.mfl_export_url = 'https://www58.myfantasyleague.com/{}/export'.format(year)
+        self.mfl_API_url = 'https://api.myfantasyleague.com/{}/export'.format(year)
+        self.mfl_login_url = '{}/{}/login'.format(mfl_url, year)
+        self.headers={}
+        self.print_url=print_url
 
     def _export(self, params):
         """Send request to MFL API and return result.
@@ -28,9 +39,36 @@ class ExportApi:
             dict: Dictionary containing JSON data
         """
         params['JSON'] = 1
-        return requests.get(self.mfl_export_url, params=params).json()
+        return requests.get(self.mfl_export_url, params=params,headers=self.headers).json()
+    
+    def _import(self, params, json=True):
+        if json:
+            params['JSON'] = 1
+        encoded_params = urllib.parse.urlencode(params)
+        #encoded_params="&".join("{}={}".format(*i) for i in params.items())
+        url = '{}?{}'.format(self.mfl_API_url, encoded_params)
+        if self.print_url:
+            print(url)
+        resp = self.opener.open(url)
+        resp=resp.read()
+        print(resp)
+        #resp = resp.decode('utf8').replace("'", '"')
+        return loads(resp)
+    
+    def login(self, username, password):
+        
+        params = urllib.parse.urlencode({
+            'USERNAME':username,
+            'PASSWORD': password,
+            'XML': 1},quote_via=quote_plus) # is 'XML' required?
+        url = '{}?{}'.format(self.mfl_login_url, params)
+        resp = urllib.request.urlopen(url)
+        root=ET.fromstring(resp.read())
+        user_id = root.attrib['MFL_USER_ID']
+        self.headers.update({'Cookie': 'MFL_USER_ID={}'.format(user_id)})
+        self.opener.addheaders.append(('Cookie', 'MFL_USER_ID={}'.format(user_id)))
 
-    def players(self, players=None, since=None, details=False):
+    def players(self, players=None,L=None, since=None, details=False):
         """Return player ID's and players in the MFL database.
         All other functions use player ID's, so call this function if information like names, teams, or positions are needed.
         Args:
@@ -47,6 +85,8 @@ class ExportApi:
             params['SINCE'] = timestamp
         if players is not None:
             params['PLAYERS'] = concat(players)
+        if L is not None:
+            params['L'] = str(L)
         return self._export(params)
 
     def all_rules(self):
@@ -134,6 +174,16 @@ class ExportApi:
             params['FRANCHISES'] = franchises
         return self._export(params)
 
+    def myLeagues(self,year):
+        """Return information about the most-added players across all MFL leagues.
+        Only players that have been added in more than 2%% of leagues will be returned.
+        Args:
+            week (int): NFL week to get information for. If no value is provided, the most recent week is used.
+        """
+        params = {'TYPE': 'myleagues',
+                  'YEAR':str(year)}
+        return self._import(params)
+    
     def top_adds(self, week=None):
         """Return information about the most-added players across all MFL leagues.
         Only players that have been added in more than 2%% of leagues will be returned.

@@ -11,6 +11,30 @@
  * Licensed under MIT (https://github.com/twbs/bootstrap/blob/master/LICENSE)
  */
 
+.dash-spinner.dash-default-spinner {
+    margin: 1rem auto;
+    width: 99%;
+    height: 20vh;
+    text-align: center;
+    font-size: 50px;
+    margin-left: 1%;
+}
+.dash-spinner {
+  background-image: url("https://media.giphy.com/media/WRRJbQYlTtn6TXOLUj/giphy.gif");
+background-size: 99%;
+  background-repeat: no-repeat;
+	margin: 1rem auto;
+    width: 99%;
+    height: 99%;
+    text-align: center;
+    font-size: 50px;
+    margin-left: 1%;
+}
+
+.dash-spinner * {
+  display: none !important;
+}
+
 @import url("https://fonts.googleapis.com/css?family=Roboto:400,700");
 :root {
   --blue: #2A9FD6;
@@ -9795,6 +9819,8 @@ legend {
   width: 100%;
 }
 
+
+
 .dash-bootstrap .DateInput > input::placeholder {
   color: #a5d4d9;
   opacity: 1;
@@ -10197,5 +10223,72 @@ legend {
 #wrapper .Select-value-label {
      color: #fff;
      border-color: #fff;
-     font-weight: 700
+     font-weight: 700;
+     
+    }
+
+    .caroffer .Select-value-label {
+      color: #fff !important;
+      opacity: 100 !important;
+      margin:auto !important;
+      margin:20px 0px!important;
+      background-color: #000!important;
+    }
+
+    .caroffer .Select-placeholder {
+      color: #fff !important;
+      opacity: 100 !important;
+      margin:auto !important;
+      margin:20px 0px!important;
+      background-color: #000!important;
+    }
+
+    .caroffer .Select-value {
+      color: #fff !important;
+      opacity: 100 !important;
+      margin:40px 0px!important;
+      height:100px!important;
+    }
+
+    .caroffer .Select-multi-value-wrapper {
+      color: #fff !important;
+      opacity: 100 !important;
+      margin-top:0px !important;
+    }
+
+    .caroffer .Select-input {
+      color: #fff !important;
+      opacity: 100 !important;
+      margin:auto !important;
+    }
+
+    .caroffer .Select-control {
+      color: #fff !important;
+      opacity: 100 !important;
+      margin:auto !important;
+      background-color: #000!important;
+    }
+
+    .caroffer::placeholder {
+      color: #fff !important;
+      opacity: 100 !important;
+      margin:auto !important;
+    }
+    
+    .caroffer .Select--multi .Select-value-icon {
+      border-right-color: rgba(42, 159, 214, 0.25);
+      line-height: calc(0.875rem * 1.5);
+      padding-top: 0;
+      padding-bottom: 0;
+      background-color: #313131!important;
+    }
+
+    .caroffer .VirtualizedSelectOption {
+      padding: 5px !important;
+      color: #fff !important;
+      background-color: #000 !important;
+    }
+    
+    .caroffer .VirtualizedSelectFocusedOption {
+      background-color: #ccff00 !important;
     }

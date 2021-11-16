@@ -21,6 +21,10 @@ import numpy as np
 from datetime import datetime
 import dash_bootstrap_components as dbc
 import random
+import base64
+image_filename = 'COLOGO.png' # replace with your own image
+encoded_image = base64.b64encode(open(image_filename, 'rb').read()).decode('ascii')
+CarOfferLogo='data:image/png;base64,{}'.format(encoded_image)
 
 
 UserDict={'ID'+str(i).zfill(3):'User'+str(i) for i in range(0,400)}
@@ -30,12 +34,7 @@ for i in range(0,350):
     df.to_csv('Accounts/'+str(i).zfill(3)+'.csv',index=False)
 '''   
 CarOfferContest =html.Div([
-        html.H1(children='Car Offer Christmas'),
-        html.Div(id="wrapper",children=[html.Div(id="contest",)])
-        ])
-
-CarOfferTransactions =html.Div([
-        html.H1(children='Car Offer Christmas'),
+        html.Div(html.Img(src=CarOfferLogo, height="80px"),style={'width':'100%','height':'200px',}),
         html.Div(id="wrapper",
             children=
             [
@@ -58,6 +57,61 @@ CarOfferTransactions =html.Div([
                 ]
             )
         ])
+
+CarOffBossMode =html.Div([
+        html.H1(children='Car Offer Christmas'),
+        html.Div(id="wrapper",children=[html.Div(id="contest",)])
+        ])
+
+CarOfferTransactions =html.Div([
+        html.Div([
+            html.Div([html.Img(src=CarOfferLogo, height="80px",style={'width':'600px','height':'100px',"margin":"64px 50px 50px 30px"})],id="wrapper",style={'width':'2048px',"flex-direction": "row","display": "flex","margin-bottom":"48px","margin":"auto"}),
+            html.Div([
+                dcc.Dropdown(id="Account",className="caroffer",
+                         options=[{'label': str(i).zfill(3), 'value': str(i).zfill(3)} for i in range(0,350)],
+                         placeholder="First Last Name",
+                         style={'width':'1000px',"margin-left":"0px",'font-size':'42px','padding':"12px"}),
+                         html.Div("Balance:",style={'font-size':'42px','font-weight':'bold',"margin-left":"200px","color":"#ccff00",'height':'86px'})
+                ],id="wrapper",style={'width':'2048px',"flex-direction": "row","display": "flex","margin-bottom":"48px","margin":"auto"}),
+            html.Div([html.Div([
+                    dcc.Input(id="Amount",className="caroffer",type='number',placeholder='Enter Amount',style={'font-size':'42px','width':'300px','height':'86px','margin':'12px','backgroundColor':"#292929",'color':"#fff",}),
+                      dcc.Input(id="Notes",className="caroffer",placeholder='Notes',style={'font-size':'42px','width':'1000px','height':'86px','margin':'12px','backgroundColor':"#292929",'color':"#fff",}) ,
+                      dbc.Button(
+                        "Deposit",
+                        id="Deposit",
+                        style={'font-size':'42px','width':'250px','height':'86px','margin':'12px','backgroundColor':"#177DDC",'color':"#fff",'borderColor':"#177DDC"}
+                            ),
+                     dbc.Button(
+                        "Withdraw",
+                        id="Withdraw",
+                        style={'font-size':'42px','width':'250px','height':'86px','margin':'12px','backgroundColor':"#292929",'color':"#177DDC",'borderColor':"#177DDC"}
+                            ),
+                 ],style={'width':'2048px',"height":"200px",'padding':'40px 0px',"flex-direction": "row","display": "flex","background-color":"#434343","margin":"auto"}
+            )],style={'width':'100%',"height":"200px","background-color":"#434343"})
+
+            ])
+            ],style={'width':'100%','height':'200px',"flex-direction": "column","display": "flex"})
+        # html.Div(id="wrapper",
+        #     children=
+        #     [
+            
+        #     html.Div(id="AccountInfo"),
+        #     html.Div(id="Transactions"),
+        #     dbc.Row([dbc.Col([dcc.Input(id="Amount",placeholder='Enter Amount')],width=1),
+        #              dbc.Col([dcc.Input(id="Notes",placeholder='Notes')],width=4),  
+        #              dbc.Button(
+        #      "Deposit",
+        #      id="Deposit",
+        #     style={'margin':'4px','backgroundColor':"#fff",'color':"#000",'borderColor':"#000"}
+        #         ),
+        #             dbc.Button(
+        #      "Withdraw",
+        #      id="Withdraw",
+        #     style={'margin':'4px','backgroundColor':"#fff",'color':"#000",'borderColor':"#000"}
+        #         )]),
+        #         ]
+        #     )
+        
 
 CarOfferLeaderBoard=html.Div([
         html.H1(children='Car Offer Christmas'),

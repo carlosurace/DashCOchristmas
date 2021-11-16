@@ -11,17 +11,13 @@ from App import app,cache
 #import ADPAPP
 #import DraftApp
 import dash_bootstrap_components as dbc
-from layouts import DraftHelper, RDP_graph,RDP_table,FCgraph,TradeFinder,Admin
-import callbacks
-import os
 import datetime
 import pandas as pd
 import dash_daq as daq
 import base64
-from ADPComps import ADPComps
-from Brent import Brent
 from CarofferChristmas import  CarOfferContest,CarOfferLeaderBoard,CarOfferTransactions
 import time
+import os
 THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
 ImagePath=os.path.join(THIS_FOLDER,'data/analytics logo.jpg')
 Image=base64.b64encode(open(ImagePath,'rb').read()).decode('ascii')
@@ -35,7 +31,7 @@ NavbarSignUp=dbc.Navbar(
                     dbc.Col(html.Img(src=Logo, height="90px"))
                 ],
                 align="left",
-                no_gutters=True,
+                
             )),
         html.H2("Sign Up")
         #dbc.NavItem(dbc.NavLink("Welcome", href="/Home")),
@@ -63,7 +59,7 @@ NavbarSignUp=dbc.Navbar(
                     dbc.Col(html.Img(src=Logo, height="90px"))
                 ],
                 align="left",
-                no_gutters=True,
+                
             )),
         html.H2("Sign Up")
         #dbc.NavItem(dbc.NavLink("Welcome", href="/Home")),
@@ -103,19 +99,7 @@ def input_triggers_spinner(value):
               [Input('url', 'pathname')])
 def display_page(pathname):
     print(pathname)
-    if pathname == '/ForYourEyesOnly':
-        return RDP_table
-    elif pathname == '/HelpMePlease':
-        return DraftHelper
-    elif pathname == '/WolfOfWallstreet':
-        return TradeFinder
-    elif pathname == '/ADPComps':
-        return ADPComps
-    elif pathname == '/DakIsTop3':
-        return Brent
-    elif pathname == '/Admin':
-        return Admin
-    elif pathname.lower() == '/caroffer/contest':
+    if pathname.lower() == '/caroffer/contest':
         return CarOfferContest
     elif pathname.lower() == '/caroffer':
         return CarOfferLeaderBoard

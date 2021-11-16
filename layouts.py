@@ -134,7 +134,7 @@ NavbarRDP=dbc.Navbar(
                     dbc.Col(html.Img(src=Logo, height="90px"))
                 ],
                 align="left",
-                no_gutters=True,
+                
             )),
         html.H2("Real Draft Position")
         #dbc.NavItem(dbc.NavLink("Welcome", href="/Home")),
@@ -153,7 +153,7 @@ NavbarTrades=dbc.Navbar(
                     dbc.Col(html.Img(src=Logo, height="90px"))
                 ],
                 align="left",
-                no_gutters=True,
+                
             )),
         html.H2("AOD Trade Database"),
 
@@ -175,7 +175,7 @@ NavbarAdmin=dbc.Navbar(
                     dbc.Col(html.Img(src=Logo, height="90px"))
                 ],
                 align="left",
-                no_gutters=True,
+                
             )),
         html.H2("AOD Draft Selection Portal"),
     ],

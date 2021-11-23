@@ -15,7 +15,7 @@ import datetime
 import pandas as pd
 import dash_daq as daq
 import base64
-from CarofferChristmas import  CarOfferContest,CarOfferLeaderBoard,CarOfferTransactions
+from CarofferChristmas import  CarOfferContest,CarOfferLeaderBoard,CarOfferTransactions,Change
 import time
 import os
 THIS_FOLDER = os.path.dirname(os.path.abspath(__file__))
@@ -105,6 +105,8 @@ def display_page(pathname):
         return CarOfferLeaderBoard
     elif pathname.lower() == '/caroffer/transactions':
         return CarOfferTransactions
+    elif pathname.lower() == '/caroffer/change':
+        return Change
     else:
         return Join
 

@@ -15,7 +15,7 @@ import dash_html_components as html
 import plotly.express as px
 import pandas as pd
 import numpy as np
-from App import  app
+from App import  app,cache
 import pandas as pd
 import numpy as np
 from datetime import datetime
@@ -26,6 +26,9 @@ image_filename = 'COLOGO.png' # replace with your own image
 encoded_image = base64.b64encode(open(image_filename, 'rb').read()).decode('ascii')
 CarOfferLogo='data:image/png;base64,{}'.format(encoded_image)
 
+pimage_filename = 'Player.png' # replace with your own image
+pencoded_image = base64.b64encode(open(pimage_filename, 'rb').read()).decode('ascii')
+pCarOfferLogo='data:image/png;base64,{}'.format(pencoded_image)
 
 UserDict={'ID'+str(i).zfill(3):'User'+str(i) for i in range(0,400)}
 '''
@@ -71,7 +74,7 @@ CarOfferTransactions =html.Div([
                          options=[{'label': str(i).zfill(3), 'value': str(i).zfill(3)} for i in range(0,350)],
                          placeholder="First Last Name",
                          style={'width':'1000px',"margin-left":"0px",'font-size':'42px','padding':"12px"}),
-                         html.Div("Balance:",style={'font-size':'42px','font-weight':'bold',"margin-left":"200px","color":"#ccff00",'height':'86px'})
+                         html.Div("Balance:",id="balance",style={'font-size':'42px','font-weight':'bold',"margin-left":"200px","color":"#ccff00",'height':'86px'})
                 ],id="wrapper",style={'width':'2048px',"flex-direction": "row","display": "flex","margin-bottom":"48px","margin":"auto"}),
             html.Div([html.Div([
                     dcc.Input(id="Amount",className="caroffer",type='number',placeholder='Enter Amount',style={'font-size':'42px','width':'300px','height':'86px','margin':'12px','backgroundColor':"#292929",'color':"#fff",}),
@@ -87,8 +90,8 @@ CarOfferTransactions =html.Div([
                         style={'font-size':'42px','width':'250px','height':'86px','margin':'12px','backgroundColor':"#292929",'color':"#177DDC",'borderColor':"#177DDC"}
                             ),
                  ],style={'width':'2048px',"height":"200px",'padding':'40px 0px',"flex-direction": "row","display": "flex","background-color":"#434343","margin":"auto"}
-            )],style={'width':'100%',"height":"200px","background-color":"#434343"})
-
+            )],style={'width':'100%',"height":"200px","background-color":"#434343"}),
+            html.Div(id="Transactions")
             ])
             ],style={'width':'100%','height':'200px',"flex-direction": "column","display": "flex"})
         # html.Div(id="wrapper",
@@ -114,86 +117,96 @@ CarOfferTransactions =html.Div([
         
 
 CarOfferLeaderBoard=html.Div([
-        html.H1(children='Car Offer Christmas'),
+        html.Div([html.Img(src=CarOfferLogo, height="80px",style={'width':'600px','height':'100px',"margin":"64px 50px 50px 30px"})],id="wrapper",style={'width':'2048px',"flex-direction": "row","display": "flex","margin-bottom":"24px","margin":"auto"}), 
         dcc.Interval(id='int',interval=5000),
-        html.Div(id="wrapper",children=[html.Div(id="Leaderboard")])
+        html.Div(id="wrapper",children=[html.Div(id="Leaderboard",style={"width":"1000px","margin-bottom":"48px",'font-size':'36px',"margin":"auto","color":"#ccff00","display": "grid","grid-row-gap":"5px","grid-template-columns":"70px 180px 250px 250px","padding": "auto"})])
         ])
 
 
 def GetBalance(ID):
-    try:
-        data=pd.read_csv('Accounts/'+str(ID)+'.csv')
-        data["sum"]=np.where(data["Type"]=="Withdraw",-data["Amount"],data["Amount"])
-        
-        lastseen=data["Amount"][data["Type"]=="Withdraw"].reset_index(drop=True)
-        try:
-            lastseen=lastseen[len(lastseen)-1]
-        except:
-            lastseen=0
-        Balance=data["sum"]=data["sum"].sum()
-        Info = dbc.Row([html.H5("Account Balance: $"+str(Balance)),html.H5("Last Withdrawal: $"+str(lastseen))])
-        leaderboard=pd.read_csv('Accounts/Leaderboard.csv')
-        leaderboard=leaderboard[leaderboard.ID!='ID'+ID].reset_index(drop=True)
-        leaderboard.loc[len(leaderboard)]=['ID'+ID,UserDict['ID'+ID],Balance,lastseen]
-        leaderboard.to_csv('Accounts/Leaderboard.csv',index=False)
-        return Info
-    except Exception as inst:
-        return html.H5(str(inst))
+    data=cache.get(str(ID))
+    if data is None:
+        data=[{"Time":None,"Transaction":1000,"Notes":"Initial Deposit"}]
+        cache.set(str(ID),data)
+    if len(data)>0:
+        Balance=sum(c["Transaction"] for c in data)
+        Inplay=data[len(data)-1]["Transaction"]
+    else:
+        Balance=0
+        Inplay=0
     
-def GetTransactions(ID):
-    try:
-        data=pd.read_csv('Accounts/'+str(ID)+'.csv')
-        trans=[]
-        for i in range(len(data)):
-            trans.append(dbc.Row([dbc.Col(html.H5(str(data["Time"].iloc[i])),width=2),dbc.Col(html.H5(str(data["Type"].iloc[i])),width=2),dbc.Col(html.H5(str(data["Amount"].iloc[i])),width=2),dbc.Col(html.H5(str(data["Notes"].iloc[i])),width=2)]))
-        return trans
-    except Exception as inst:
-        print(Exception)
-        return html.H5(str(inst))
+    
+    Inplay=-Inplay if Inplay<0 else 0
+    return Balance,Inplay
 
-def transact(ID,Amount,Type,Notes):
-    data=pd.read_csv('Accounts/'+str(ID)+'.csv')
-    data.loc[len(data)]=[str(datetime.now()),Type,int(Amount),str(Notes)]
-    data.to_csv('Accounts/'+str(ID)+'.csv',index=False)                         
+def GetTransactions(ID):
+    data=cache.get(str(ID))
+    if data is None:
+        data=[{"Time":None,"Transaction":1000,"Notes":"Initial Deposit"}]
+        cache.set(str(ID),data)
+    trans=[]
+    for i in data:
+        trans.append(dbc.Row([dbc.Col(html.H5(str(i["Time"])),width=2),dbc.Col(html.H5(str(i["Transaction"])),width=2),dbc.Col(html.H5(str(i["Notes"])),width=2)]))
+    return trans
+
+def transact(ID,Amount,Notes):
+    data=cache.get(str(ID))
+    data.append({"Time":str(datetime.now()),"Transaction":int(Amount),"Notes":str(Notes)})
+    cache.set(str(ID),data)                      
 @app.callback(
-    [Output(component_id='AccountInfo', component_property='children'),
+    [Output(component_id='balance', component_property='children'),
      Output(component_id='Transactions', component_property='children'),
      Output(component_id='Amount', component_property='value')], # or is there a different one for table
     [Input(component_id='Account', component_property='value'),
      Input(component_id='Deposit', component_property='n_clicks'),
      Input(component_id='Withdraw', component_property='n_clicks')],
     [State(component_id='Amount', component_property='value'),
-     State(component_id='Notes', component_property='value')])
-    
+     State(component_id='Notes', component_property='value')])  
 def UpdateDrop (ID,D,W,Amount,Notes):
     ctx = dash.callback_context
     trigger=ctx.triggered[0]['prop_id'].split('.')[0]
-    if trigger=='Deposit' or trigger=='Withdraw':
-        transact(ID,Amount,trigger,Notes)
+    if trigger=='Deposit':
+        transact(ID,Amount,Notes)
+        Amount=None
+    if trigger=='Withdraw':
+        transact(ID,-Amount,Notes)
         Amount=None
         
-    Info=GetBalance(ID)
+        
+    bal,ip=GetBalance(ID)
     
     trans=GetTransactions(ID)
-    return [Info],trans,Amount
+    return ["Balance: "+str(bal)+"("+str(ip)+")"],trans,Amount
 
 @app.callback(
     [Output(component_id='Leaderboard', component_property='children')], # or is there a different one for table
-    [Input(component_id='int', component_property='n_interval')])
+    [Input(component_id='int', component_property='n_intervals')])
     
 def Leader (Int):
-    print("tRY")
+    print("tRY",Int)
     leaderboard=pd.read_csv('Accounts/Leaderboard.csv')
     leaderboard=leaderboard.sort_values('Balance').reset_index(drop=True)
     led=[]
+    for i in range(len(leaderboard)):
+        bal,ip=GetBalance(str(leaderboard["ID"].iloc[i])[2:])
+        leaderboard["Balance"].iloc[i]=bal
+        leaderboard["InPlay"].iloc[i]=bal
+    leaderboard=leaderboard.sort_values("Balance",ascending=False)
+    led+=[html.Div("Rank",style={"padding":"5px 0px","width":"auto"},className="one-edge-shadow"),
+        html.Div([],className="one-edge-shadow"),
+        html.Div(str("Name"),style={"padding":"5px 0px"},className="one-edge-shadow"),
+        html.Div("$"+str("Balance"),style={"padding":"5px 0px"},className="one-edge-shadow")]
     for i in range(0,10):
-        led.append(dbc.Row([dbc.Col(html.H5(str(i)),width=2),dbc.Col(html.H5(str(leaderboard["Name"].iloc[i])),width=2),dbc.Col(html.H5(str(leaderboard["Balance"].iloc[i])),width=2)]))
+        led+=[html.Div("#"+str(i+1),style={"padding":"5px 0px","width":"auto"},className="one-edge-shadow"),
+        html.Div(html.Img(src=pCarOfferLogo,style={"color":"white","height":"80px","width":"80px"} ),className="one-edge-shadow"),
+        html.Div(str(leaderboard["Name"].iloc[i]),style={"padding":"5px 0px"},className="one-edge-shadow"),
+        html.Div("$"+str(leaderboard["Balance"].iloc[i]),style={"padding":"5px 0px"},className="one-edge-shadow")]
     return [led]
 
 
 @app.callback(
     [Output(component_id='contest', component_property='children')], # or is there a different one for table
-    [Input(component_id='sub-int1', component_property='n_interval')], prevent_initial_call=True)
+    [Input(component_id='sub-int1', component_property='n_intervals')], prevent_initial_call=True)
 def contest (Int):
     print("tRY")
     num=random.randint(0,400)
